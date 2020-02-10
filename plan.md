@@ -1,9 +1,5 @@
 # Thesis plan
 
-Main bulk of writing to occur post-internship, starting Feb 2020. This leaves approx 9 months to complete earlier research on Kelvin-Helmholtz in null points, dynamically twisted coronal loops, or kink instability in a loop using anomolous resistivity.
-
----
-
 # What needs to be written?
 
 ## Introduction
@@ -28,6 +24,8 @@ This is a reimagining of work already published in Braginskii 1965 and MacTaggar
 ## Experimental setup (2 chapters)
 ### Chp 1 - Implementation of 1D lare code to describe numerical method
 
+    - Implementation & extrapolation to 3D
+
 ### Chp 2 - Implementation of Braginskii & switching models in 3D code
 
 This is mostly done in previous reports. 
@@ -41,21 +39,18 @@ This is mostly done in previous reports.
     - Model
     - Analysis is in depth, employing new tools, these will be described
 
-This is all written up for a journal article, so should require only some expansion in the right places.
-
-    - Dynamic twisting of loop into unstable?
-    - Anomolous resistivity
-    - Shock viscosity
-
-This work is semi-done but needs polishing and proper analysis.
+    - TODO Anomolous resistivity
 
 ## Application to twisted null point
     - Motivation
     - Model
     - Heating results
-    - Kelvin-Helmholtz
 
 The results are written up in MacTaggart, so I'll expand on these, potentially including the work on the Kelvin-Helmholtz in the null point. The KHI work is not complete at this point.
+
+## Application to the KHI in a twisted null point
+
+Work TODO
 
 ## Summary & future work suggestions
 
@@ -81,10 +76,6 @@ Not written until most of the rest is done.
 - Kink instability
   - Further work on static
     - Scaling the resultant Ohmic heating?
-  - Dynamically twisted
-    - Do the static results generalise?
-    - Can we twist the field multiple times?
-    - Is the driver in any way realistic?
   - Anomalous resistivity (+ symmetry breaking?)
     - Are the results in any way similar to bg resistivity?
     - What can we say about reconn rate, heating, onset time and relaxation time?

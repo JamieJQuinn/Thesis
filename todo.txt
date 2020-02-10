@@ -1,0 +1,5 @@
+Get Athena style wave tests working in lare3d (continue from work done during NAM)
+Run parameter studies of static kink including anomalous resistivity
+Run parameter studies of static kink comparing shock with iso and aniso to provide some recommendation
+Run parameter studies of KHI null point using background & anomalous resist
+
