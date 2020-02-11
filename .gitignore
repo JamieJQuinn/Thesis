@@ -11,3 +11,4 @@ main.toc
 main.fdb_latexmk
 main.fls
 .ipynb_checkpoints
+*.ipynb
