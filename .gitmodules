@@ -1,0 +1,3 @@
+[submodule "images/SDF"]
+	path = images/SDF
+	url = https://github.com/keithbennett/SDF.git
