@@ -38,6 +38,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0,'../lare3d-tools')
 from print_energy import Energy
 
+PAD_INCHES = 0.02
 main_data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/"
 ```
 
@@ -97,103 +98,17 @@ latexify()
 ```
 
 ```{python}
-def get_var_slice(sdfFilename, variable):
-    sdfFile = sdf.read(sdfFilename)
-
-    sdf_var = getattr(sdfFile, variable)
-    var = sdf_var.data
-    dims = sdf_var.dims
-
-    # If z-dimensions even, average between midpoints
-    average = (dims[2] % 2 == 0)
-
-    if average:
-        return 0.5*(var[:,:,int(dims[2]/2)-1] + var[:,:,int(dims[2]/2)]).transpose()
-    else:
-        return var[:,:,int(dims[2]/2)].transpose()
-
-def mean_difference(var_slice, is_sum_of_differences=True):
-#     new_slice = var_slice[:,220:240]
-    new_slice = var_slice
-    half_size = int(new_slice.shape[0]/2)
-
-    if new_slice.shape[0] % 2 == 0:
-        index_shift = 0
-    else:
-        index_shift = 1
-        
-    if is_sum_of_differences:
-        difference = np.mean((np.abs(new_slice) - np.abs(new_slice[::-1]))[:half_size])
-    else:
-        difference = np.mean(np.abs(new_slice[:half_size])) - np.mean(np.abs(new_slice[half_size+index_shift:]))
-    
-    return difference
-
-def get_dx_dy_dz(sdfFilename):
-    sdfFile = sdf.read(sdfFilename)
-    
-    extents = sdfFile.Grid_Grid.extents
-    dims = sdfFile.Grid_Grid.dims
-    
-    dims = [dim + 1 for dim in dims]
-    
-    return [(extents[i+3] - extents[i])/dims[i] for i in range(3)]
-
-def get_magnetic_field(sdfFilename):
-    sdfFile = sdf.read(sdfFilename)
-    
-    mag_field = np.array([
-        getattr(sdfFile, variable).data for variable in 
-        ['Magnetic_Field_bx_centred', 'Magnetic_Field_by_centred', 'Magnetic_Field_bz_centred']
-    ])
-
-    return mag_field
-
-def curl(bx, by, bz, dx, dy, dz):
-    gradbx = np.gradient(bx, dx, dy, dz)
-    gradby = np.gradient(by, dx, dy, dz)
-    gradbz = np.gradient(bz, dx, dy, dz)
-    
-    return np.array([(gradbz[1] - gradby[2]), -(gradbz[0] - gradbx[2]), (gradby[0] - gradbx[1])])
-
-def get_current(sdfFilename):
-    field = get_magnetic_field(sdfFilename)
-    dx, dy, dz = get_dx_dy_dz(sdfFilename)
-    current = curl(field[0], field[1], field[2], dx, dy, dz)
-
-def get_mean_current(sdfFilename):
-    field = get_magnetic_field(sdfFilename)
-    dx, dy, dz = get_dx_dy_dz(sdfFilename)
-
-    gradbx = np.gradient(field[0], dx, dy, dz)
-    gradby = np.gradient(field[1], dx, dy, dz)
-    gradbz = np.gradient(field[2], dx, dy, dz)
-
-    mean = np.mean(np.sqrt(np.power(gradbz[1] - gradby[2], 2) + np.power(gradbz[0] - gradbx[2], 2) + np.power(gradby[0] - gradbx[1], 2)))
-    
-    del field, gradbx, gradby, gradbz
-    
-    return mean
-
-def load_slices(folder, timedumps, variable):
-    filenames = [folder + "" + format(timedump, "04d") + ".sdf" for timedump in timedumps]
-    slices = [get_var_slice(filename, variable) for filename in filenames]
-    
-    return slices
-
-def calc_differences(slices, sum_of_differences=False):
-    return [mean_difference(var_slice, sum_of_differences) for var_slice in slices]
-
-def load_differences(folder, timedumps, variable):
-    slices = load_slices(folder, timedumps, variable)
-    return calc_differences(slices)
-
-def remove_spines(axis):
+def remove_spines(axis, axis_side='left'):
     axis.spines['top'].set_visible(False)
     axis.xaxis.set_ticks_position('bottom')
-    axis.spines['right'].set_visible(False)
-    axis.yaxis.set_ticks_position('left')
-    axis.yaxis.set_label_position('left')
+    if axis_side == 'left':
+        axis.spines['right'].set_visible(False)
+        axis.yaxis.set_ticks_position('left')
+        axis.yaxis.set_label_position('left')
+    else:
+        axis.spines['left'].set_visible(False)
+        axis.yaxis.set_ticks_position('right')
+        axis.yaxis.set_label_position('right')
 
 def delta(connectivities, j):
     return ((connectivities[j] - connectivities[j-1]) != 0).astype(int)\
@@ -209,7 +124,7 @@ def fix_ohmic_heating_restart(data):
         diff = data[1:] - data[:-1]
         if np.any(np.abs(diff) > 0.01):
             max_point = np.argmax(np.abs(diff))
-            print(max_point, data[max_point-1:max_point+1], diff[max_point-1:max_point+1])
+#             print(max_point, data[max_point-1:max_point+1], diff[max_point-1:max_point+1])
             if diff[max_point] > 0:
                 data[max_point+1:] += diff[max_point]
             else:
@@ -236,6 +151,16 @@ def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return idx
+
+def create_axes(n_columns=1, axis_side='left'):
+    latexify(columns=2)
+    fig, axis = plt.subplots()
+    remove_spines(axis, axis_side)
+    return fig, axis
+
+def save_plot(filename):
+    plt.savefig(filename, pad_inches=PAD_INCHES, bbox_inches = 'tight')
+    plt.show()
 ```
 
 # Parallel electric field
@@ -248,21 +173,13 @@ swi_timedumps = [n for n in range(0, 51)]
 folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
 switching_pef = [np.load(folder + "pef_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
 
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.15, bottom=.16, right=.97, top=.99)
-total_pef_isotropic = [10*np.mean(np.abs(pef)) for pef in isotropic_pef]
-total_pef_switching = [10*np.mean(np.abs(pef)) for pef in switching_pef]
+_fig, axis = create_axes(n_columns=2)
 
 eta = 5*np.power(10, -4.5)
 
 max_pef_isotropic = [eta*np.max(np.abs(pef)) for pef in isotropic_pef]
 max_pef_switching = [eta*np.max(np.abs(pef)) for pef in switching_pef]
 
-# n_rows = max_dump - min_dump
-n_columns = 2
-# times = range(0, 10 * n_rows, 10)
 iso_times = np.array(iso_timedumps) * 5
 swi_times = np.array(swi_timedumps) * 5
 
@@ -270,39 +187,10 @@ axis.plot(iso_times, max_pef_isotropic, 'o-', color="tab:blue", markersize=4, li
 axis.plot(swi_times, max_pef_switching, 'x--', color="tab:orange", markersize=4, linewidth=0.7, label=r"Max Switching")
 plt.ylabel(r"max $\Phi$")
 
-# To plot mean parallel electric field on same axis:
-# axis2 = axis.twinx()
-# axis2.plot(iso_times, total_pef_isotropic, 'or-', label=r"Mean $10\times|E_{\parallel}|$ - Isotropic")
-# axis2.plot(swi_times, total_pef_switching, 'xr--', label=r"Mean $10\times|E_{\parallel}|$ - Switching")
-# plt.ylabel(r"Mean $|E_{\parallel}|$")
-
-remove_spines(axis)
-
 plt.xlabel(r"$t$")
 plt.xlim(iso_times[0], iso_times[-1])
 
-# axis.legend()
-# plt.tight_layout()
-plt.savefig('max_parallel_electric_field.pdf', pad_inches=0.0)
-plt.show()
-```
-
-```{python active="", eval=FALSE}
-n_columns=2
-n_rows=10
-fig, axes = plt.subplots(n_rows, n_columns, figsize=(n_columns*8, (n_rows-1)*8), sharex=True, sharey=True)
-
-for j in range(0, n_rows):
-    plot = axes[j, 0].imshow(np.abs(isotropic_pef[j]), vmin=500, vmax=2000)
-    axes[j,0].set_title(str(j))
-#     plot = axes[j, 0].imshow(isotropic_pef[j])
-    plot = axes[j, 1].imshow(np.abs(switching_pef[j]), vmin=500, vmax=2000)
-
-plt.tight_layout()
-```
-
-```{python}
-print(np.max(isotropic_pef[10]))
+save_plot('max_parallel_electric_field.pdf')
 ```
 
 # Plotting Change in Connectivity
@@ -315,16 +203,11 @@ swi_timedumps = [n for n in range(0, 51)]
 folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
 switching_connectivity = [np.load(folder + "connectivity_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
 
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.185, bottom=.19, right=.97, top=.97)
+_fig, axis = create_axes(n_columns=2)
 
 iso_mean_deltas = [np.mean(np.abs(delta(isotropic_connectivity, i))) for i in iso_timedumps[1:]]
 swi_mean_deltas = [np.mean(np.abs(delta(switching_connectivity, i))) for i in swi_timedumps[1:]]
 
-n_columns = 2
-# times = range(0, 10 * n_rows, 10)
 iso_times = np.array(iso_timedumps) * 5
 swi_times = np.array(swi_timedumps) * 5
 
@@ -332,20 +215,10 @@ axis.plot(iso_times[1:], iso_mean_deltas, 'o-', color="tab:blue", markersize=4, 
 axis.plot(swi_times[1:], swi_mean_deltas, 'x--', color="tab:orange", markersize=4, linewidth=0.7, label=r"Switching")
 plt.ylabel(r"$\Delta\Phi_c$")
 
-# axis2 = axis.twinx()
-# axis2.plot(times, total_connectivity_isotropic, 'or-', label=r"Mean $10\times|E_{\parallel}|$ - Isotropic")
-# axis2.plot(times, total_connectivity_switching, 'xr--', label=r"Mean $10\times|E_{\parallel}|$ - Switching")
-# plt.ylabel(r"Mean $|E_{\parallel}|$")
-
-remove_spines(axis)
-
 plt.xlabel(r"$t$")
 plt.xlim(iso_times[0], iso_times[-1])
 
-# axis.legend()
-# plt.tight_layout()
-plt.savefig('mean_difference_in_connectivity.pdf', pad_inches=0.0)
-plt.show()
+save_plot('mean_difference_in_connectivity.pdf')
 ```
 
 # Plots from en.dat (kinetic energy, current, heating, etc)
@@ -359,56 +232,37 @@ switching_energy = Energy(folder + "en.dat")
 fix_current_restart(isotropic_energy.data[:,8])
 fix_current_restart(switching_energy.data[:,8])
 
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.15, bottom=.17, right=.95, top=.97)
+fig, axis = create_axes(n_columns=2)
 
 axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,6], '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], switching_energy.data[:,6], '--', linewidth=0.5)
-# axis.text(350, 0.05, r'KE$_{\parallel}$')
 
 plt.xlim(0, 600)
 plt.ylim(0, 0.06)
 
 plt.xlabel(r"$t$")
 plt.ylabel(r'KE$_{\parallel}$')
-remove_spines(axis)
 
-plt.savefig('parallel_kinetic_energy_over_time.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('parallel_kinetic_energy_over_time.pdf')
 ```
 
 ```{python}
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.15, bottom=.17, right=.96, top=.97)
-
+fig, axis = create_axes(n_columns=2)
 
 axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,7], '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], switching_energy.data[:,7], '--', linewidth=0.5)
-
-# axis.text(350, 0.05, r'KE$_{\perp}$')
 
 plt.xlim(0, 600)
 plt.ylim(0, 0.06)
 
 plt.xlabel(r"$t$")
 plt.ylabel(r'KE$_{\perp}$')
-remove_spines(axis)
 
-plt.savefig('perp_kinetic_energy_over_time.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('perp_kinetic_energy_over_time.pdf')
 ```
 
 ```{python}
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.15, bottom=.17, right=.96, top=.97)
+fig, axis = create_axes(n_columns=2)
 
 fix_current_restart(isotropic_energy.data[:,8])
 fix_current_restart(switching_energy.data[:,8])
@@ -416,30 +270,20 @@ fix_current_restart(switching_energy.data[:,8])
 axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,8], '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], switching_energy.data[:,8], '--', linewidth=0.5)
 
-# axis.text(340, 10, r'max $|\boldsymbol{\jmath}|$')
-
 plt.xlim(0, 600)
 plt.ylim(0, 12)
 
 plt.xlabel(r"$t$")
 plt.ylabel(r'max $|\boldsymbol{\jmath}|$', labelpad=-1)
 
-remove_spines(axis)
-
-plt.savefig('current_density_over_time.pdf', pad_inches=0.0)
-plt.show()
+save_plot('current_density_over_time.pdf')
 ```
 
 ```{python}
-latexify(columns=2)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.18, bottom=.17, right=.96, top=.97)
+fig, axis = create_axes(n_columns=2)
 
 axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,1], '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], switching_energy.data[:,1], '--', linewidth=0.5)
-
-# axis.text(340, 10, r'max $|\boldsymbol{\jmath}|$')
 
 plt.xlim(0, 600)
 # plt.ylim(0, 90)
@@ -447,74 +291,45 @@ plt.xlim(0, 600)
 plt.xlabel(r"$t$")
 plt.ylabel(r'ME')
 
-remove_spines(axis)
-
 # plt.savefig('magnetic_energy_density_over_time.pdf', pad_inches=0.0)
 plt.show()
 ```
 
 ```{python}
-latexify(columns=3)
-
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.01, bottom=.17, right=.81, top=.99)
+fig, axis = create_axes(n_columns=3, axis_side='right')
 
 fix_ohmic_heating_restart(isotropic_energy.data[:,5])
 fix_ohmic_heating_restart(switching_energy.data[:,5])
 
 axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,5], '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], switching_energy.data[:,5], '--', linewidth=0.5)
-# axis.text(350, 0.6, r'$Q_{\eta}$')
 
 plt.xlim(0, 600)
 plt.ylim(0, 2.2)
 
-plt.xlabel(r"$t$", labelpad=-4)
+plt.xlabel(r"$t$")
 plt.ylabel(r'$Q_{\eta}$')
-remove_spines(axis)
 
-axis.spines['right'].set_visible(True)
-axis.spines['left'].set_visible(False)
-axis.yaxis.set_ticks_position('right')
-axis.yaxis.set_label_position('right')
-
-plt.savefig('ohmic_heating_over_time.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('ohmic_heating_over_time.pdf')
 ```
 
 ```{python}
-latexify(columns=3)
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.015, bottom=.17, right=.77, top=.955)
+fig, axis = create_axes(n_columns=3, axis_side='right')
 
 axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,4], '-', linewidth=0.5)
 axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,4], '--', linewidth=0.5)
 
-# axis.text(350, 1e-6, r'$Q_{\nu}$')
-
 plt.xlim(0, 600)
 plt.ylim(1e-8, 1)
-# plt.ylim(0, 0.06)
 
-plt.xlabel(r"$t$", labelpad=-4)
+plt.xlabel(r"$t$")
 plt.ylabel(r'$Q_{\nu}$')
-remove_spines(axis)
 
-axis.spines['right'].set_visible(True)
-axis.spines['left'].set_visible(False)
-axis.yaxis.set_ticks_position('right')
-axis.yaxis.set_label_position('right')
-
-plt.savefig('viscous_heating_over_time.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('viscous_heating_over_time.pdf')
 ```
 
 ```{python}
-latexify(columns=3)
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.01, bottom=.17, right=.80, top=.99)
+fig, axis = create_axes(n_columns=3, axis_side='right')
 
 fix_ohmic_heating_restart(isotropic_energy.data[:,5])
 fix_ohmic_heating_restart(switching_energy.data[:,5])
@@ -524,28 +339,18 @@ swi_total_heating = switching_energy.data[:,4] + switching_energy.data[:,5]
 
 axis.plot(isotropic_energy.data[:,0], iso_total_heating, '-', linewidth=0.5)
 axis.plot(switching_energy.data[:,0], swi_total_heating, '--', linewidth=0.5)
-# axis.text(320, 0.6, r'$Q_{\nu} + Q_{\eta}$')
 
 plt.xlim(-2, 600)
 plt.ylim(0, 2.2)
 
-plt.xlabel(r"$t$", labelpad=-4)
+plt.xlabel(r"$t$")
 plt.ylabel(r'$Q_{\nu} + Q_{\eta}$')
-remove_spines(axis)
 
-axis.spines['right'].set_visible(True)
-axis.spines['left'].set_visible(False)
-axis.yaxis.set_ticks_position('right')
-axis.yaxis.set_label_position('right')
-
-plt.savefig('total_heating_over_time.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('total_heating_over_time.pdf')
 ```
 
 ```{python}
-fig, axis = plt.subplots()
-fig.subplots_adjust(left=.185, bottom=.19, right=.97, top=.97)
+fig, axis = create_axes(n_columns=3)
 
 axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,2], '-')
 axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,2], '--')
@@ -558,13 +363,10 @@ axis.plot(points, growthLine, color='#888888')
 plt.xlim(0, 50)
 # plt.ylim(0, 12)
 
-plt.xlabel(r"$t$", labelpad=-4)
+plt.xlabel(r"$t$")
 plt.ylabel(r'KE')
 
-remove_spines(axis)
-
-plt.savefig('log_kinetic_energy_over_time.pdf', pad_inches=0.0)
-plt.show()
+save_plot('log_kinetic_energy_over_time.pdf')
 ```
 
 # Plotting $\alpha$
@@ -572,7 +374,6 @@ plt.show()
 ```{python}
 latexify(columns=2)
 fig, axis = plt.subplots()
-fig.subplots_adjust(left=.1, bottom=.16, right=.88, top=.99)
 
 r = np.linspace(0, 2, 100)
 
@@ -593,7 +394,7 @@ plt.xlim(0, 2)
 # plt.ylim(0, 2.2)
 
 plt.xlabel(r'$r$')
-plt.ylabel(r'$\alpha$', labelpad=-2)
+plt.ylabel(r'$\alpha$')
 
 ax2 = axis.twinx()
 ax2.plot(r, bz, '-', color='tab:blue', linewidth=0.5)
@@ -607,18 +408,10 @@ ax2.text(1.5, 0.05, r'$B_{\theta}$')
 
 plt.ylabel(r'$B_z;\ B_{\theta}$')
 
-remove_spines(ax2)
+remove_spines(ax2, 'right')
+remove_spines(axis, 'left')
 
-ax2.spines['right'].set_visible(True)
-ax2.spines['left'].set_visible(False)
-ax2.yaxis.set_ticks_position('right')
-ax2.yaxis.set_label_position('right')
-
-remove_spines(axis)
-
-plt.savefig('alpha_profile.pdf', pad_inches=0.0)
-
-plt.show()
+save_plot('alpha_profile.pdf')
 ```
 
 # Check Energy conservation
