@@ -18,6 +18,7 @@ jupyter:
 
 ```{python}
 import numpy as np
+import sys
 import sdf
 import math
 import matplotlib
@@ -34,7 +35,10 @@ COLUMN_THIRDSIZE = 0.32
 # This is here to allow for changing of font size
 import matplotlib.pyplot as plt
 
+sys.path.insert(0,'../lare3d-tools')
 from print_energy import Energy
+
+main_data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/"
 ```
 
 ```{python}
@@ -238,10 +242,10 @@ def find_nearest(array, value):
 
 ```{python}
 iso_timedumps = [n for n in range(0, 51)]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
 isotropic_pef = [np.load(folder + "pef_" + format(timedump, "04d") + ".sdf.npy") for timedump in iso_timedumps]
 swi_timedumps = [n for n in range(0, 51)]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
 switching_pef = [np.load(folder + "pef_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
 
 latexify(columns=2)
@@ -305,10 +309,10 @@ print(np.max(isotropic_pef[10]))
 
 ```{python}
 iso_timedumps = [n for n in range(0, 51)]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
 isotropic_connectivity = [np.load(folder + "connectivity_" + format(timedump, "04d") + ".sdf.npy") for timedump in iso_timedumps]
 swi_timedumps = [n for n in range(0, 51)]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
 switching_connectivity = [np.load(folder + "connectivity_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
 
 latexify(columns=2)
@@ -347,9 +351,9 @@ plt.show()
 # Plots from en.dat (kinetic energy, current, heating, etc)
 
 ```{python}
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+folder = main_data_folder + "long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
 isotropic_energy = Energy(folder + "en.dat")
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+folder = main_data_folder + "long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
 switching_energy = Energy(folder + "en.dat")
 
 fix_current_restart(isotropic_energy.data[:,8])
@@ -625,7 +629,7 @@ def sum_energy_data(data):
 ```
 
 ```{python}
-rke_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/test-rke/v1e-4r5e-4.5-test-rke-switching/Data/"
+rke_folder = main_data_folder + "test-rke/v1e-4r5e-4.5-test-rke-switching/Data/"
 no_rke_energy = Energy(rke_folder + "en.dat")
 
 fig, axis = plt.subplots()
@@ -660,7 +664,7 @@ plt.show()
 # s parameter study
 
 ```{python}
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/s-parameter-study"
+folder = main_data_folder + "s-parameter-study"
 s_values = ["1.0", "0.6", "0.5", "0"]
 filenames = [folder + "/v1e-4r5e-4.5-fixed-switching-" + s + "-switching/Data/en.dat" for s in s_values]
 energies = [Energy(filename) for filename in filenames]
@@ -691,7 +695,7 @@ plt.show()
 
 ```{python}
 exponents = ["3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/viscosity-parameter-study-long"
+folder = main_data_folder + "viscosity-parameter-study-long"
 iso_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
 
@@ -733,7 +737,7 @@ plt.show()
 ## Over resistivity
 
 exponents = ["3", "3.25", "3.5", "3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/slowly-changing-resist"
+folder = main_data_folder + "slowly-changing-resist"
 iso_filenames = [folder + "/v1e-4r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v1e-4r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -766,7 +770,7 @@ plt.savefig("max_kinetic_changing_resist.pdf", pad_inches=0.0)
 ## Over viscosity
 
 exponents = ["3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/slowly-changing-visc"
+folder = main_data_folder + "slowly-changing-visc"
 iso_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
 
@@ -799,7 +803,7 @@ plt.savefig("max_early_time_kinetic_changing_visc.pdf", pad_inches=0.0)
 ## total Over resistivity
 
 exponents = ["3.5", "3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/resistivity-parameter-study-long"
+folder = main_data_folder + "resistivity-parameter-study-long"
 iso_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -832,7 +836,7 @@ plt.savefig("max_total_kinetic_changing_resist.pdf", pad_inches=0.0)
 ## total over resistivity (separate instabilities)
 
 exponents = ["3.5", "3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/resistivity-parameter-study-long"
+folder = main_data_folder + "resistivity-parameter-study-long"
 iso_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 
 latexify(columns=2)
@@ -871,7 +875,7 @@ plt.savefig("max_ke_split_inst_changing_resistivity.pdf", pad_inches=0.0)
 ## total over viscosity (separate instabilities)
 
 exponents = ["3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/viscosity-parameter-study-long"
+folder = main_data_folder + "viscosity-parameter-study-long"
 iso_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 
 latexify(columns=2)
@@ -935,7 +939,7 @@ def integrate_data(data, index, max_time=-1):
 ## total Over resistivity
 
 exponents = ["3.5", "3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/resistivity-parameter-study-long"
+folder = main_data_folder + "resistivity-parameter-study-long"
 iso_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -990,7 +994,7 @@ def get_at_time(filenames, data_index, time):
 ## visc heating varying viscosity
 
 exponents = ["3.75","4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/viscosity-parameter-study-long"
+folder = main_data_folder + "viscosity-parameter-study-long"
 iso_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
 # swi_filenames = [folder + "/v5e-" + "4.5" + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
@@ -1041,7 +1045,7 @@ plt.show()
 ## ohmic heating varying viscosity
 
 exponents = ["3.75","4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/viscosity-parameter-study-long"
+folder = main_data_folder + "viscosity-parameter-study-long"
 iso_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-" + exponent + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
 # swi_filenames = [folder + "/v5e-" + "4.5" + "r5e-4.5-switching/Data/en.dat" for exponent in exponents]
@@ -1089,7 +1093,7 @@ plt.show()
 ## ohmic heating varying resistivity
 
 exponents = ["3.5","3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/resistivity-parameter-study-long"
+folder = main_data_folder + "resistivity-parameter-study-long"
 iso_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -1149,7 +1153,7 @@ plt.show()
 ## visc heating varying resistivity
 
 exponents = ["3.5","3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/resistivity-parameter-study-long"
+folder = main_data_folder + "resistivity-parameter-study-long"
 iso_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-4.5r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -1239,7 +1243,7 @@ def create_log_line(gradient, point, x):
 ## ohmic heating varying resistivity
 
 exponents = ["3", "3.25", "3.5", "3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/slowly-changing-resist"
+folder = main_data_folder + "slowly-changing-resist"
 iso_filenames = [folder + "/v1e-4r5e-" + exponent + "-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v1e-4r5e-" + exponent + "-switching/Data/en.dat" for exponent in exponents]
 
@@ -1342,7 +1346,7 @@ plt.show()
 ## ohmic heating varying visc
 
 exponents = ["3.75", "4", "4.25", "4.5", "4.75"]
-folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/slowly-changing-visc"
+folder = main_data_folder + "slowly-changing-visc"
 iso_filenames = [folder + "/v5e-"+exponent+"r5e-4.5-isotropic/Data/en.dat" for exponent in exponents]
 swi_filenames = [folder + "/v5e-"+exponent+"r5e-4.5-switching/Data/en.dat" for exponent in exponents]
 
