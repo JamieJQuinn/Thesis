@@ -1,5 +1,26 @@
 # Anisotropic viscosity with astrophysical applications
 
+## Running analysis
+
+Ensure we have the SDF submodule and all its submodules:
+`git submodule update --init --recursive`
+
+Install virtual environment via pipenv:
+`cd images`
+`pipenv install`
+
+Make SDF's C interface:
+`cd SDF/C; make`
+
+Make and link SDF's python interface inside pipenv environment:
+`pipenv shell`
+`cd SDF/utilities`
+`./build -3 -s`
+
+Run notebook:
+`cd images`
+`pipenv run jupyter notebook`
+
 ## TODO
 - [ ] Get Athena style wave tests working in lare3d (continue from work done during NAM)
 - [ ] Run parameter studies of static kink including anomalous resistivity
