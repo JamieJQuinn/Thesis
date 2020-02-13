@@ -1,5 +1,7 @@
 \chapter{Application to the Kink Instability}
 
+\graphicspath{{images/kink_instability/}}
+
 \section{Introduction}
 
 The solar corona is heated to millions of degrees, whereas the surface of the Sun beneath it is only heated to the order of thousands of degrees~\cite{mandriniMagneticFieldPlasma2000}. It is generally accepted that this heating is derived mainly from the extraction of energy from the stressed magnetic field in the solar atmosphere, although exactly how this process occurs is still an area of active research~\cite{klimchukSolvingCoronalHeating2006}. There has been much study of the direct transfer of magnetic energy to heat by Ohmic heating and the transfer through kinetic energy losses by viscous heating~\cite{klimchukSolvingCoronalHeating2006,browningMechanismsSolarCoronal1991}. The relative importance and efficacy of these processes is found to depend on the models of plasma viscosity employed in the analyses. The aim of this work is to understand the effect of isotropic and anisotropic viscosity on the kink instability, a key phenomenon in coronal plasma dynamics.
@@ -205,14 +207,14 @@ for $r > 1$, where $\lambda$ is a parameter measuring the twist in the tube. The
   \centering
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/initial_field/initial_field_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/initial_field/initial_field_cropped.png}
       \put (50,5) {\small\textbf{(a)}}
     \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/alpha_profile.pdf}
+    \begin{overpic}[width=\textwidth]{alpha_profile.pdf}
       \put (47,60) {\small\textbf{(b)}}
     \end{overpic}
   \end{center}
@@ -285,7 +287,7 @@ anisotropic viscosity in the corona, but can also be used to investigate, more d
   %\centering
   %\begin{subfigure}[b]{0.48\textwidth}
   %\begin{center}
-    %\begin{overpic}[width=\textwidth]{images/kink_instability/s_function.pdf}
+    %\begin{overpic}[width=\textwidth]{s_function.pdf}
       %%\put (10,65) {\small\textbf{(a)}}
     %\end{overpic}
   %\end{center}
@@ -427,7 +429,7 @@ Section~\ref{sec:general-numerical-setup}. Due to the strength of the field and 
 %  \begin{center}
 \hspace*{-5mm}
 \vspace{5mm} 
-   \begin{overpic}[width=\textwidth]{images/kink_instability/log_kinetic_energy_over_time.pdf}
+   \begin{overpic}[width=\textwidth]{log_kinetic_energy_over_time.pdf}
       \put (50,60) {\small\textbf{(a)}}
     \end{overpic}
 %  \end{center}
@@ -435,10 +437,10 @@ Section~\ref{sec:general-numerical-setup}. Due to the strength of the field and 
 \hfill
  \begin{subfigure}[b]{0.48\textwidth}
 %  \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0009_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0009_cropped.png}
       \put (50,40) {\small\textbf{(b)}}
     \end{overpic}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0010_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0010_cropped.png}
       \put (50,40) {\small\textbf{(c)}}
     \end{overpic}
 %  \end{center}
@@ -467,27 +469,27 @@ During the transition from the linear to the nonlinear phase, field lines in the
     \centering
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \begin{overpic}[]{images/kink_instability/parallel_kinetic_energy_over_time.pdf}
+      \begin{overpic}[]{parallel_kinetic_energy_over_time.pdf}
         \put (50,55) {\small\textbf{(a)}}
       \end{overpic}
       %\label{fig:parallel_kinetic_energy_over_time}
     \end{subfigure}%
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \begin{overpic}[]{images/kink_instability/perp_kinetic_energy_over_time.pdf}
+      \begin{overpic}[]{perp_kinetic_energy_over_time.pdf}
         \put (50,55) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \begin{overpic}[]{images/kink_instability/current_density_over_time.pdf}
+      \begin{overpic}[]{current_density_over_time.pdf}
         \put (50,55) {\small\textbf{(c)}}
       \end{overpic}
       %\label{fig:current_density_over_time}
     \end{subfigure}
     \begin{subfigure}[t]{0.49\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/magnetic_energy_density_over_time.pdf}
+      \begin{overpic}[width=\textwidth]{magnetic_energy_density_over_time.pdf}
         \put (50,55) {\small\textbf{(d)}}
       \end{overpic}
     \end{subfigure}
@@ -521,7 +523,7 @@ in other quantities related to magnetic reconnection.
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\linewidth]{images/kink_instability/max_parallel_electric_field.pdf}
+      \begin{overpic}[width=\linewidth]{max_parallel_electric_field.pdf}
         \put (50,60) {\small\textbf{(a)}}
       \end{overpic}
       \label{fig:max_parallel_electric_field}
@@ -529,7 +531,7 @@ in other quantities related to magnetic reconnection.
     ~
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\linewidth]{images/kink_instability/mean_difference_in_connectivity.pdf}
+      \begin{overpic}[width=\linewidth]{mean_difference_in_connectivity.pdf}
         \put (50,60) {\small\textbf{(b)}}
       \end{overpic}
       \label{fig:mean_difference_in_connectivity}
@@ -551,42 +553,42 @@ Figure~\ref{fig:reconnection-rates} displays the time series of the maximum inte
   \centering
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0013.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0013.pdf}
         \put (3,92) {\small\textbf{(a)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0015.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0015.pdf}
         \put (3,92) {\small\textbf{(b)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0020.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0020.pdf}
         \put (3,92) {\small\textbf{(c)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0013.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0013.pdf}
         \put (3,92) {\small\textbf{(d)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0015.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0015.pdf}
         \put (3,92) {\small\textbf{(e)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0020.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0020.pdf}
         \put (3,92) {\small\textbf{(f)}}
       \end{overpic}
   \end{center}
@@ -612,42 +614,42 @@ switching case as illustrated in Figure~\ref{fig:turning-point}. Since the visco
   \centering
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0025.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0025.pdf}
         \put (3,92) {\small\textbf{(a)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0030.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0030.pdf}
         \put (3,92) {\small\textbf{(b)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_isotropic_current_density_0035.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_isotropic_current_density_0035.pdf}
         \put (3,92) {\small\textbf{(c)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0025.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0025.pdf}
         \put (3,92) {\small\textbf{(d)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0030.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0030.pdf}
         \put (3,92) {\small\textbf{(e)}}
       \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
   \begin{center}
-      \begin{overpic}[width=\textwidth]{images/kink_instability/python-slices/final_switching_current_density_0035.pdf}
+      \begin{overpic}[width=\textwidth]{python-slices/final_switching_current_density_0035.pdf}
         \put (3,92) {\small\textbf{(f)}}
       \end{overpic}
   \end{center}
@@ -676,14 +678,14 @@ The contrast between fine-scale current and flow structures for the switching mo
   \centering
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0035_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0035_cropped.png}
       \put (50,40) {\small\textbf{(a)}}
     \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-switching_0035_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-switching_0035_cropped.png}
       \put (50,40) {\small\textbf{(b)}}
     \end{overpic}
   \end{center}
@@ -715,14 +717,14 @@ During this phase, the kinetic energy in the switching model case also increases
   \centering
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0062_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-isotropic_0062_cropped.png}
       \put (50,40) {\small\textbf{(a)}}
     \end{overpic}
   \end{center}
   \end{subfigure}
   \begin{subfigure}[b]{0.48\textwidth}
   \begin{center}
-    \begin{overpic}[width=\textwidth]{images/kink_instability/field_line_plots/cropped/v1e-4r5e-4.5-switching_0059_cropped.png}
+    \begin{overpic}[width=\textwidth]{field_line_plots/cropped/v1e-4r5e-4.5-switching_0059_cropped.png}
       \put (50,40) {\small\textbf{(b)}}
     \end{overpic}
   \end{center}
@@ -739,19 +741,19 @@ For both cases, the asymptotic relaxed magnetic field is a linear force-free fie
     \centering
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/ohmic_heating_over_time.pdf}
+      \begin{overpic}[width=\textwidth]{ohmic_heating_over_time.pdf}
         \put (40,60) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/viscous_heating_over_time.pdf}
+      \begin{overpic}[width=\textwidth]{viscous_heating_over_time.pdf}
         \put (40,60) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/total_heating_over_time.pdf}
+      \begin{overpic}[width=\textwidth]{total_heating_over_time.pdf}
         \put (40,60) {\small\textbf{(c)}}
       \end{overpic}
     \end{subfigure}
@@ -778,7 +780,7 @@ We have described the nonlinear evolution of the kink instability for the cases 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.5\linewidth]{images/kink_instability/kinetic-energy-changing-s.pdf}
+  \includegraphics[width=0.5\linewidth]{kinetic-energy-changing-s.pdf}
   \caption{\textit{Kinetic energy over time, varying the switching
         function $s^2$.} The grey lines are the two regular cases; switching, where $s^2 = 1$ (dashed), and isotropic (solid), where $s^2=0$. The coloured lines represent values of $s^2 = 0.5$ (blue, dotted), and $s^2 = 0.6$ (orange, dash-dotted). There is a clear critical value somewhere between $0.5$ and $0.6$, where the behaviour changes.}
   \label{fig:kinetic-energy-changing-s}
@@ -802,14 +804,14 @@ In the second study we vary the resistivity as $\eta = 5 \times 10^{-m}$, where 
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/max_ke_split_inst_changing_viscosity.pdf}
+      \begin{overpic}[width=\textwidth]{max_ke_split_inst_changing_viscosity.pdf}
         \put (50,62) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/max_ke_split_inst_changing_resistivity.pdf}
+      \begin{overpic}[width=\textwidth]{max_ke_split_inst_changing_resistivity.pdf}
         \put (50,62) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
@@ -833,21 +835,21 @@ The effect of resistivity $\eta$ on the secondary instability is to suppress it 
     \centering
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/visc_heating_varying_viscosity.pdf}
+      \begin{overpic}[width=\textwidth]{visc_heating_varying_viscosity.pdf}
         \put (50,60) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/ohmic_heating_varying_viscosity.pdf}
+      \begin{overpic}[width=\textwidth]{ohmic_heating_varying_viscosity.pdf}
         \put (50,60) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.32\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/max_kinetic_changing_visc.pdf}
+      \begin{overpic}[width=\textwidth]{max_kinetic_changing_visc.pdf}
         \put (50,60) {\small\textbf{(c)}}
       \end{overpic}
     \end{subfigure}
@@ -872,14 +874,14 @@ The relationship between the isotropic viscous heating at $\nu$ appears non-triv
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/growth_rate_varying_viscosity.pdf}
+      \begin{overpic}[width=\textwidth]{growth_rate_varying_viscosity.pdf}
         \put (50,62) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/max_early_time_kinetic_changing_visc.pdf}
+      \begin{overpic}[width=\textwidth]{max_early_time_kinetic_changing_visc.pdf}
         \put (50,62) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
@@ -901,14 +903,14 @@ It can be seen from the relationship between the growth rate and $\nu$ for both 
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/visc_heating_varying_resistivity.pdf}
+      \begin{overpic}[width=\textwidth]{visc_heating_varying_resistivity.pdf}
         \put (50,60) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/ohmic_heating_varying_resistivity.pdf}
+      \begin{overpic}[width=\textwidth]{ohmic_heating_varying_resistivity.pdf}
         \put (50,60) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
@@ -931,14 +933,14 @@ We observe that Ohmic heating increases with increasing $\eta$ (Figure~\ref{fig:
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/growth_rate_varying_resistivity.pdf}
+      \begin{overpic}[width=\textwidth]{growth_rate_varying_resistivity.pdf}
         \put (50,62) {\small\textbf{(a)}}
       \end{overpic}
     \end{subfigure}%
     ~
     \begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \begin{overpic}[width=\textwidth]{images/kink_instability/max_kinetic_changing_resist.pdf}
+      \begin{overpic}[width=\textwidth]{max_kinetic_changing_resist.pdf}
         \put (50,62) {\small\textbf{(b)}}
       \end{overpic}
     \end{subfigure}
