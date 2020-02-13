@@ -1,0 +1,273 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.3
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import sys
+import sdf
+import math
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+# %matplotlib inline
+
+sys.path.insert(0,'../lare3d-tools')
+from print_energy import Energy
+from plotting_parameters import *
+from helper_functions import *
+```
+
+# Parallel electric field
+
+```{python}
+iso_timedumps = [n for n in range(0, 51)]
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+isotropic_pef = [np.load(folder + "pef_" + format(timedump, "04d") + ".sdf.npy") for timedump in iso_timedumps]
+swi_timedumps = [n for n in range(0, 51)]
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+switching_pef = [np.load(folder + "pef_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
+
+_fig, axis = create_axes(n_columns=2)
+
+eta = 5*np.power(10, -4.5)
+
+max_pef_isotropic = [eta*np.max(np.abs(pef)) for pef in isotropic_pef]
+max_pef_switching = [eta*np.max(np.abs(pef)) for pef in switching_pef]
+
+iso_times = np.array(iso_timedumps) * 5
+swi_times = np.array(swi_timedumps) * 5
+
+axis.plot(iso_times, max_pef_isotropic, 'o-', color="tab:blue", markersize=4, linewidth=0.7, label=r"Max Isotropic")
+axis.plot(swi_times, max_pef_switching, 'x--', color="tab:orange", markersize=4, linewidth=0.7, label=r"Max Switching")
+plt.ylabel(r"max $\Phi$")
+
+plt.xlabel(r"$t$")
+plt.xlim(iso_times[0], iso_times[-1])
+
+save_plot('max_parallel_electric_field.pdf')
+```
+
+# Plotting Change in Connectivity
+
+```{python}
+iso_timedumps = [n for n in range(0, 51)]
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+isotropic_connectivity = [np.load(folder + "connectivity_" + format(timedump, "04d") + ".sdf.npy") for timedump in iso_timedumps]
+swi_timedumps = [n for n in range(0, 51)]
+folder = main_data_folder + "cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+switching_connectivity = [np.load(folder + "connectivity_" + format(timedump, "04d") + ".sdf.npy") for timedump in swi_timedumps]
+
+_fig, axis = create_axes(n_columns=2)
+
+iso_mean_deltas = [np.mean(np.abs(delta(isotropic_connectivity, i))) for i in iso_timedumps[1:]]
+swi_mean_deltas = [np.mean(np.abs(delta(switching_connectivity, i))) for i in swi_timedumps[1:]]
+
+iso_times = np.array(iso_timedumps) * 5
+swi_times = np.array(swi_timedumps) * 5
+
+axis.plot(iso_times[1:], iso_mean_deltas, 'o-', color="tab:blue", markersize=4, linewidth=0.7, label=r"Isotropic")
+axis.plot(swi_times[1:], swi_mean_deltas, 'x--', color="tab:orange", markersize=4, linewidth=0.7, label=r"Switching")
+plt.ylabel(r"$\Delta\Phi_c$")
+
+plt.xlabel(r"$t$")
+plt.xlim(iso_times[0], iso_times[-1])
+
+save_plot('mean_difference_in_connectivity.pdf')
+```
+
+# Plots from en.dat (kinetic energy, current, heating, etc)
+
+```{python}
+folder = main_data_folder + "long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
+isotropic_energy = Energy(folder + "en.dat")
+folder = main_data_folder + "long-run-cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-switching/Data/"
+switching_energy = Energy(folder + "en.dat")
+
+fix_current_restart(isotropic_energy.data[:,8])
+fix_current_restart(switching_energy.data[:,8])
+
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,6], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,6], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+plt.ylim(0, 0.06)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE$_{\parallel}$')
+
+save_plot('parallel_kinetic_energy_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,7], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,7], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+plt.ylim(0, 0.06)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE$_{\perp}$')
+
+save_plot('perp_kinetic_energy_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+fix_current_restart(isotropic_energy.data[:,8])
+fix_current_restart(switching_energy.data[:,8])
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,8], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,8], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+plt.ylim(0, 12)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'max $|\boldsymbol{\jmath}|$', labelpad=-1)
+
+save_plot('current_density_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,1], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,1], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+# plt.ylim(0, 90)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'ME')
+
+save_plot('magnetic_energy_density_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+
+fix_ohmic_heating_restart(isotropic_energy.data[:,5])
+fix_ohmic_heating_restart(switching_energy.data[:,5])
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,5], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,5], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+plt.ylim(0, 2.2)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\eta}$')
+
+save_plot('ohmic_heating_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+
+axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,4], '-', linewidth=0.5)
+axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,4], '--', linewidth=0.5)
+
+plt.xlim(0, 600)
+plt.ylim(1e-8, 1)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\nu}$')
+
+save_plot('viscous_heating_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+
+fix_ohmic_heating_restart(isotropic_energy.data[:,5])
+fix_ohmic_heating_restart(switching_energy.data[:,5])
+
+iso_total_heating = isotropic_energy.data[:,4] + isotropic_energy.data[:,5]
+swi_total_heating = switching_energy.data[:,4] + switching_energy.data[:,5]
+
+axis.plot(isotropic_energy.data[:,0], iso_total_heating, '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], swi_total_heating, '--', linewidth=0.5)
+
+plt.xlim(-2, 600)
+plt.ylim(0, 2.2)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\nu} + Q_{\eta}$')
+
+save_plot('total_heating_over_time.pdf')
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3)
+
+axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,2], '-')
+axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,2], '--')
+
+points = [12, 45]
+growthLine = [np.power(10, 3.25/25*(x-15) - 4.9) for x in points]
+
+axis.plot(points, growthLine, color='#888888')
+
+plt.xlim(0, 50)
+# plt.ylim(0, 12)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE')
+
+save_plot('log_kinetic_energy_over_time.pdf')
+```
+
+# Check Energy conservation
+
+```{python}
+def sum_energy_data(data):
+    return data[:,1] + data[:,2] + data[:,3]# + data[:,4] + data[:,5]
+```
+
+```{python active="", eval=FALSE}
+rke_folder = main_data_folder + "test-rke/v1e-4r5e-4.5-test-rke-switching/Data/"
+no_rke_energy = Energy(rke_folder + "en.dat")
+
+_fig, axis = create_axes(n_columns=2)
+
+fix_ohmic_heating_restart(isotropic_energy.data[:,5])
+fix_ohmic_heating_restart(switching_energy.data[:,5])
+
+# iso_energy_sum = np.sum(isotropic_energy.data[:,[1,2,3]], axis=1)
+# swi_energy_sum = np.sum(switching_energy.data[:,[1,2,3]], axis=1)
+
+iso_energy_sum = sum_energy_data(isotropic_energy.data)
+swi_energy_sum = sum_energy_data(switching_energy.data)
+no_rke_energy_sum = sum_energy_data(no_rke_energy.data)
+
+axis.plot(isotropic_energy.data[:,0], iso_energy_sum, '-')
+axis.plot(switching_energy.data[:,0], swi_energy_sum, '--')
+axis.plot(no_rke_energy.data[:,0], no_rke_energy_sum, '--')
+
+plt.xlim(0, 500)
+# plt.ylim(0, 0.06)
+
+plt.xlabel(r'Time')
+plt.ylabel(r'Total Energy')
+
+# plt.savefig('internal_energy_over_time.pdf', pad_inches=0.0)
+
+plt.show()
+```
