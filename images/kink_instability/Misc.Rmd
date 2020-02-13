@@ -1,0 +1,100 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.3
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import sys
+from scipy import special
+
+sys.path.insert(0,'../lare3d-tools')
+from print_energy import Energy
+from plotting_parameters import *
+from helper_functions import *
+
+# %matplotlib inline
+```
+
+# Plotting the interpolation function
+
+```{python}
+# Concentration param
+aMax = 30
+
+B = np.linspace(0, 2, num=1000)
+
+a = 150 * B*B
+
+# Calculate kappa parameter
+kappa_erfi = 1/2.0*(1 + 1/(4*a)) - np.exp(2*a)/(2*np.sqrt(2*np.pi*a)*special.erfi(np.sqrt(2*a)))
+kappa_erfi[0] = 1.0/3
+kappa_erfi[a>150*1.52*1.52] = 0.000722355018311
+
+s_erfi = 1.0-3.0*kappa_erfi
+
+_fig, axis = create_axes(n_columns=2)
+axis.plot(B, s_erfi)
+plt.xlabel(r"$|\boldsymbol{B}|$", labelpad=-5)
+plt.ylabel(r"$s(|\boldsymbol{B}|)$", labelpad=0)
+plt.ylim(0, 1)
+plt.xlim(0, 1)
+save_plot("s_function.pdf")
+```
+
+# Plotting $\alpha$
+
+```{python}
+latexify(columns=2)
+fig, axis = plt.subplots()
+
+r = np.linspace(0, 2, 100)
+
+alpha = np.zeros_like(r)
+bz = np.zeros_like(r)
+bth = np.zeros_like(r)
+
+lamb = 1.8
+
+bz[r<=1] = np.sqrt(1 - lamb*lamb/7 + lamb*lamb/7*np.power(1-r*r, 7) - lamb*lamb*r*r*np.power(1-r*r,6))[r<1]
+bz[r>1] = np.sqrt(1 - lamb*lamb/7)
+bth[r<=1] = (lamb*r*np.power(1-r*r,3))[r<=1]
+alpha[r<=1] = (2*lamb*np.power(1-r*r, 2)*(1-4*r*r)/bz)[r<=1]
+
+axis.plot(r, alpha, '--', color='tab:grey', linewidth=0.5)
+
+plt.xlim(0, 2)
+# plt.ylim(0, 2.2)
+
+plt.xlabel(r'$r$')
+plt.ylabel(r'$\alpha$')
+
+ax2 = axis.twinx()
+ax2.plot(r, bz, '-', color='tab:blue', linewidth=0.5)
+ax2.plot(r, bth, '-', color='tab:blue', linewidth=0.5)
+
+plt.xlim(0, 2)
+
+ax2.text(1.5, 0.8, r'$B_z$')
+ax2.text(1.5, 0.35, r'$\alpha$')
+ax2.text(1.5, 0.05, r'$B_{\theta}$')
+
+plt.ylabel(r'$B_z;\ B_{\theta}$')
+
+remove_spines(ax2, 'right')
+remove_spines(axis, 'left')
+
+save_plot('alpha_profile.pdf')
+```
+
+```{python}
+
+```
