@@ -3,9 +3,6 @@ SCRIPTS=$(NOTEBOOKS:.Rmd=.py)
 RUN_COMMANDS=$(addprefix run_,$(SCRIPTS))
 PLOTS=$(wildcard *.pdf)
 
-#%.py: %.ipynb
-	#jupyter nbconvert --to script $<
-
 %.py: %.Rmd
 	jupytext --to script $<
 
