@@ -19,6 +19,7 @@ from scipy import special
 sys.path.insert(0,'../lare3d-tools')
 from print_energy import Energy
 from plotting_parameters import *
+from plotting_functions import *
 from helper_functions import *
 
 # %matplotlib inline
