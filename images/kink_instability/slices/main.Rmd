@@ -28,7 +28,7 @@ from slice_helper_functions import *
 
 # Plot current density slices
 
-```{python}
+```{python active="", eval=FALSE}
 # for testing
 
 folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/initially-unstable/cadence-5-v1e-4r5e-4.5/v1e-4r5e-4.5-isotropic/Data/"
