@@ -10,5 +10,7 @@ main.pdf
 main.toc
 main.fdb_latexmk
 main.fls
+main.bcf
+main.run.xml
 .ipynb_checkpoints
 *.ipynb
