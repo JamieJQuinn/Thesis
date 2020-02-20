@@ -17,7 +17,7 @@
 \usepackage{stix}  % uses Times for text and a range of fonts for mathematics
 % End of choices for fonts
 \usepackage{graphicx}  % standard package for importing graphics files
-\usepackage{cite}  % improves format of numerical citations, such as [1-3]
+%\usepackage{cite}  % improves format of numerical citations, such as [1-3]
 \usepackage[top=1.8cm, bottom=1.8cm,left=4.0cm,right=1.5cm]{geometry}
 % These margins are the university guidelines
 \usepackage[onehalfspacing]{setspace}  % gives one-and-a-half line spacing
@@ -30,9 +30,11 @@
 \usepackage{amsmath}
 \usepackage{subcaption}
 \usepackage{booktabs}
-\usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{overpic}
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{thesis.bib}
 
 \usepackage{lineno,hyperref}
 %\modulolinenumbers[5]
@@ -100,6 +102,7 @@ Column width is \the\columnwidth
 %\linenumbers
 
 \mainmatter % Turn on chapter numbering, reset page numbers, use arabic
+\include{background}
 \include{kink_instability}
 % and the other chapters
 \appendix
@@ -108,6 +111,6 @@ Column width is \the\columnwidth
 \backmatter  % Turn off chapter numbering
 % I assume that the bibliography is assembled by hand.
 % Change the file if you use bibtex or something like that.
-%\bibliography{bibliography}
+\printbibliography
 
 \end{document}

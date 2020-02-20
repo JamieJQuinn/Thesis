@@ -22,8 +22,4 @@ ${OUTPUT}: $(INPUT) $(DEPENDS)
 .PHONY: clean
 clean:
 	rm -f *.aux
-	rm -f $(OUTPUT_NAME).dvi $(OUTPUT_NAME).lot $(OUTPUT_NAME).log $(OUTPUT_NAME).toc $(OUTPUT_NAME).fls $(OUTPUT_NAME).fdb_latexmk $(OUTPUT_NAME).out $(OUTPUT_NAME).pdf $(OUTPUT_NAME).lof
-
-.PHONY: fix_bib_entries
-fix_bib_entries:
-	sed -i 's/journaltitle/journal/g' bibliography.bib
+	rm -f $(OUTPUT_NAME).dvi $(OUTPUT_NAME).lot $(OUTPUT_NAME).log $(OUTPUT_NAME).toc $(OUTPUT_NAME).fls $(OUTPUT_NAME).fdb_latexmk $(OUTPUT_NAME).out $(OUTPUT_NAME).pdf $(OUTPUT_NAME).lof $(OUTPUT_NAME).bcf $(OUTPUT_NAME).run.xml
