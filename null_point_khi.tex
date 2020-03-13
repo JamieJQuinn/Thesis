@@ -2,6 +2,281 @@
 
 \section{Results}
 
+\subsection{Evolution of a typical KHI case}
+
+This is for the v-4r-4 case
+
+Initially the torsional Alfv\'en wave traces the field surrounding the null point, moving towards the fan plane.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vx_x_0.0_0001.pdf}
+\end{figure}
+
+At this point there is a very weak pattern in the out of plane velocity, reflected in the vorticity and the current density. NOTE the limits on the fan plane slices are different to those perpendicular to the fan plane.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0001.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0001.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0001.pdf}
+\end{figure}
+
+Most of the vorticity is concentrated just above and below the fan plane at this point.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0001.pdf}
+\end{figure}
+
+After two Alfv\'en times the upper and lower torsional waves have begun to interact at the fan plane, producing a vorticity ring. The differences between the switching and isotropic cases appear at this time. This is weaker and has greater radius in the switching case. The corresponding ring in the current density has a similar size comparing viscous models, but a slightly greater magnitude in the isotropic case.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0002.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_z_0.0_0002.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0002.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0002.pdf}
+\end{figure}
+
+There is some difference in the shape, but not the size, of the vorticity structures perpendicular to the fan plane. This is similarly true for the current density.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0002.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_x_0.0_0002.pdf}
+\end{figure}
+
+In only the switching case we see the presence of a growing Kelvin-Helmholtz instability
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0002.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_z_0.0_0002.pdf}
+\end{figure}
+
+One Alfv\'en time later the counter flows appear slightly in both cases and the initial instability remains present in the switching case only.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vx_x_0.0_0003.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vx_x_0.0_0003.pdf}
+\end{figure}
+
+The vorticity structures are relatively similar, however the switching case now shows a wider and much stronger (~3x!) vorticity ring.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0003.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_z_0.0_0003.pdf}
+\end{figure}
+
+The only difference in the current density is a larger ring, with very similar magnitudes. This magnitude has increased from the last time.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0003.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0003.pdf}
+\end{figure}
+
+At an Alfv\'en time of $t=4$ the behaviour seen at $t=3$ remains  broadly the same. The vorticity rings in each case get stronger, with the switching case now around 5x stronger. The velocity structures still look similar, with the addition of the growing KHI in the switching case. The counterflows and the current density grow stronger also, with the ring gradually increasing in radius in the switching case (why?).
+
+Through $t=5$ the trend continues; greater vorticity, stronger counterflows, KHI only in switching case, still not fully developed.
+
+At this time, the "pattern of reconnection" [TODO reword] is similar in both cases, but notably stronger in the switching case:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-isotropic_integrated_pef_0005.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-switching_integrated_pef_0005.pdf}
+\end{figure}
+
+At $t=6$ the velocity above and below the fan plane, at a distance of 0.85 from the null, starts to separate into two bands above and below. Everything else remains similar to the previous time.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_x_0.85_0006.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_x_0.85_0006.pdf}
+\end{figure}
+
+At $t=7$ the pattern far from the fan plane starts to show signs of the KHI proper.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_x_0.85_0007.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_x_0.85_0007.pdf}
+\end{figure}
+
+And we see the same in the fan plane, including some strong effects from the boundary.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0007.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_z_0.0_0007.pdf}
+\end{figure}
+
+It's only at $t=9$ we begin to see the effect of the instability in the vorticity (and similarly in the current density)
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0009.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_z_0.0_0009.pdf}
+\end{figure}
+
+At this time we find the strength of reconnection is much greater in the switching case.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-isotropic_integrated_pef_0009.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-switching_integrated_pef_0009.pdf}
+\end{figure}
+
+At $t=10$ we see little change in the isotropic case but we note an onset of reconnection in the switching case, seen both in the parallel electric field and in the local current density:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0010.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-switching_integrated_pef_0010.pdf}
+\end{figure}
+
+At $t=11$ the KHI is fully developed. Throughout the preceding times, an inner ring of current density forms and grows in magnitude, seen in both the isotropic and switching cases.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_z_0.0_0011.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0011.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0011.pdf}
+\end{figure}
+
+At $t=13$ the null shows some indication of beginning to reconnect and collapse, shown by the presence of velocity structures around the spine, mainly in the isotropic case. The inner ring of current density has shrunk and is now extremely strong, stronger in the isotropic case than the switching case, although we note the current structure located along the spine is around twice as strong as that around the null.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vx_x_0.0_0013.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vx_x_0.0_0013.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0013.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0013.pdf}
+\end{figure}
+
+At $t=14$ in only the isotropic case the ring of density has shrunk entirely to the null.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0014.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0014.pdf}
+\end{figure}
+
+At this time, the reconnection rate becomes highly negative at the centre of the plot, in both cases:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-isotropic_integrated_pef_0014.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/field_line_integrator/v-4r-4-switching_integrated_pef_0014.pdf}
+\end{figure}
+
+Indeed, by $t=15$, the null is showing signs of collapse in the vorticity, the velocity and in a sudden decrease in current density at the null in the isotropic case.  Note the KHI is still present and the sheer size of the vorticity in the switching case (probably due to a numerical issues, we don't have much stabalising viscous damping in this simulation). It appears as though the presence of the KHI slows the shrinking of the inner current density ring, slowing the eventual collapse of the null.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0015.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_z_0.0_0015.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0015.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_z_0.0_0015.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0015.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0015.pdf}
+\end{figure}
+
+\subsection{Qualitative analysis of parameter study}
+
+The results of the single case shown in section TODO vary strongly with $\eta$. Increasing $\eta$ to $10^{-3}$ produces a null that shows no sign of collapse, in that the Poynting flux appears to be balanced by Ohmic losses [TODO, calculate inputs and outputs]. This remains true even if the KHI is present. The effect of the KHI is to increase Ohmic heating through increased reconnection in the fan plane [TODO show this]. In contrast, decreasing $\eta$ to $10^{-5}$ causes the null to collapse much sooner than in the single case above. Again, this is true regardless of the presence of the KHI.
+
+In all v-3 isotropic simulations there's an odd spike in every variable. This was also seen in the kink simulations. I assume this is due to small fast waves created during the initial ramp up interacting within the isotropic viscous stress tensor to produce odd effects. It appears to only affect the first time step and slightly increases the viscous heating. Since it doesn't happen in the v-4 simulations, and the results are fairly similar, I trust the behaviour of the v-3 simulations after the spike has passed.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-3-isotropic_Velocity_Vz_z_0.0_0001.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-3-switching_Velocity_Vz_z_0.0_0001.pdf}
+\end{figure}
+
+One major result to note is that decreasing $\eta$ disrupts the KHI. Although the initial instability can be see in the v-3r-5-switching case (below, left), it does not grow and, at any rate, is disrupted by the null collapse which happens much earlier in the low $\eta$ cases, starting between $t=8$ and $9$. Increasing $\eta$ appears to reduce the effect of the boundary, producing a much more radially symmetric KHI (below, right).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-3-switching_Velocity_Vz_z_0.0_0009.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-5-switching_Velocity_Vz_z_0.0_0006.pdf}
+\end{figure}
+
+Throughout many of the simulations $\nu$ does not strongly affect the behaviour in the switching case. The is due to the anisotropic part of the tensor being reasonably weak where it is switched on (i.e. away from the null) and the isotropic part only being switched on only at the null where there isn't appreciable velocity shears.
+
+At $t=1$ the only difference between each of the parameter runs is the thickness of the Alfv\'en wave at $x=0.85$. This increases with both $\eta$ and $\nu$, appearing at its thinnest in the switching sims at $\eta=10^{-5}$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-5-isotropic_Velocity_Vy_x_0.85_0001.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-5-switching_Velocity_Vy_x_0.85_0001.pdf}
+\end{figure}
+
+For the isotropic simulations, this correlates with the properties of the vorticity ring which increases in radius with decreasing $\nu$ and slightly with decreasing $\eta$. Decreasing $\eta$ makes the ring appear more diffuse (although this could be a difference in scales TODO check this). The peak vorticity within the ring increases with decreasing $\nu$ and increasing $\eta$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-3r-4-isotropic_vorticity_density_x_0.0_0002.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0002.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-5r-4-isotropic_vorticity_density_x_0.0_0002.pdf}
+\end{figure}
+
+This correlation remains true until the null collapse begins aroung $t=9$ when large vorticities are generated and a clear trend is no longer present.
+
+Although the ring of current density that appears alongside the vorticity ring shows a similar increase in radius with decreasing $\nu$ and $\eta$, the strength increases with decreasing $\eta$ and with decreasing $\nu$.
+
+I.e. $\eta$ goes up, peak vorticity goes up, peak current density goes down. Why? Current density down makes sense, resistivity acts to smooth out currents, but how does it affect the vorticity?
+
+In the switching case, we find the difference in $\nu$ to be negligible until the KHI starts to appear strongly (i.e. $t=9$). Before this point we see extremely high peaks in vorticity, consistent with the increase in vorticity with $\nu$ seen in the isotropic cases. We also see the same decrease in strength with $\eta$. After the KHI occurs, $\nu$ strongly affects the strength of the vorticity and the current density, with the maximum vorticity generally decreasing with decreasing $\nu$ and similarly for the current density. For large values of $\eta$ (i.e.$10^{-3}$) we find evidence (localised regions of very high vorticity and current density) of the KHI promoting reconnection within the fan plane at $t=10$. This occurs sooner for larger values of $\nu$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-3r-3-switching_vorticity_density_z_0.0_0010.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-3-switching_vorticity_density_z_0.0_0010.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-5r-3-switching_vorticity_density_z_0.0_0010.pdf}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-3r-3-switching_magnitude_current_density_z_0.0_0010.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-3-switching_magnitude_current_density_z_0.0_0010.pdf}
+  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-5r-3-switching_magnitude_current_density_z_0.0_0010.pdf}
+\end{figure}
+
+By $t=11$ this fan-plane reconnection has also occurred in the $\eta=10^{-4}$ cases. We find it does not occur in the $\eta=10^{-5}$ cases where reconnection at the null occurs sooner than in the other cases, disrupting the fan-plane reconnection.
+
+We also find this for the one KHI-unstable isotropic case, v-5r-3, where the fan-plane reconnection occurs around $t=14$.
+
+Generally, for $\eta=10^{-3}$, the reconnection rate varies very little with $\nu$ in all cases, however the presence of the KHI (in either the switching or isotropic cases) enhances reconnection.
+
+For $\eta=10^{-4}$, increasing $\nu$ decreases the reconnection rate however the overall behaviour of reconnection remains the same as the single case.
+
+For $\eta=10^{-5}$, the reconnection rate is generally higher than the $10^{-4}$ simulations, particularly along the field lines that intersect the vorticity-current density ring, and along the spine until a reconnection event occurs around $t=10$ in the isotropic cases. The strength of the resultant outflows depend strongly on $\nu$, as does the proceeding reconnection within the rest of the structure, the rate of which is generally higher for weaker viscosity. In the switching case, the initial reconnection event appears sooner and, while the reconnection rate remains relatively constant across the range of $\nu$, lower viscosity does lead to a more violent resultant behaviour.
+
 \subsection{Parameter study}
 
 A parameter study was run, varying $\nu$ over three values ($10^{-5}$, $10^{-4}$ and $10^{-3}$), and varying $\eta$ over the same three values, giving nine parameter sets in total. For each of these, two simulations were run, one using the isotropic model and the other using the switching model.
