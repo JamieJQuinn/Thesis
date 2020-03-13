@@ -4,7 +4,7 @@
 
 \section{Introduction}
 
-The solar corona is heated to millions of degrees, whereas the surface of the Sun beneath it is only heated to the order of thousands of degrees~\cite{mandriniMagneticFieldPlasma2000}. It is generally accepted that this heating is derived mainly from the extraction of energy from the stressed magnetic field in the solar atmosphere, although exactly how this process occurs is still an area of active research~\cite{klimchukSolvingCoronalHeating2006}. There has been much study of the direct transfer of magnetic energy to heat by Ohmic heating and the transfer through kinetic energy losses by viscous heating~\cite{klimchukSolvingCoronalHeating2006,browningMechanismsSolarCoronal1991}. The relative importance and efficacy of these processes is found to depend on the models of plasma viscosity employed in the analyses. The aim of this work is to understand the effect of isotropic and anisotropic viscosity on the kink instability, a key phenomenon in coronal plasma dynamics.
+The solar corona is heated to millions of degrees, whereas the surface of the Sun beneath it is only heated to the order of thousands of degrees~\cite{mandriniMagneticFieldPlasma2000}. It is generally accepted that this heating is derived mainly from the extraction of energy from the stressed magnetic field in the solar atmosphere, although exactly how this process occurs is still an area of active research~\cite{klimchukSolvingCoronalHeating2006a}. There has been much study of the direct transfer of magnetic energy to heat by Ohmic heating and the transfer through kinetic energy losses by viscous heating~\cite{klimchukSolvingCoronalHeating2006a,browningMechanismsSolarCoronal1991}. The relative importance and efficacy of these processes is found to depend on the models of plasma viscosity employed in the analyses. The aim of this work is to understand the effect of isotropic and anisotropic viscosity on the kink instability, a key phenomenon in coronal plasma dynamics.
 
 In many situations in the solar corona, the strength of viscosity
 can be greater than that of resistivity by many orders of
@@ -12,9 +12,9 @@ magnitude, even when anomalous resistivity is considered. Due to this,
 viscous heating can outperform Ohmic heating in certain coronal
 situations, particularly those involving
 reconnection~\cite{browningMechanismsSolarCoronal1991,
-  craigViscousDissipation3D2013a,
+  craigViscousDissipation3D2013,
   armstrongViscoResistiveDissipation2013,
-  hollwegViscosityChewGoldbergerLowEquations1986}. These findings are
+  hollwegViscosityChewGoldbergerLowEquations1986a}. These findings are
 dependent on how viscosity in the solar atmosphere is modelled. For a
 plasma in the presence of a strong magnetic field, viscosity is
 anisotropic and momentum transfer occurs preferentially in the
@@ -22,14 +22,14 @@ direction of the magnetic
 field~\cite{braginskiiTransportProcessesPlasma1965}. A general
 description of anisotropic viscosity in the solar atmosphere is given
 in~\cite{hollwegViscosityMagnetizedPlasma1985,
-  hollwegViscosityChewGoldbergerLowEquations1986}. More recent
+  hollwegViscosityChewGoldbergerLowEquations1986a}. More recent
 studies have demonstrated the importance of anisotropic viscosity for
 heating in investigations of three-dimensional (3D) null
-points~\cite{craigViscousDissipation3D2013a}, current sheet
+points~\cite{craigViscousDissipation3D2013}, current sheet
 merging~\cite{armstrongViscoResistiveDissipation2013} and flux
 pile-up~\cite{litvinenkoViscousEnergyDissipation2005}. There is
 further evidence of the importance of anisotropic viscosity in other
-astrophysical applications, including the intracluster medium~\cite{zuhoneEffectAnisotropicViscosity2014, parrishEffectsAnisotropicViscosity2012a} and the solar wind~\cite{baleMagneticFluctuationPower2009}. In other solar applications, viscosity has a role to play in the damping of coronal instabilities~\cite{howsonEffectsResistivityViscosity2017} and waves~\cite{vranjesViscosityEffectsWaves2014, erdelyiResonantAbsorptionAlfven1995, rudermanSlowSurfaceWave2000}, though not all these cases have been fully explored using an anisotropic model of viscosity.
+astrophysical applications, including the intracluster medium~\cite{zuhoneEffectAnisotropicViscosity2014, parrishEffectsAnisotropicViscosity2012a} and the solar wind~\cite{baleMagneticFluctuationPower2009}. In other solar applications, viscosity has a role to play in the damping of coronal instabilities~\cite{howsonEffectsResistivityViscosity2017} and waves~\cite{vranjesViscosityEffectsWaves2014, erdelyiResonantAbsorptionAlfven1995a, rudermanSlowSurfaceWave2000a}, though not all these cases have been fully explored using an anisotropic model of viscosity.
 
 Implementing the full Braginskii viscosity
 tensor~\cite{braginskiiTransportProcessesPlasma1965} into existing
@@ -55,7 +55,7 @@ who developed a phenomenological model of anisotropic viscosity in the
 solar corona that captures the main physics for viscosity in the
 corona, namely parallel viscosity in regions of strong field strength and isotropic viscosity in regions of very weak or zero field strength. In this paper, we will refer to this model of viscosity as the \textit{switching model}, for short. The model interpolates between isotropic and parallel viscosity based on how the local magnetic field strength affects the distribution of momentum transport. The interpolation itself can be adjusted, effectively changing the size of isotropic (i.e.\ weak field) regions, to compensate for resolution issues in simulations. In numerical tests of stressed null points, comparing the isotropic and anisotropic models showed that the use of isotropic viscosity overestimates the viscous heating by an order of magnitude~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}.
 
-As a first step of investigating the effects of anisotropic viscosity on coronal dynamics, we focus on the kink instability~\cite{hoodKinkInstabilitySolar1979, hoodCoronalHeatingMagnetic2009}, believed to be a trigger for flares~\cite{srivastavaOBSERVATIONKINKINSTABILITY2010} and an important mechanism in the theory of coronal heating through nanoflares~\cite{browningHeatingCoronaNanoflares2008a}. The instability has also been studied using shock viscosity~\cite{hoodCoronalHeatingMagnetic2009,barefordShockHeatingNumerical2015} but a detailed investigation of the effects of Newtonian and Braginskii viscosity has not, to the best of our knowledge, been performed.
+As a first step of investigating the effects of anisotropic viscosity on coronal dynamics, we focus on the kink instability~\cite{hoodKinkInstabilitySolar1979, hoodCoronalHeatingMagnetic2009}, believed to be a trigger for flares~\cite{srivastavaObservationKinkInstability2010} and an important mechanism in the theory of coronal heating through nanoflares~\cite{browningHeatingCoronaNanoflares2008a}. The instability has also been studied using shock viscosity~\cite{hoodCoronalHeatingMagnetic2009,barefordShockHeatingNumerical2015} but a detailed investigation of the effects of Newtonian and Braginskii viscosity has not, to the best of our knowledge, been performed.
 In particular, the main aim of this paper is to provide insight into the effect of the choice of viscosity model on the nonlinear dynamics and relaxation of a twisted coronal loop, where the kink instability converts magnetic energy to heat through Ohmic heating generated via current structures and through viscous heating generated via flow structures. We aim to give an estimate of how well viscous heating (using both isotropic and anisotropic models) performs when compared with Ohmic heating. This study extends previous work~\cite{hoodCoronalHeatingMagnetic2009} which also considers the kink instability in a zero-current loop (details given below). However, in contrast to~\cite{hoodCoronalHeatingMagnetic2009}, we consider only background resistivity and viscosity as the two mechanisms of heat generation (that is, we do not consider shock viscosity or anomalous resistivity). In performing this investigation, we also provide further validation of the switching model in a simpler topology to that used by MacTaggart et al.~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}, in that there are no null points present in the field at any time.
 
 The layout of the paper is as follows. The coronal loop model, MHD
@@ -88,7 +88,7 @@ twisted flux tube in a Cartesian box of dimension $[-2\text{
    twisted such that it is linearly unstable to the ideal kink
    instability. This configuration allows us to compare directly to
    previous studies that use identical magnetic field
-   configurations~\cite{hoodCoronalHeatingMagnetic2009,barefordShockHeatingNumerical2015,bothaOBSERVATIONALSIGNATURESCORONAL2012}. The
+   configurations~\cite{hoodCoronalHeatingMagnetic2009,barefordShockHeatingNumerical2015,bothaObservationalSignaturesCoronal2012}. The
    field outside the flux tube is straight and has a strength of
    $5\times10^{-3} \text{ T}$. Given this temperature and magnetic
    field strength, the plasma beta is initially $\beta \approx
@@ -231,7 +231,7 @@ Although we prescribe an initial temperature of $T=2\times10^{4} \text{ K}$, the
 \end{equation}
 and have been non-dimensionalised using the reference values found in Table~\ref{tab:reference-values}. The initial magnetic field and velocity are set to their equilibrium states, discussed above, with the addition of a small perturbation.
 
-In order to make a meaningful comparison of our results with those of~\cite{hoodCoronalHeatingMagnetic2009}, we use identical initial magnetic field and velocity perturbations, calculated via a linear stability analysis (in ideal MHD) applied to a similar flux tube that uses a constant, piecewise profile for $\alpha(r)$~\cite{vanderlindenCompleteCoronalLoop1999,browningSolarCoronalHeating2003,browningHeatingCoronaNanoflares2008a}.
+In order to make a meaningful comparison of our results with those of~\cite{hoodCoronalHeatingMagnetic2009}, we use identical initial magnetic field and velocity perturbations, calculated via a linear stability analysis (in ideal MHD) applied to a similar flux tube that uses a constant, piecewise profile for $\alpha(r)$~\cite{vanderlindenCompleteCoronalLoop1999,browningSolarCoronalHeating2003c,browningHeatingCoronaNanoflares2008a}.
 
 At the boundaries, we satisfy the line-tied condition on the magnetic field by ensuring the field is constant and equal to its initial values given by equations~\eqref{eq:field-profile-r-lt-1} and~\eqref{eq:field-profile-r-gt-1}. Similarly, on the boundaries we ensure that the density, internal energy and velocity $\vec{u}$ are constant and equal to their initial values. To close the system, the fluxes of all variables through each of the boundaries are set to zero. That is, on the $x$-boundary,
 \begin{equation}
@@ -247,7 +247,7 @@ Isotropic (Newtonian) viscosity is the most commonly used viscosity model for ap
 \label{eq:isotropic_stress_tensor}
 \end{equation}
 where $\ten{W} = \vec{\nabla \vec{u}} + {(\vec{\nabla \vec{u}})}^{\text{T}} - \frac{2}{3}(\vec{\nabla} \cdot \vec{u}) \ten{I}$ is the traceless rate-of-strain tensor and $\ten{I}$ is the identity tensor.
-In the solar corona, apart from regions of very weak field strength, viscosity is dominated by the strong field limit of the full Braginskii tensor~\cite{hollwegViscosityChewGoldbergerLowEquations1986},
+In the solar corona, apart from regions of very weak field strength, viscosity is dominated by the strong field limit of the full Braginskii tensor~\cite{hollwegViscosityChewGoldbergerLowEquations1986a},
 \begin{equation}
 \ten{\sigma}_{\text{strong}} = \frac{3}{2} \nu (\ten{W}\vec{b}) \cdot \vec{b} \left( \vec{b} \otimes \vec{b} - \frac{1}{3}\ten{I}\right),
 \label{eq:strong_braginskii_stress_tensor}
@@ -417,7 +417,7 @@ tensor is the only difference between the two cases. In this
   section, we use the diffusion parameters $\nu = 10^{-4},\ \eta =
 5\times 10^{-4.5}$, both small but suitably above the threshold of
 numerical diffusion discussed in
-Section~\ref{sec:general-numerical-setup}. The chosen value of $\nu$ is well within the range of typical values found in the real corona, that is, in our nondimensionalisation, between $10^{-8}$ and $10^{-3}$~\cite{rudermanSlowSurfaceWave2000}. All other parameters are
+Section~\ref{sec:general-numerical-setup}. The chosen value of $\nu$ is well within the range of typical values found in the real corona, that is, in our nondimensionalisation, between $10^{-8}$ and $10^{-3}$~\cite{rudermanSlowSurfaceWave2000a}. All other parameters are
 identical in both cases and are kept fixed to the values specified in
 Section~\ref{sec:general-numerical-setup}. Due to the strength of the field and lack of null points, it is measured that $s=1$ throughout the entire domain, thus the switching model reverts to the strong field approximation of the Braginskii tensor~\eqref{eq:strong_braginskii_stress_tensor}.
 
