@@ -30,12 +30,13 @@ def get_var_slice(sdfFilename, variable):
     else:
         return var[:,:,int(dims[2]/2)].transpose()
 
-def get_dx_dy_dz(sdfFile):
+def get_dx_dy_dz(sdfFile, cell_centre=False):
     extents = sdfFile.Grid_Grid.extents
     dims = sdfFile.Grid_Grid.dims
-    
-    dims = [dim + 1 for dim in dims]
-    
+
+    if cell_centre:
+        dims = [dim - 1 for dim in dims]
+
     return [(extents[i+3] - extents[i])/dims[i] for i in range(3)]
 
 def get_variable(sdfFile, varname):
@@ -52,7 +53,7 @@ def plot_slice(sdfFilename, variable_name, dimension, slice_loc,
     latexify(columns=1)
     fig, axis = plt.subplots()
 
-    im = axis.imshow(velocity,\
+    im = axis.imshow(velocity.T,\
     #             vmax=v_limits, vmin=-v_limits,\
                 interpolation='bilinear',\
                 cmap=plt.get_cmap("viridis"),
@@ -102,14 +103,21 @@ def get_slice_extents(sdfFilename, dimension):
 
 def get_slice(sdfFilename, variable_name, dimension, slice_loc):
     sdfFile = sdf.read(sdfFilename)
-    var = get_variable(sdfFile, variable_name)
+    
+    if variable_name == "magnitude_current_density":
+        data = get_magnitude_current(sdfFile)
+    elif variable_name == "vorticity_density":
+        data = get_magnitude_vorticity(sdfFile)
+    else:
+        var = get_variable(sdfFile, variable_name)
+        data = var.data
     
     if type(dimension) is str:
         dimension = get_dimension_index(dimension)
     
     index = length_to_index(sdfFile, slice_loc, dimension)
     
-    return np.take(var.data, index, axis=dimension)
+    return np.take(data, index, axis=dimension)
 
 
 def slice_variable(sdf_var, x_min=0, x_max=-1, y_min=0, y_max=-1, z_min=0, z_max=-1):
@@ -126,8 +134,42 @@ def curl(bx, by, bz, dx, dy, dz):
     gradbx = np.gradient(bx, dx, dy, dz)
     gradby = np.gradient(by, dx, dy, dz)
     gradbz = np.gradient(bz, dx, dy, dz)
-    
+
     return np.array([(gradbz[1] - gradby[2]), -(gradbz[0] - gradbx[2]), (gradby[0] - gradbx[1])])
+
+def mag_curl(bx, by, bz, dx, dy, dz):
+    gradbx = np.gradient(bx, dx, dy, dz)
+    gradby = np.gradient(by, dx, dy, dz)
+    gradbz = np.gradient(bz, dx, dy, dz)
+
+    return np.sqrt(np.power(gradbz[1] - gradby[2], 2) + np.power(gradbz[0] - gradbx[2], 2) + np.power(gradby[0] - gradbx[1], 2))
+
+def get_magnitude_vorticity(sdfFile):
+    vx = get_variable(sdfFile, "Velocity_Vx").data
+    vy = get_variable(sdfFile, "Velocity_Vy").data
+    vz = get_variable(sdfFile, "Velocity_Vz").data
+
+    dx, dy, dz = get_dx_dy_dz(sdfFile)
+
+    return mag_curl(vx, vy, vz, dx, dy, dz)
+
+def centre_magnetic_field(bx, by, bz):
+    bx = 0.5*(bx[:-1,:,:] + bx[1:,:,:])
+    by = 0.5*(by[:,:-1,:] + by[:,1:,:])
+    bz = 0.5*(bz[:,:,:-1] + bz[:,:,1:])
+
+    return bx, by, bz
+
+def get_magnitude_current(sdfFile):
+    bx = get_variable(sdfFile, "Magnetic_Field_Bx").data
+    by = get_variable(sdfFile, "Magnetic_Field_By").data
+    bz = get_variable(sdfFile, "Magnetic_Field_Bz").data
+
+    bx, by, bz = centre_magnetic_field(bx, by, bz)
+
+    dx, dy, dz = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    return mag_curl(bx, by, bz, dx, dy, dz)
 
 def get_magnitude_current_at(sdfFile, zSliceIdx, xLimits = (0,-1), yLimits=(0,-1)):
     bx = slice_variable(\

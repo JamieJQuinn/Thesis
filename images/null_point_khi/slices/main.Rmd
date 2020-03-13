@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.3.3
+      jupytext_version: 1.3.4
   kernelspec:
     display_name: Python 3
     language: python
@@ -52,18 +52,31 @@ def plot_entire_parameter_study(variable_name, slice_dim, slice_loc, xlim=False,
 # Plot velocity slices showing presence of instability in Vz
 
 ```{python}
-run_folder = "v-4r-3-switching"
+run_folder = "v-4r-4-isotropic"
 folder = data_folder + parameter_study_folder + run_folder + "/Data/"
-i=7
+i=8
 timedump = '{0:04d}'.format(i)
 sdfFilename = folder + timedump + ".sdf"
 
-plot_slice(sdfFilename, "Velocity_Vz", "z", 0.0)
+sdfFile = sdf.read(sdfFilename)
+
+vx = get_variable(sdfFile, "Magnetic_Field_Bx")
+print(sdfFile.Grid_Grid.dims)
 ```
 
 ```{python}
-# for variable in ["Velocity_Vz", "Fluid_Energy"]:
-for variable in ["Fluid_Energy"]:
+run_folder = "v-4r-4-switching"
+folder = data_folder + parameter_study_folder + run_folder + "/Data/"
+i=6
+timedump = '{0:04d}'.format(i)
+sdfFilename = folder + timedump + ".sdf"
+
+plot_slice(sdfFilename, "vorticity_density", "x", 0.85, xlim=(-1.0, 1.0), ylim=(-0.25, 0.25))
+```
+
+```{python}
+# for variable in ["Velocity_Vz", "vorticity_density", "magnitude_current_density", "Fluid_Energy"]:
+for variable in ["magnitude_current_density", "vorticity_density"]:
     plot_entire_parameter_study(variable, "z", 0.0)
 ```
 
@@ -80,16 +93,11 @@ plot_slice(sdfFilename, "Velocity_Vz", "x", 0.85, xlim=(-0.5, 0.5), ylim=(-0.1, 
 ```
 
 ```{python}
-for variable in ["Velocity_Vx", "Fluid_Energy"]:
+for variable in ["Velocity_Vx", "vorticity_density", "magnitude_current_density", "Fluid_Energy"]:
     plot_entire_parameter_study(variable, "x", 0.0, xlim=(-1.0, 1.0), ylim=(-0.25, 0.25))
 ```
 
 ```{python}
-# for variable in ["Velocity_Vz", "Velocity_Vy", "Fluid_Energy"]:
-for variable in ["Velocity_Vy", "Fluid_Energy"]:
+for variable in ["Velocity_Vz", "vorticity_density", "magnitude_current_density", "Velocity_Vy", "Fluid_Energy"]:
     plot_entire_parameter_study(variable, "x", 0.85, xlim=(-0.5, 0.5), ylim=(-0.1, 0.1))
-```
-
-```{python}
-
 ```
