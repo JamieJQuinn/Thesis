@@ -7,8 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-sys.path.insert(0, '..')
-from plotting_functions import latexify, save_plot
+from plotting import latexify, save_plot
 from plotting_parameters import *
 
 INCLUDE_CBARS=True
