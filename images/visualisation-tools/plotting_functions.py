@@ -1,6 +1,7 @@
 import math
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 from plotting_parameters import *
 
@@ -60,42 +61,30 @@ def latexify(fig_width=None, fig_height=None, columns=1, square=False):
 
     matplotlib.rcParams.update(params)
 
-def remove_spines(axis, axis_side='left'):
+def remove_spines(axis, axis_side='left', sharex=False, sharey=False):
     axis.spines['top'].set_visible(False)
-    axis.xaxis.set_ticks_position('bottom')
+    if not sharex:
+        axis.xaxis.set_ticks_position('bottom')
     if axis_side == 'left':
         axis.spines['right'].set_visible(False)
-        axis.yaxis.set_ticks_position('left')
-        axis.yaxis.set_label_position('left')
+        if not sharey:
+            axis.yaxis.set_ticks_position('left')
+            axis.yaxis.set_label_position('left')
     else:
         axis.spines['left'].set_visible(False)
-        axis.yaxis.set_ticks_position('right')
-        axis.yaxis.set_label_position('right')
+        if not sharey:
+            axis.yaxis.set_ticks_position('right')
+            axis.yaxis.set_label_position('right')
 
-def create_axes(n_columns=1, axis_side='left'):
-    latexify(columns=2)
-    fig, axis = plt.subplots()
-    remove_spines(axis, axis_side)
-    return fig, axis
-
-def save_plot(filename):
-    plt.savefig(filename, pad_inches=PAD_INCHES, bbox_inches = 'tight')
-    plt.show()
-def create_axes(n_columns=1, axis_side='left'):
-    latexify(columns=2)
-    fig, axis = plt.subplots()
-    remove_spines(axis, axis_side)
-    return fig, axis
-
-def save_plot(filename):
-    plt.savefig(filename, pad_inches=PAD_INCHES, bbox_inches = 'tight')
-    plt.show()
-
-def create_axes(n_columns=1, axis_side='left'):
-    latexify(columns=2)
-    fig, axis = plt.subplots()
-    remove_spines(axis, axis_side)
-    return fig, axis
+def create_axes(n_columns=1, axis_side='left', subplots_rows=1, subplots_columns=1, sharex=False, sharey=False):
+    latexify(columns=n_columns)
+    fig, axes = plt.subplots(subplots_rows, subplots_columns, sharex=sharex, sharey=sharey)
+    if subplots_rows == 1 and subplots_columns == 1:
+        remove_spines(axes, axis_side)
+    else:
+        for axis in axes.flatten():
+            remove_spines(axis, axis_side, sharex=sharex, sharey=sharey)
+    return fig, axes
 
 def save_plot(filename):
     plt.savefig(filename, pad_inches=PAD_INCHES, bbox_inches = 'tight')
