@@ -1,3 +1,6 @@
 [submodule "images/SDF"]
 	path = images/SDF
 	url = https://github.com/keithbennett/SDF.git
+[submodule "code/SDF"]
+	path = code/SDF
+	url = git@github.com:keithbennett/SDF.git
