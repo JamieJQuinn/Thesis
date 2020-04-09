@@ -1,6 +1,3 @@
 [submodule "images/SDF"]
 	path = images/SDF
 	url = https://github.com/keithbennett/SDF.git
-[submodule "images/lare3d-tools"]
-	path = images/lare3d-tools
-	url = https://github.com/JamieJQuinn/lare3d-tools.git
