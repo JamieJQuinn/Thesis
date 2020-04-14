@@ -14,20 +14,8 @@ INCLUDE_CBARS=True
 INCLUDE_TITLE=True
 INCLUDE_AXIS_LABELS=True
 
-def get_var_slice(sdfFilename, variable):
-    sdfFile = sdf.read(sdfFilename)
-
-    sdf_var = getattr(sdfFile, variable)
-    var = sdf_var.data
-    dims = sdf_var.dims
-
-    # If z-dimensions even, average between midpoints
-    average = (dims[2] % 2 == 0)
-
-    if average:
-        return 0.5*(var[:,:,int(dims[2]/2)-1] + var[:,:,int(dims[2]/2)]).transpose()
-    else:
-        return var[:,:,int(dims[2]/2)].transpose()
+def load_sdf_file(sdfFilename):
+    return sdf.read(sdfFilename)
 
 def get_dx_dy_dz(sdfFile, cell_centre=False):
     extents = sdfFile.Grid_Grid.extents
@@ -38,26 +26,65 @@ def get_dx_dy_dz(sdfFile, cell_centre=False):
 
     return [(extents[i+3] - extents[i])/dims[i] for i in range(3)]
 
-def get_variable(sdfFile, varname):
-    return getattr(sdfFile, varname)
+def get_variable(sdfFile, variable_name):
+    return getattr(sdfFile, variable_name)
 
-def get_magnetic_field(sdfFilename):
-    sdfFile = sdf.read(sdfFilename)
+def get_variable_data(sdfFile, variable_name):
+    if variable_name == "magnitude_current_density":
+        return get_magnitude_current(sdfFile)
+    elif variable_name == "vorticity_density":
+        return get_magnitude_vorticity(sdfFile)
+    elif variable_name == "kinetic_energy":
+        return calc_kinetic_energy(sdfFile)
+    else:
+        return get_variable(sdfFile, variable_name).data
 
+def calc_centred_velocity(var):
+    x_av = var[1:,:,:] + var[:-1,:,:]
+    y_av = x_av[:,1:,:] + x_av[:,:-1,:]
+    z_av = y_av[:,:,1:] + y_av[:,:,:-1]
+    return z_av / 8.0
+
+def calc_mag_velocity2(sdfFile):
+    vx = get_variable_data(sdfFile, "Velocity_Vx")
+    vy = get_variable_data(sdfFile, "Velocity_Vy")
+    vz = get_variable_data(sdfFile, "Velocity_Vz")
+
+    return np.power(vx, 2) + np.power(vy, 2) + np.power(vz, 2)
+
+def calc_kinetic_energy(sdfFile):
+    magV2 = calc_centred_velocity(
+        calc_mag_velocity2(sdfFile)
+    )
+
+    rho = get_variable_data(sdfFile, "Fluid_Rho")
+
+    return 0.5*rho*magV2
+
+def calc_kinetic_energy_z(sdfFile):
+    vz = calc_centred_velocity(
+        get_variable_data(sdfFile, "Velocity_Vz")
+    )
+
+    rho = get_variable_data(sdfFile, "Fluid_Rho")
+
+    return 0.5*rho*np.power(vz, 2)
+
+def get_magnetic_field(sdfFile):
     mag_field = np.array([
-        getattr(sdfFile, variable).data for variable in
+        get_variable_data(sdfFile, variable) for variable in
         ['Magnetic_Field_bx_centred', 'Magnetic_Field_by_centred', 'Magnetic_Field_bz_centred']
     ])
 
     return mag_field
 
-def plot_slice(sdfFilename, variable_name, dimension, slice_loc,
+def plot_slice(sdfFile, variable_name, dimension, slice_loc,
                cbar=INCLUDE_CBARS,
                include_title=INCLUDE_TITLE,
                include_axis_labels=INCLUDE_AXIS_LABELS,
                xlim=False, ylim=False, title=False):
-    velocity = get_slice(sdfFilename, variable_name, dimension, slice_loc)
-    extents = get_slice_extents(sdfFilename, dimension)
+    velocity = get_slice(sdfFile, variable_name, dimension, slice_loc)
+    extents = get_slice_extents(sdfFile, dimension)
 
     latexify(columns=1)
     fig, axis = plt.subplots()
@@ -72,7 +99,7 @@ def plot_slice(sdfFilename, variable_name, dimension, slice_loc,
         axis.set_xlim(xlim)
     if ylim:
         axis.set_ylim(ylim)
-        
+
     if include_title:
         if title:
             axis.title.set_text(" ".join(title.split("_")))
@@ -83,7 +110,7 @@ def plot_slice(sdfFilename, variable_name, dimension, slice_loc,
         labels = get_axis_labels(dimension)
         axis.set_xlabel(labels[0])
         axis.set_ylabel(labels[1])
-        
+
     if cbar:
         divider = make_axes_locatable(axis)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -98,11 +125,10 @@ def get_axis_labels(dimension):
     return labels
 
 
-def get_slice_extents(sdfFilename, dimension):
+def get_slice_extents(sdfFile, dimension):
     if type(dimension) is str:
         dimension = get_dimension_index(dimension)
 
-    sdfFile = sdf.read(sdfFilename)
     extents = list(sdfFile.Grid_Grid.extents)
     extents.pop(dimension+3)
     extents.pop(dimension)
@@ -110,22 +136,12 @@ def get_slice_extents(sdfFilename, dimension):
     return extents
 
 
-def get_slice(sdfFilename, variable_name, dimension, slice_loc):
-    sdfFile = sdf.read(sdfFilename)
-    
-    if variable_name == "magnitude_current_density":
-        data = get_magnitude_current(sdfFile)
-    elif variable_name == "vorticity_density":
-        data = get_magnitude_vorticity(sdfFile)
-    else:
-        var = get_variable(sdfFile, variable_name)
-        data = var.data
-    
+def get_slice(sdfFile, variable_name, dimension, slice_loc):
     if type(dimension) is str:
         dimension = get_dimension_index(dimension)
-    
+
     index = length_to_index(sdfFile, slice_loc, dimension)
-    
+
     return np.take(data, index, axis=dimension)
 
 
@@ -154,9 +170,9 @@ def mag_curl(bx, by, bz, dx, dy, dz):
     return np.sqrt(np.power(gradbz[1] - gradby[2], 2) + np.power(gradbz[0] - gradbx[2], 2) + np.power(gradby[0] - gradbx[1], 2))
 
 def get_magnitude_vorticity(sdfFile):
-    vx = get_variable(sdfFile, "Velocity_Vx").data
-    vy = get_variable(sdfFile, "Velocity_Vy").data
-    vz = get_variable(sdfFile, "Velocity_Vz").data
+    vx = get_variable_data(sdfFile, "Velocity_Vx")
+    vy = get_variable_data(sdfFile, "Velocity_Vy")
+    vz = get_variable_data(sdfFile, "Velocity_Vz")
 
     dx, dy, dz = get_dx_dy_dz(sdfFile)
 
@@ -170,9 +186,9 @@ def centre_magnetic_field(bx, by, bz):
     return bx, by, bz
 
 def get_magnitude_current(sdfFile):
-    bx = get_variable(sdfFile, "Magnetic_Field_Bx").data
-    by = get_variable(sdfFile, "Magnetic_Field_By").data
-    bz = get_variable(sdfFile, "Magnetic_Field_Bz").data
+    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
+    by = get_variable_data(sdfFile, "Magnetic_Field_By")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
 
     bx, by, bz = centre_magnetic_field(bx, by, bz)
 
@@ -227,7 +243,6 @@ def get_dimension_index(dimension):
         return 1
     elif dimension == "z":
         return 2
-
 
 def length_to_index(sdfFile, x, dimension):
     if type(dimension) is str:

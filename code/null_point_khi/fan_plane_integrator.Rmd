@@ -1,0 +1,109 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import scipy.ndimage
+from scipy.signal import find_peaks, peak_widths
+# from scipy import interpolate
+import sys
+import math
+import matplotlib.pyplot as plt
+# %matplotlib inline
+
+from plotting_parameters import *
+
+sys.path.insert(0,'../shared')
+from plotting import *
+from sdf_helper import *
+
+data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/null-point-stressing/twisting-driver"
+p_study_folder = "/parameter-study/"
+```
+
+```{python}
+def format_filename(folder, dump_number):
+    return folder + '{0:04d}'.format(dump_number) + ".sdf"
+```
+
+```{python}
+run_folder = "v-3r-3-switching"
+sdf_folder = data_folder + p_study_folder + run_folder + "/Data/"
+
+sdfFile = sdf.read(format_filename(sdf_folder, 10))
+
+data = calc_kinetic_energy_z(sdfFile)
+
+# data = get_variable(sdfFile, "Velocity_Vz").data
+
+plt.imshow(data[:,:,int(data.shape[2]/2)])
+```
+
+```{python}
+res = (data.shape[0], data.shape[1], data.shape[2])
+
+limits = (-3.5, 3.5, -3.5, 3.5, -0.25, 0.25)
+r_min = 0
+r_max = int(res[2]/2)
+
+r = np.array(range(r_min, r_max))
+theta_res = int(res[2]*2)
+thetas = np.linspace(0, 2*np.pi, theta_res)
+z = np.array(range(
+    int(length_to_index(sdfFile, limits[4], "z")),
+    int(length_to_index(sdfFile, limits[5], "z"))
+))
+
+R, THETA, Z = np.meshgrid(r, thetas, z, indexing='ij')
+
+X = R*np.cos(THETA) + int(res[0]/2)
+Y = R*np.sin(THETA) + int(res[1]/2)
+
+coord_transform = np.array([X, Y, Z])
+
+data_cyl = scipy.ndimage.map_coordinates(data, coord_transform, order=1)
+
+integration = np.mean(data_cyl, axis=1)
+```
+
+```{python}
+plt.imshow(integration)
+plt.colorbar()
+plt.show()
+
+r = np.linspace(0, limits[1], num=len(r))
+z = np.linspace(limits[4], limits[5], num=len(z))
+
+plt.plot(r, integration[:, int(res[2]/2)])
+
+peaks, _ = find_peaks(integration[:, int(res[2]/2)])
+plt.plot(r[peaks], integration[peaks, int(res[2]/2)], 'x')
+plt.show()
+
+z_slice = integration[peaks[0],:]
+peaks, _ = find_peaks(z_slice)
+plt.plot(z, z_slice)
+plt.plot(z[peaks], z_slice[peaks], 'x')
+plt.show()
+
+biggest_peak = np.argmax(z[peaks])
+
+widths = peak_widths(z_slice, peaks)
+plt.plot(z[peaks], widths[0]/res[2]*(limits[5] - limits[4]))
+plt.show()
+```
+
+```{python}
+
+```
