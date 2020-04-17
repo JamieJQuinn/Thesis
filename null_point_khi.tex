@@ -4,32 +4,32 @@
 
 \subsection{Evolution of a typical KHI case}
 
-This is for the v-4r-4 case
+We discuss initially the evolution of the case $\eta = 10^{-4}, \nu = 10^{-4}$, which captures the main features of the null's response to the driver: a potential KHI and an eventual null collapse. This choice of parameters also highlights the differences between the isotropic and the switching cases, mainly the lack of the instability in the isotropic case.
 
-Initially the torsional Alfv\'en wave traces the field surrounding the null point, moving towards the fan plane.
+Initially, at $t=1$ the torsional Alfv\'en waves injected by the driver trace the field surrounding the null point, moving towards the fan plane.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vx_x_0.0_0001.pdf}
 \end{figure}
 
-At this point there is a very weak pattern in the out of plane velocity, reflected in the vorticity and the current density. NOTE the limits on the fan plane slices are different to those perpendicular to the fan plane.
+%At this point there is a very weak pattern in the out of plane velocity, reflected in the vorticity and the current density. NOTE the limits on the fan plane slices are different to those perpendicular to the fan plane.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0001.pdf}
-  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0001.pdf}
-  \includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0001.pdf}
-\end{figure}
+%\begin{figure}[H]
+  %\centering
+  %\includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vz_z_0.0_0001.pdf}
+  %\includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_magnitude_current_density_z_0.0_0001.pdf}
+  %\includegraphics[width=0.3\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_z_0.0_0001.pdf}
+%\end{figure}
 
-Most of the vorticity is concentrated just above and below the fan plane at this point.
+%Most of the vorticity is concentrated just above and below the fan plane at this point.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0001.pdf}
-\end{figure}
+%\begin{figure}[H]
+  %\centering
+  %\includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0001.pdf}
+%\end{figure}
 
-After two Alfv\'en times the upper and lower torsional waves have begun to interact at the fan plane, producing a vorticity ring. The differences between the switching and isotropic cases appear at this time. This is weaker and has greater radius in the switching case. The corresponding ring in the current density has a similar size comparing viscous models, but a slightly greater magnitude in the isotropic case.
+At $t=2$ the upper and lower torsional waves have begun to interact at the fan plane, producing a ring of both vorticity and current density in the fan plane. The rings appear larger, but slightly weaker, in the switching case. 
 
 \begin{figure}[H]
   \centering
@@ -43,7 +43,7 @@ After two Alfv\'en times the upper and lower torsional waves have begun to inter
   \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_magnitude_current_density_z_0.0_0002.pdf}
 \end{figure}
 
-There is some difference in the shape, but not the size, of the vorticity structures perpendicular to the fan plane. This is similarly true for the current density.
+Due to the apparent viscosity being so much weaker in the switching case, it takes longer for the rings to properly form. 
 
 \begin{figure}[H]
   \centering
@@ -51,7 +51,13 @@ There is some difference in the shape, but not the size, of the vorticity struct
   \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_x_0.0_0002.pdf}
 \end{figure}
 
-In only the switching case we see the presence of a growing Kelvin-Helmholtz instability
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_vorticity_density_x_0.0_0003.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_vorticity_density_x_0.0_0003.pdf}
+\end{figure}
+
+Still at $t=2$, in only the switching case do we see the presence of a growing Kelvin-Helmholtz instability, being seen in a ring between radii of approximately $0.25$ and $0.5$.
 
 \begin{figure}[H]
   \centering
@@ -59,7 +65,7 @@ In only the switching case we see the presence of a growing Kelvin-Helmholtz ins
   \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-switching_Velocity_Vz_z_0.0_0002.pdf}
 \end{figure}
 
-One Alfv\'en time later the counter flows appear slightly in both cases and the initial instability remains present in the switching case only.
+At $t=3$ the counter flows appear in both cases and the initial instability remains present in the switching case only.
 
 \begin{figure}[H]
   \centering
@@ -278,6 +284,107 @@ For $\eta=10^{-4}$, increasing $\nu$ decreases the reconnection rate however the
 For $\eta=10^{-5}$, the reconnection rate is generally higher than the $10^{-4}$ simulations, particularly along the field lines that intersect the vorticity-current density ring, and along the spine until a reconnection event occurs around $t=10$ in the isotropic cases. The strength of the resultant outflows depend strongly on $\nu$, as does the proceeding reconnection within the rest of the structure, the rate of which is generally higher for weaker viscosity. In the switching case, the initial reconnection event appears sooner and, while the reconnection rate remains relatively constant across the range of $\nu$, lower viscosity does lead to a more violent resultant behaviour.
 
 Wyper conjectured that with decreased $\eta$ and enough time, the highly twisted field around the spine would be unstable to the kink instability. What we find here is that this part of the field, the most twisted point at around $z=\pm 0.08$ is simply the initial point at which reconnection occurs, causing a cascade of violent reconnection into the rest of the null. It's the increased twist in the spine, caused by a lack of magnetic diffusion, that causes the null to collapse sooner. At this stage in the analysis I can find no evidence of the kink instability in the spine, but the temporal resolution is not so great. I'll run further simulations with more data dumps.
+
+\subsection{Quantitative Analysis of Parameter Study}
+
+Plotting the kinetic energies of each of the simulations presents a clear indication of how the parameter choice affects the onset of the KHI in the fan-plane (Figure~\ref{fig:kinetic_energy_over_time_parameter}). As a reminder, the simulations using switching viscosity were unstable to the KHI in all cases, however when $\eta = 10^{-5}$, the instability grows more slowly and appears to be interrupted by the collapse of the null. For the isotropic cases, there was only one parameter choice that resulted in instability; $\eta=10^{-3}, \nu=10^{-5}$. This is summarised in table~\ref{tab:stability}. The stability is reflected in the kinetic energies. For resistivities of $10^{-4}$ and $10^{-3}$ using the switching model, there appears a signature shape indicative of the KHI. This is also seen in the unstable isotropic case, $(10^{-3}, 10^{-5})$. Isotropic cases $(10^{-3}, 10^{-4})$ and $(10^{-4}, 10^{-3})$ show a similar initial increase in kinetic energy, however this does not appear to culminate in instability and we do not notice the small amplitude KHI seen in the low-resistivity switching cases where $\eta=10^{-5}$. Prior to $t\approx 8$) the kinetic energy in these cases appears similar to the fully unstable cases, but with a more shallow gradient. This is due to the lower resistivity allowing the Alfv\'en waves to propagate further away from the spine before interacting in the fan-plane, as can be seen by the location of the vorticity sheets compared in Figure~\ref{fig:low_resistivity_voriticy_ring}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-4-switching_vorticity_density_z_0.0_0006.pdf}
+  \includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-3r-5-switching_vorticity_density_z_0.0_0006.pdf}
+  \caption{Comparison of vorticity ring sizes for $\eta = 10^{-4}$ (left) and $\eta = 10^{-5}$ (right)}
+  \label{fig:low_resistivity_voriticy_ring}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/energy_plots/parameter_study/kinetic_energy_over_time.png}
+  \caption{Kinetic energy over time}%
+  \label{fig:kinetic_energy_over_time_parameter}
+\end{figure}
+
+\begin{table}[]
+\centering
+\begin{tabular}{lllll}
+$\eta$    & $\nu$     & Isotropic Stable? & Switching Stable? &  \\
+\midrule
+$10^{-5}$ & $10^{-5}$ & Y                 & Linear N          &  \\
+$10^{-5}$ & $10^{-4}$ & Y                 & Linear N          &  \\
+$10^{-5}$ & $10^{-3}$ & Y                 & Linear N          &  \\
+$10^{-4}$ & $10^{-5}$ & Y                 & N                 &  \\
+$10^{-4}$ & $10^{-4}$ & Y                 & N                 &  \\
+$10^{-4}$ & $10^{-3}$ & Y                 & N                 &  \\
+$10^{-3}$ & $10^{-5}$ & N                 & N                 &  \\
+$10^{-3}$ & $10^{-4}$ & Y                 & N                 &  \\
+$10^{-3}$ & $10^{-3}$ & Y                 & N                 & 
+\end{tabular}
+\caption{Stability in the isotopic and switching cases across varying $\eta$ and $\nu$. The only unstable isotropic simulation is the one corresponding to $\eta = 10^{-3}, \nu = 10^{-5}$.}
+\label{tab:stability}
+\end{table}
+
+\subsubsection{Why does the KHI not occur at low resistivity}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_2.pdf}
+  \caption{$t=2$}%
+  \label{fig:azimuthal_averages_v-3_2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/slices/v-3r-5-switching_Velocity_Vz_z_0.0_0002.pdf}
+  \caption{$t=2$}%
+  \label{fig:v-3r-5-switching_Velocity_Vz_z_0_0002}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_4.pdf}
+  \caption{$t=4$}%
+  \label{fig:azimuthal_averages_v-3_4}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_5.pdf}
+  \caption{$t=5$}%
+  \label{fig:azimuthal_averages_v-3_5}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_7.pdf}
+  \caption{$t=7$}%
+  \label{fig:azimuthal_averages_v-3_7}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_10.pdf}
+  \caption{$t=10$}%
+  \label{fig:azimuthal_averages_v-3_10}
+\end{figure}
+
+Looking only at the case of $\nu = 10^{-3}$, we can see the KHI appear as early as $t=2$ in the azimuthally averaged velocity in the $z$-direction, for all three values of $\eta$ (Figure~\ref{fig:azimuthal_averages_v-3_2}) and all at approximately the same location, around $r=0.5$. This can also be more clearly seen in the slice through $z$, shown in Figure~\ref{fig:v-3r-5-switching_Velocity_Vz_z_0_0002} for the case $\eta=10^{-5}$, but the pattern is similar for other values of $\eta$. Within only two Alfv\'en times it's clear the KHI is able to grow faster when resistivity is higher, as shown in Figure~\ref{fig:azimuthal_averages_v-3_4} at time $t=4$. After this time the behaviour for each value of $\eta$ diverges. For high and medium values of $\eta$, the initial instability spreads radially, though more slowly in the medium case. The $\eta=10^{-5}$ case shows some evidence of some exchange of energy from the magnetic field to the flow, perhaps caused by a small reconnection event, as can be seen from a small dip in the current density colocating with a sudden and transient increase in velocity (Figure~\ref{fig:azimuthal_averages_v-3_4}). This may also be the point at which the isotropic region switches to the switching region (TODO check). If this is the case, the interpolation between the two regions must be made smoother. At $t=7$ the high resistivity case shows further development of the instability (Figure~\ref{fig:azimuthal_averages_v-3_7}). By $t=10$ (Figure~\ref{fig:azimuthal_averages_v-3_10}) the KHI has grown in both high and medium cases, with the energy of the instability peaking at around $r=0.75$ in the high resistivity case, and $r=1.1$ in the medium case. We also see disruption of the instability before it has properly developed in the low resistivity case.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/mach_numbersv-32.pdf}
+  \caption{Mach numbers at $t=2$}
+  \label{fig:mach_numbersv_32}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/mach_numbersv-36.pdf}
+  \caption{Mach numbers at $t=6$}
+  \label{fig:mach_numbersv-36}
+\end{figure}
+
+It's instructive to study how the relevant Mach numbers and instability parameters vary radially, and link those to the behaviour and stability of the KHI. As an indicator of the stability of the shear layer, we plot the Mach number associated with the fast-mode $M_f = \frac{\Delta v}{\sqrt{c_s^2 + c_A^2}}$, where $\Delta v$ is the difference in velocity over the shear layer, and $c_s$ and $c_A$ are the local sound and Alfv\'en speeds, respectively, as well as the parameter $\Delta = \frac{L_B}{L_v}(M_{A, proj})^{2/3}$, where $L_B$ and $L_v$ are the widths of the respective magnetic and velocity shear layers, and $M_{A, proj}$ is the Alfv\'en velocity of the layer after removing the guide field, i.e. $M_{A, proj} = \frac{\Delta v \sqrt{\rho}}{\Delta B}$ (TODO reword this entire sentence). For the layer to be unstable to the KHI, $M_f < 2$ and $\Delta > 1$. At early times ($t=2$) the initial growth of the instability occurs at $r=0.5$, coinciding with the peak of $M_f$ (Figure~\ref{fig:mach_numbersv_32}). At this time and location, it is only the high resistivity case which shows shear layers with $\Delta > 1$. Both lower resistivity cases are linearly stable to the instability. This changes for the mid resistivity case (TODO decide mid or medium) only around $t=6$ (Figure~\ref{fig:mach_numbersv-36}), where the peak of $M_f$ coincides with the point where $\Delta \approx 1$ and the instability begins to grow.
+
 
 \subsection{Parameter study}
 
