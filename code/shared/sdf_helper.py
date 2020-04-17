@@ -9,6 +9,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from plotting import latexify, save_plot
 from plotting_parameters import *
+from parameters import *
 
 INCLUDE_CBARS=True
 INCLUDE_TITLE=True
@@ -36,6 +37,14 @@ def get_variable_data(sdfFile, variable_name):
         return get_magnitude_vorticity(sdfFile)
     elif variable_name == "kinetic_energy":
         return calc_kinetic_energy(sdfFile)
+    elif variable_name == "kinetic_energy_z":
+        return calc_kinetic_energy_z(sdfFile)
+    elif variable_name == "abs_Velocity_Vz":
+        return np.abs(get_variable_data(sdfFile, "Velocity_Vz"))
+    elif variable_name == "alfven_velocity":
+        return calc_alfven_velocity(sdfFile)
+    elif variable_name == "sound_speed":
+        return calc_sound_speed(sdfFile)
     else:
         return get_variable(sdfFile, variable_name).data
 
@@ -51,6 +60,15 @@ def calc_mag_velocity2(sdfFile):
     vz = get_variable_data(sdfFile, "Velocity_Vz")
 
     return np.power(vx, 2) + np.power(vy, 2) + np.power(vz, 2)
+
+def calc_sound_speed(sdfFile):
+    # From Newton-Laplace formula
+    # sound speed = sqrt(temperature)
+    return np.sqrt(calc_temperature(sdfFile))
+
+def calc_temperature(sdfFile):
+    # Nondimensional temperature is just 1-gamma * internal energy
+    return (GAMMA-1.0)*get_variable_data(sdfFile, "Fluid_Energy")
 
 def calc_kinetic_energy(sdfFile):
     magV2 = calc_centred_velocity(
@@ -69,6 +87,14 @@ def calc_kinetic_energy_z(sdfFile):
     rho = get_variable_data(sdfFile, "Fluid_Rho")
 
     return 0.5*rho*np.power(vz, 2)
+
+def calc_mag(vector):
+    return np.power(vector[0], 2) + np.power(vector[1], 2) + np.power(vector[2], 2)
+
+def calc_alfven_velocity(sdfFile):
+    B = calc_mag(get_magnetic_field(sdfFile))
+    rho = get_variable_data(sdfFile, "Fluid_Rho")
+    return B/np.sqrt(rho)
 
 def get_magnetic_field(sdfFile):
     mag_field = np.array([
@@ -135,6 +161,8 @@ def get_slice_extents(sdfFile, dimension):
     extents[1], extents[2] = extents[2], extents[1]
     return extents
 
+def get_extents(sdfFile):
+    return list(sdfFile.Grid_Grid.extents)
 
 def get_slice(sdfFile, variable_name, dimension, slice_loc):
     if type(dimension) is str:
@@ -225,8 +253,7 @@ def get_magnitude_current_at(sdfFile, zSliceIdx, xLimits = (0,-1), yLimits=(0,-1
 
 def get_temperature_at(sdfFile, zSliceIdx, xLimits = (0,-1), yLimits=(0,-1)):
     # Temperature in nondim units is just \gamma - 1 times the internal energy
-    gamma = 5.0/3
-    temp = (gamma-1) * slice_variable(\
+    temp = (GAMMA-1) * slice_variable(\
         get_variable(sdfFile, "Fluid_Energy"),\
         x_min=xLimits[0], x_max = xLimits[1],\
         y_min=yLimits[0], y_max = yLimits[1],\
