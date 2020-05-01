@@ -108,7 +108,8 @@ def plot_slice(sdfFile, variable_name, dimension, slice_loc,
                cbar=INCLUDE_CBARS,
                include_title=INCLUDE_TITLE,
                include_axis_labels=INCLUDE_AXIS_LABELS,
-               xlim=False, ylim=False, title=False):
+               xlim=False, ylim=False, title=False, cmap="viridis",
+              vmax = None, vmin = None):
     velocity = get_slice(sdfFile, variable_name, dimension, slice_loc)
     extents = get_slice_extents(sdfFile, dimension)
 
@@ -116,9 +117,9 @@ def plot_slice(sdfFile, variable_name, dimension, slice_loc,
     fig, axis = plt.subplots()
 
     im = axis.imshow(velocity.T,\
-    #             vmax=v_limits, vmin=-v_limits,\
+                vmax=vmax, vmin=vmin,\
                 interpolation='bilinear',\
-                cmap=plt.get_cmap("viridis"),
+                cmap=plt.get_cmap(cmap),
                extent=extents, origin='lower')
 
     if xlim:
