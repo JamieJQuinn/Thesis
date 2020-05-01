@@ -45,6 +45,8 @@ def get_variable_data(sdfFile, variable_name):
         return calc_alfven_velocity(sdfFile)
     elif variable_name == "sound_speed":
         return calc_sound_speed(sdfFile)
+    elif variable_name == "parallel_electric_field":
+        return calc_parallel_electric_field(sdfFile)
     else:
         return get_variable(sdfFile, variable_name).data
 
@@ -54,12 +56,32 @@ def calc_centred_velocity(var):
     z_av = y_av[:,:,1:] + y_av[:,:,:-1]
     return z_av / 8.0
 
+def calc_centred_velocity_slice(var):
+    x_av = var[1:,:] + var[:-1,:]
+    y_av = x_av[:,1:] + x_av[:,:-1]
+    return y_av / 4.0
+
 def calc_mag_velocity2(sdfFile):
     vx = get_variable_data(sdfFile, "Velocity_Vx")
     vy = get_variable_data(sdfFile, "Velocity_Vy")
     vz = get_variable_data(sdfFile, "Velocity_Vz")
 
     return np.power(vx, 2) + np.power(vy, 2) + np.power(vz, 2)
+
+def calc_parallel_electric_field(sdfFile):
+    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
+    by = get_variable_data(sdfFile, "Magnetic_Field_By")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
+
+    bx, by, bz = centre_magnetic_field(bx, by, bz)
+
+    dx, dy, dz = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    gradbx = np.gradient(bx, dx, dy, dz)
+    gradby = np.gradient(by, dx, dy, dz)
+    gradbz = np.gradient(bz, dx, dy, dz)
+
+    return bx*(gradbz[1] - gradby[2]) + by*(gradbz[0] - gradbx[2]) + bz*(gradby[0] - gradbx[1])
 
 def calc_sound_speed(sdfFile):
     # From Newton-Laplace formula
@@ -170,6 +192,7 @@ def get_slice(sdfFile, variable_name, dimension, slice_loc):
         dimension = get_dimension_index(dimension)
 
     index = length_to_index(sdfFile, slice_loc, dimension)
+    data = get_variable_data(sdfFile, variable_name)
 
     return np.take(data, index, axis=dimension)
 
