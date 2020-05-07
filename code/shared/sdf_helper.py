@@ -45,6 +45,10 @@ def get_variable_data(sdfFile, variable_name):
         return calc_alfven_velocity(sdfFile)
     elif variable_name == "sound_speed":
         return calc_sound_speed(sdfFile)
+    elif variable_name == "pressure":
+        return calc_pressure(sdfFile)
+    elif variable_name == "magnetic_pressure":
+        return calc_magnetic_pressure(sdfFile)
     elif variable_name == "parallel_electric_field":
         return calc_parallel_electric_field(sdfFile)
     else:
@@ -61,6 +65,19 @@ def calc_centred_velocity_slice(var):
     y_av = x_av[:,1:] + x_av[:,:-1]
     return y_av / 4.0
 
+def calc_pressure(sdfFile):
+    rho = get_variable_data(sdfFile, "Fluid_Rho")
+    energy = get_variable_data(sdfFile, "Fluid_Energy")
+    pressure = rho*energy * (GAMMA - 1.0)
+    return pressure
+
+def calc_magnetic_pressure(sdfFile):
+    bx = get_variable_data(sdfFile, "Magnetic_Field_bx_centred")
+    by = get_variable_data(sdfFile, "Magnetic_Field_by_centred")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_bz_centred")
+
+    return np.power(bx, 2) + np.power(by, 2) + np.power(bz, 2)
+
 def calc_mag_velocity2(sdfFile):
     vx = get_variable_data(sdfFile, "Velocity_Vx")
     vy = get_variable_data(sdfFile, "Velocity_Vy")
@@ -69,19 +86,19 @@ def calc_mag_velocity2(sdfFile):
     return np.power(vx, 2) + np.power(vy, 2) + np.power(vz, 2)
 
 def calc_parallel_electric_field(sdfFile):
-    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
-    by = get_variable_data(sdfFile, "Magnetic_Field_By")
-    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
-
-    bx, by, bz = centre_magnetic_field(bx, by, bz)
+    bx = get_variable_data(sdfFile, "Magnetic_Field_bx_centred")
+    by = get_variable_data(sdfFile, "Magnetic_Field_by_centred")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_bz_centred")
 
     dx, dy, dz = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    mag_mag = np.sqrt(np.power(bx,2) + np.power(by,2) + np.power(bz,2))
 
     gradbx = np.gradient(bx, dx, dy, dz)
     gradby = np.gradient(by, dx, dy, dz)
     gradbz = np.gradient(bz, dx, dy, dz)
 
-    return bx*(gradbz[1] - gradby[2]) + by*(gradbz[0] - gradbx[2]) + bz*(gradby[0] - gradbx[1])
+    return (bx*(gradbz[1] - gradby[2]) + by*(gradbz[0] - gradbx[2]) + bz*(gradby[0] - gradbx[1]))/mag_mag
 
 def calc_sound_speed(sdfFile):
     # From Newton-Laplace formula
@@ -126,6 +143,15 @@ def get_magnetic_field(sdfFile):
 
     return mag_field
 
+def attach_colorbar(axis, im, side='right'):
+    divider = make_axes_locatable(axis)
+    cax = divider.append_axes(side, size="5%", pad=0.05)
+    if side == 'right' or side =='left':
+        orientation = 'vertical'
+    else:
+        orientation = 'horizontal'
+    plt.colorbar(im, cax=cax, orientation=orientation)
+
 def plot_slice(sdfFile, variable_name, dimension, slice_loc,
                cbar=INCLUDE_CBARS,
                include_title=INCLUDE_TITLE,
@@ -161,9 +187,7 @@ def plot_slice(sdfFile, variable_name, dimension, slice_loc,
         axis.set_ylabel(labels[1])
 
     if cbar:
-        divider = make_axes_locatable(axis)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        plt.colorbar(im, cax=cax)
+        attach_colorbar(axis, im)
 
 
 def get_axis_labels(dimension):
