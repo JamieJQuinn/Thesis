@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.3.3
+      jupytext_version: 1.3.4
   kernelspec:
     display_name: Python 3
     language: python
@@ -15,15 +15,104 @@ jupyter:
 ```{python}
 import numpy as np
 import sdf
+import sys
 import math
 import matplotlib
 import matplotlib.pyplot as plt
 # %matplotlib inline
 
 import importlib
+
+sys.path.insert(0,'../')
+
+sys.path.insert(0,'../../visualisation-tools')
+from plotting_functions import *
 import slice_helper_functions
 importlib.reload(slice_helper_functions)
 from slice_helper_functions import *
+```
+
+```{python}
+def plot_current_density_and_velocity(sdfFile, outname, xLimits=(-2, 2), yLimits=(-2, 2),\
+                                      max_current=-1, max_temperature=-1, print_maxes=False,\
+                                     remove_axes=False):
+    latexify(columns=2, square=True)
+    fig,axis = plt.subplots()
+
+    # if not remove_axes:
+        # # Make room for labels
+        # fig.subplots_adjust(left=.12, bottom=0.05, right=.965, top=.99)
+    # else:
+        # fig.subplots_adjust(left=0, bottom=0, right=1, top=1)
+
+    xIndexLimits = tuple((length_to_index(sdfFile, length, "x") for length in xLimits))
+    yIndexLimits = tuple((length_to_index(sdfFile, length, "y") for length in yLimits))
+    
+    current_density = get_magnitude_current_at(sdfFile, 350, xLimits=xIndexLimits, yLimits=yIndexLimits)
+    if max_current < 0:
+        max_current = int(current_density.max())
+    
+    axis.imshow(current_density,\
+                extent=[xLimits[0], xLimits[1], yLimits[0], yLimits[1]],\
+                vmax=max_current, vmin=0,\
+                interpolation='bilinear',\
+                cmap=plt.get_cmap("Blues"))
+    if print_maxes:
+        axis.text(-1, 0.9, "Max Current: " + str(max_current), color='w')
+    
+    print("Max current:", max_current)
+    
+    temperature = get_temperature_at(sdfFile, 350, xLimits=xIndexLimits, yLimits=yIndexLimits)
+    print(dimensionalise_temperature(temperature[0,0]))
+    if max_temperature < 0:
+        max_temperature = int(dimensionalise_temperature(temperature.max()))
+    
+    axis.imshow(dimensionalise_temperature(temperature),\
+                extent=[xLimits[0], xLimits[1], -yLimits[1], yLimits[0]],\
+                vmax=max_temperature, vmin=2e4,\
+                interpolation='bilinear',\
+                cmap=plt.get_cmap("Reds"))
+    
+    if print_maxes:
+        axis.text(-1, -0.95, "Max temp: " + str(int(max_temperature/1e6)), color='w')
+    
+    print(r"Max temperature $\times 10^{-6}$:", max_temperature/1e6)
+            
+    vx = slice_variable(\
+        get_variable(sdfFile, "Velocity_Vx"),\
+        z_min=350, z_max = 350 + 1)
+    vy = slice_variable(\
+        get_variable(sdfFile, "Velocity_Vy"),\
+        z_min=350, z_max = 350 + 1)
+    
+    vx = 0.25*(vx[1:,1:] + vx[:-1,1:] + vx[:-1,:-1] + vx[1:,:-1])
+    vy = 0.25*(vy[1:,1:] + vy[:-1,1:] + vy[:-1,:-1] + vy[1:,:-1])
+    
+    vectorIdx = 6
+    
+    vx = vx.squeeze(axis=2)[\
+                            xIndexLimits[0]+int(vectorIdx/2):xIndexLimits[1]:vectorIdx,\
+                            yIndexLimits[1]-int(vectorIdx/2):yIndexLimits[0]:-vectorIdx\
+                           ].transpose()
+    vy = -vy.squeeze(axis=2)[\
+                            xIndexLimits[0]+int(vectorIdx/2):xIndexLimits[1]:vectorIdx,\
+                            yIndexLimits[1]-int(vectorIdx/2):yIndexLimits[0]:-vectorIdx\
+                           ].transpose()
+    
+    X, Y = np.meshgrid(\
+                      np.linspace(xLimits[0], xLimits[1], vx.shape[1]),\
+                      np.linspace(-yLimits[1], yLimits[0], vx.shape[0])\
+                      )
+    
+    if remove_axes:
+        axis.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
+
+#     axis.streamplot(X, Y, vx, vy)
+    axis.quiver(X, Y, vx, vy, units='xy', pivot='tail', width=0.007, color='k')
+    
+    save_plot(outname)
+    plt.show()
+    plt.close(fig)
 ```
 
 # Plot current density slices
