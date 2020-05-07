@@ -1,0 +1,477 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import sdf
+import sys
+import importlib
+import math
+import matplotlib
+import matplotlib.pyplot as plt
+# %matplotlib inline
+
+sys.path.insert(0,'../shared')
+from energy import Energy
+
+import plotting
+importlib.reload(plotting)
+from plotting import *
+
+import sdf_helper
+importlib.reload(sdf_helper)
+from sdf_helper import *
+
+import fan_plane_integrator
+importlib.reload(fan_plane_integrator)
+from fan_plane_integrator import *
+
+import field_line_integrator
+importlib.reload(field_line_integrator)
+from field_line_integrator import *
+```
+
+# Settings
+
+```{python}
+data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/null-point-stressing/"
+parameter_study_folder = "/twisting-driver/parameter-study/"
+high_temporal_cadence_folder = "/twisting-driver/detailed-reconnection-runs/"
+high_resolution_folder = "/twisting-driver/high-resolution/"
+velocity_parameter_study_folder = "/twisting-driver/parameter-study-varying-twist-velocity/"
+
+outdir = "../../images/null_point_khi/"
+```
+
+```{python}
+specific_run = "v-4r-4"
+iso_folder = data_folder + parameter_study_folder + specific_run + "-isotropic"
+swi_folder = data_folder + parameter_study_folder + specific_run + "-switching"
+```
+
+```{python}
+DRAFT = True
+```
+
+# Useful functions
+
+```{python}
+def fetch_sdffile(time_index, visc, resist, containing_folder, visc_model):
+    timedump = '{0:04d}'.format(time_index)
+    run_string = "v-" + str(visc) + "r-" + str(resist)
+    run_folder = run_string + "-" + visc_model
+    folder = containing_folder + run_folder + "/Data/"
+    sdfFilename = folder + timedump + ".sdf"
+    return sdf.read(sdfFilename)
+```
+
+```{python}
+def fetch_viscosity_pair_sdffile(time_index, visc, resist, containing_folder):
+    iso_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "isotropic")
+    swi_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "switching")
+
+    return iso_sdfFile, swi_sdfFile
+```
+
+```{python}
+def plot_side_by_side(axis, sdfFile, slices, cmaps):
+    extents = get_slice_extents(sdfFile, "x")
+    left = extents[:]
+    left[1] = 0.0
+    right = extents[:]
+    right[0] = 0.0
+    midpoint = length_to_index(sdfFile, 0.0, "x")
+    
+    imgs = [axis.imshow(slices[0].T[:,:midpoint], extent=left, cmap=cmaps[0]),
+            axis.imshow(slices[1].T[:,midpoint:], extent=right, cmap=cmaps[1])]
+
+    axis.set_xlim(extents[0], extents[1])
+    axis.set_ylim(extents[2], extents[3])
+
+    
+    return imgs
+```
+
+```{python}
+def plot_quadrants(axis, sdfFile,
+                   slices, cmaps):
+    extents = get_slice_extents(sdfFile, "z")
+    top_right = extents[:]
+    top_right[0] = 0.0
+    top_right[2] = 0.0
+    bottom_right = extents[:]
+    bottom_right[0] = 0.0
+    bottom_right[3] = 0.0
+    top_left = extents[:]
+    top_left[1] = 0.0
+    top_left[2] = 0.0
+    bottom_left = extents[:]
+    bottom_left[1] = 0.0
+    bottom_left[3] = 0.0
+    midpoint = length_to_index(sdfFile, 0.0, "x")
+    
+    imgs = [
+        axis.imshow(slices[0][:midpoint,:midpoint], extent=top_left, cmap=cmaps[0]),
+        axis.imshow(slices[1][:midpoint,midpoint:], extent=top_right, cmap=cmaps[1]),
+        axis.imshow(slices[2][midpoint:,:midpoint], extent=bottom_left, cmap=cmaps[2]),
+        axis.imshow(slices[3][midpoint:,midpoint:], extent=bottom_right, cmap=cmaps[3])
+    ]
+
+    axis.set_xlim(extents[0], extents[1])
+    axis.set_ylim(extents[2], extents[3])
+    
+    return imgs
+```
+
+```{python}
+def plot_vorticity_and_current(axis, time_index, visc, resist, containing_folder,
+                               max_vorticity=None, max_current=None,
+                               slice_multipliers=[1.0,1.0,1.0,1.0]):
+    iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(time_index, visc, resist, containing_folder)
+    
+    vorticity_iso = get_slice(iso_sdf, "vorticity_density", "z", 0.0)
+    current_iso = get_slice(iso_sdf, "magnitude_current_density", "z", 0.0)
+    vorticity_swi = get_slice(swi_sdf, "vorticity_density", "z", 0.0)
+    current_swi = get_slice(swi_sdf, "magnitude_current_density", "z", 0.0)
+    
+    slices = [vorticity_iso, vorticity_swi,
+              current_iso  , current_swi]
+    for i, mult in enumerate(slice_multipliers):
+        slices[i] *= mult
+    
+    cmaps = ['Blues', 'Blues',
+             'Reds', 'Reds']
+
+    imgs = plot_quadrants(axis, iso_sdf, slices, cmaps)
+    
+    if max_vorticity == None:
+        max_vorticity = math.ceil(max(
+            np.max(vorticity_iso), np.max(vorticity_swi)
+        ))
+    
+    if max_current == None:
+        max_current = math.ceil(max(
+            np.max(current_iso), np.max(current_swi)
+        ))
+    
+    print("max vorticity:", max_vorticity)
+    print("max current:", max_current)
+    
+    imgs[0].set_clim(vmin=0, vmax=max_vorticity)
+    imgs[1].set_clim(vmin=0, vmax=max_vorticity)
+    imgs[2].set_clim(vmin=0, vmax=max_current)
+    imgs[3].set_clim(vmin=0, vmax=max_current)    
+    
+    return imgs
+```
+
+# Kinetic Energy
+
+```{python}
+iso_energy_filename = iso_folder + "/Data/en.dat"
+swi_energy_filename = swi_folder + "/Data/en.dat"
+energy_iso = Energy(iso_energy_filename)
+energy_swi = Energy(swi_energy_filename)
+
+_fig, axis = create_axes(2)
+
+axis.plot(energy_iso.data[:,0], energy_iso.data[:,2])
+axis.plot(energy_swi.data[:,0], energy_swi.data[:,2], '--')
+
+axis.set_ylim(0.0, 0.008)
+axis.set_xlim(0, 15)
+axis.set_xlabel(r"$t$")
+axis.set_ylabel(r"$KE$")
+
+save_plot(outdir + "v-4r-4_kinetic_energy.pdf")
+```
+
+# Vorticity/current density rings
+
+```{python}
+fig, axis = create_axes(2, square=True)
+
+imgs = plot_vorticity_and_current(
+    axis, 3, 4, 4, data_folder + parameter_study_folder
+)
+# remove_spines(axis, 'right')
+axis.spines['bottom'].set_visible(False)
+axis.spines['left'].set_visible(False)
+axis.set_ylim(-2.0, 2.0)
+axis.set_xlim(-2.0, 2.0)
+axis.set_xlabel(r"$x$")
+axis.set_ylabel(r"$y$")
+
+if DRAFT:
+    axis.text(-1.95, 1.95, r"Iso $\omega$",
+              verticalalignment='top'
+             )
+    axis.text(1.95, 1.95, r"Swi $\omega$", 
+              horizontalalignment='right',
+              verticalalignment='top',
+)
+    axis.text(-1.95, -1.95, r"Iso $|j|$",
+              verticalalignment='bottom'
+             )
+    axis.text(1.95, -1.95, r"Swi $|j|$", 
+              horizontalalignment='right',
+              verticalalignment='bottom',
+)
+
+if DRAFT:
+    bbox_ax = axis.get_position()
+#     print(bbox_ax)
+    bar_heights = 0.95*(bbox_ax.y1 - bbox_ax.y0)/2
+    cax1 = cbar_im1a_ax = fig.add_axes(
+        [0.91, bbox_ax.y0 + 1.05*(bbox_ax.y1 - bbox_ax.y0)/2, 0.02, bar_heights])
+    plt.colorbar(imgs[0], cax=cax1)
+    cax2 = cbar_im1a_ax = fig.add_axes(
+        [0.91, bbox_ax.y0, 0.02, bar_heights])
+    plt.colorbar(imgs[2], cax=cax2)
+
+save_plot(outdir + "v-4r-4_vorticity_current_ring_t_3.pdf")
+```
+
+```{python}
+fig, axis = create_axes(2, square=True)
+
+imgs = plot_vorticity_and_current(
+    axis, 9, 4, 4, data_folder + parameter_study_folder,\
+    slice_multipliers = [10.0, 1.0, 1.0, 1.0]
+)
+
+# remove_spines(axis, 'right')
+axis.spines['bottom'].set_visible(False)
+axis.spines['left'].set_visible(False)
+axis.set_ylim(-3.0, 3.0)
+axis.set_xlim(-3.0, 3.0)
+axis.set_xlabel(r"$x$")
+axis.set_ylabel(r"$y$")
+
+if DRAFT:
+    axis.text(-1.95, 1.95, r"Iso $\omega \times 10$",
+              verticalalignment='top'
+             )
+    axis.text(1.95, 1.95, r"Swi $\omega$", 
+              horizontalalignment='right',
+              verticalalignment='top',
+)
+    axis.text(-1.95, -1.95, r"Iso $|j|$",
+              verticalalignment='bottom'
+             )
+    axis.text(1.95, -1.95, r"Swi $|j|$", 
+              horizontalalignment='right',
+              verticalalignment='bottom',
+)
+
+if DRAFT:
+    bbox_ax = axis.get_position()
+#     print(bbox_ax)
+    bar_heights = 0.95*(bbox_ax.y1 - bbox_ax.y0)/2
+    cax1 = cbar_im1a_ax = fig.add_axes(
+        [0.91, bbox_ax.y0 + 1.05*(bbox_ax.y1 - bbox_ax.y0)/2, 0.02, bar_heights])
+    plt.colorbar(imgs[0], cax=cax1)
+    cax2 = cbar_im1a_ax = fig.add_axes(
+        [0.91, bbox_ax.y0, 0.02, bar_heights])
+    plt.colorbar(imgs[2], cax=cax2)
+
+save_plot(outdir + "v-4r-4_vorticity_current_ring_t_9.pdf")
+```
+
+# Velocity out of the plane
+
+```{python}
+swi_sdf = fetch_sdffile(2, 4, 4, data_folder + parameter_study_folder, "switching")
+plot_slice(swi_sdf, "Velocity_Vz", "z", 0.0, xlim=(-1.0, 1.0), ylim=(-1.0, 1.0))
+save_plot(outdir + "v-4r-4_vz_z_0_t_2.pdf")
+```
+
+```{python}
+swi_sdf = fetch_sdffile(7, 4, 4, data_folder + parameter_study_folder, "switching")
+plot_slice(swi_sdf, "Velocity_Vz", "z", 0.0, xlim=(-2.0, 2.0), ylim=(-2.0, 2.0))
+save_plot(outdir + "v-4r-4_vz_z_0_t_7.pdf")
+```
+
+# Mach numbers
+
+```{python}
+def plot_mach_numbers(axes, sdfFile, linestyle, label,
+                     r_min, r_max, z_min, z_max):
+    fast_mach, alfven_mach, delta1 = \
+        calc_mach_numbers(sdfFile, r_min, r_max, z_min, z_max)
+    r = np.linspace(r_min, r_max, num=fast_mach.size)
+    axes[0].plot(r, fast_mach, linestyle, label=label)
+    axes[1].plot(r, alfven_mach, linestyle)
+    axes[2].plot(r, delta1, linestyle)
+    straight_line = np.zeros_like(r) + 1.0
+    axes[2].plot(r, straight_line, 'k')
+
+```
+
+```{python}
+r_min = 0.2
+r_max = 2.0
+z_min = -0.1
+z_max = 0.1
+
+_fig, axes = create_axes(2, subplots_rows=3, sharex=True)
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(
+    2, 4, 4, data_folder + parameter_study_folder)
+
+plot_mach_numbers(axes, iso_sdf, '-', 'iso',\
+             r_min, r_max, z_min, z_max)
+plot_mach_numbers(axes, swi_sdf, '--', 'swi',\
+             r_min, r_max, z_min, z_max)
+
+for axis in axes:
+    axis.set_xlim(0.0, 2.0)
+
+axes[0].set_title(r"$M_f$")
+axes[1].set_title(r"$M_A$")
+axes[2].set_title(r"$\Lambda$")
+
+# _fig.legend()
+save_plot(outdir + "v-4r-4_mach_t_2.pdf")
+```
+
+# Counterflows
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(6, 4, 4, data_folder + parameter_study_folder)
+iso_vel = get_slice(iso_sdf, "Velocity_Vx", "x", 0.0)
+swi_vel = get_slice(swi_sdf, "Velocity_Vx", "x", 0.0)
+
+_fig, axis = create_axes(2)
+
+imgs = plot_side_by_side(axis, iso_sdf, [iso_vel, swi_vel], ['viridis', 'viridis'])
+ 
+max_vel = max(
+    np.max(iso_vel), np.max(swi_vel)
+)
+
+print("max velocity:", max_vel)
+
+imgs[0].set_clim(vmin=-max_vel, vmax=max_vel)
+imgs[1].set_clim(vmin=-max_vel, vmax=max_vel)
+
+if DRAFT:
+    attach_colorbar(axis, imgs[0])
+
+axis.set_xlim(-1.0, 1.0)
+save_plot(outdir + "v-4r-4_counterflows_t_6.pdf")
+```
+
+# Reconnection rate
+
+```{python}
+def plot_integration(data,
+               cbar=INCLUDE_CBARS,
+               include_title=INCLUDE_TITLE,
+               include_axis_labels=INCLUDE_AXIS_LABELS,
+               xlim=False, ylim=False, title=False,
+               extents=None, interpolation='none'):
+    
+    latexify(columns=2)
+    fig, axis = plt.subplots()
+        
+    im = axis.imshow(data.T,
+                interpolation=interpolation,
+                cmap=plt.get_cmap("viridis"),
+               extent=extents, origin='lower')
+
+    if include_title:
+        if title:
+            axis.title.set_text(" ".join(title.split("_")))
+    
+    if xlim:
+        axis.set_xlim(xlim)
+    if ylim:
+        axis.set_ylim(ylim)
+        
+    if include_axis_labels:
+        axis.set_xlabel("x")
+        axis.set_ylabel("y")
+        
+    if cbar:
+        divider = make_axes_locatable(axis)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        plt.colorbar(im, cax=cax)
+```
+
+```{python}
+def calc_reconnection_rate(sdfFile, h=None):
+    mag_field = load_magnetic_field(sdfFile)                                                     
+    pef_data = calculate_parallel_electric_field(mag_field)
+    pef_field = ScalarField(pef_data, mag_field.extents)
+
+    result, _ = run_field_line_integrator(mag_field, pef_field, z_level, side_length, h=h)
+
+    return result
+```
+
+```{python}
+side_length = 0.5
+z_level = 0.23
+
+swi_sdf = fetch_sdffile(6, 4, 4, data_folder + parameter_study_folder, "isotropic")
+iso_reconn_rate = calc_reconnection_rate(iso_sdf)
+
+extents = [-side_length, side_length,
+           -side_length, side_length]
+
+plot_integration(iso_reconn_rate,
+                 interpolation='bilinear',
+#                  title=run_folder + "_" + timedump + "_z_" + str(z_level),
+                 extents = extents)   
+
+save_plot(outdir + "v-4r-4_reconn_rate_iso_t_6.pdf")
+```
+
+```{python}
+swi_sdf = fetch_sdffile(9, 4, 4, data_folder + parameter_study_folder, "switching")
+
+swi_reconn_rate = calc_reconnection_rate(swi_sdf, h=0.02)
+
+extents = [-side_length, side_length,
+           -side_length, side_length]
+
+plot_integration(swi_reconn_rate,
+                 interpolation='bilinear',
+#                  title=run_folder + "_" + timedump + "_z_" + str(z_level),
+                 extents = extents)   
+
+save_plot(outdir + "v-4r-4_reconn_rate_swi_t_9.pdf")
+# plt.show()
+```
+
+```{python}
+swi_sdf = fetch_sdffile(10, 4, 4, data_folder + parameter_study_folder, "switching")
+
+swi_reconn_rate = calc_reconnection_rate(swi_sdf, h=0.01)
+
+extents = [-side_length, side_length,
+           -side_length, side_length]
+
+plot_integration(swi_reconn_rate,
+                 interpolation='bilinear',
+#                  title=run_folder + "_" + timedump + "_z_" + str(z_level),
+                 extents = extents)   
+
+save_plot(outdir + "v-4r-4_reconn_rate_swi_t_10.pdf")
+# plt.show()
+```
+
+```{python}
+
+```
