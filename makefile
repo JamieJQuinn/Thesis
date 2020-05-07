@@ -8,6 +8,7 @@ OUTPUT=$(BUILD_FOLDER)/${OUTPUT_NAME}.pdf
 DEPENDS=$(wildcard *.tex) ${INPUT}
 
 all: ${OUTPUT}
+	cp $(OUTPUT) .
 
 .PHONY: everything
 everything: images ${OUTPUT}
@@ -25,6 +26,7 @@ $(BUILD_FOLDER):
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_FOLDER)
+	rm -f $(OUTPUT_NAME).pdf
 
 fetch-images:
 	rsync -avz maths-hop:~/thesis/images .
