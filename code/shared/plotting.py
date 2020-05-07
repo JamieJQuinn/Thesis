@@ -76,8 +76,8 @@ def remove_spines(axis, axis_side='left', sharex=False, sharey=False):
             axis.yaxis.set_ticks_position('right')
             axis.yaxis.set_label_position('right')
 
-def create_axes(n_columns=1, axis_side='left', subplots_rows=1, subplots_columns=1, sharex=False, sharey=False):
-    latexify(columns=n_columns)
+def create_axes(n_columns=1, axis_side='left', subplots_rows=1, subplots_columns=1, sharex=False, sharey=False, square=False):
+    latexify(columns=n_columns, square=square)
     fig, axes = plt.subplots(subplots_rows, subplots_columns, sharex=sharex, sharey=sharey)
     if subplots_rows == 1 and subplots_columns == 1:
         remove_spines(axes, axis_side)
