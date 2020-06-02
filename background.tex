@@ -1,12 +1,14 @@
 \chapter{Background Physics}
 
-\section{Introduction to Solar physics}
+\section{Introduction to solar physics}
 
 \subsection{Layers of the Sun}
 
-The radius of a star is estimated as the radius at which the optical depth, a measure of the opacity of a plasma, takes the value $2/3$. In our own Sun, this layer is found at a radius of approximately $R_{\odot} = 695,508$km and is known as the photosphere. Below this layer lie the three inner regions: the core, the radiative region and the convection zone. From the centre to around $0.2 R_{\odot}$ lies the engine of the Sun, the core, undergoing fusion and producing the energy fuelling the [TODO rest of the Sun]. Between the core and the convection zone (at $0.71R_{\odot}$) is the radiative zone, the region at which the density gradient is high enough that the plasma is stable to convective instabilities. Heat is transported from the core through the radiative zone mostly through the process of radiative transfer. Between the radiative zone and the photosphere lies the conduction zone, the region at which the density gradient is no longer able to stabilise the plasma against the effect of the negative temperature gradient and convection occurs. The convection within this region drives the Solar dynamo and, thus, the creation of the Solar magnetic field.
+The radius of a star is estimated as the radius at which the optical depth, a measure of the opacity of a plasma, takes the value $2/3$. In our own Sun, this layer is found at a radius of approximately $R_{\odot} = 695,508$km and is known as the photosphere. Below this layer lie the three inner regions: the core, the radiative region and the convection zone. From the centre to around $0.2 R_{\odot}$ lies the engine of the Sun, the core, undergoing fusion and producing the energy fuelling the [TODO rest of the Sun]. Between the core and the convection zone (at $0.71R_{\odot}$) is the radiative zone, the region at which the density gradient is high enough that the plasma is stable to convective instabilities. Heat is transported from the core through the radiative zone mostly through the process of radiative transfer. Between the radiative zone and the photosphere lies the conduction zone, the region at which the density gradient is no longer able to stabilise the plasma against the effect of the negative temperature gradient and convection occurs. The convection within this region drives the solar dynamo and, thus, the creation of the solar magnetic field.
 
-Above the photosphere lies the atmosphere of the Sun, consisting of the photosphere, chromosphere, transition region and corona. The photosphere, usually referred to as the surface of the Sun, has a temperature of approximately $6000$K and radiates most of the visible light emitted from the Sun. As a result the photosphere is the only part of the Sun usually visible by the human eye (the exception being during eclipses when both the chromosphere and corona can be seen). Just above the photosphere is the chromosphere, extending beyond the surface by $3000$--$5000$km. The temperature ranges between $6000$K at the photospheric boundary, a minimum of $3500$K internally, and $25,000$K approaching the transition region. This narrow layer of depth $100$km lies between the chromosphere and the Solar corona and is the point at which the nature of the physics in the Solar atmosphere changes rapidly with height. The primary difference is in the extreme temperature difference across the layer, typically ranging from $25,000$K on the chromospheric side, to over $1,000,000$K on the coronal side. TODO mention temperaature catastrophe? This coincides with a drop in density of the layer, from TODO to TODO. The other major difference is in the dominance of certain types of dynamics. While the dynamics of the chromosphere is dominated by the fluid dynamics of the plasma, and merely influenced by the magnetic field, the dynamics of the Solar corona is heavily dominated by the field, with the rarefied plasma being strongly affected by the magnetic field.
+Above the photosphere lies the atmosphere of the Sun, consisting of the photosphere, chromosphere, transition region and corona. The photosphere, usually referred to as the surface of the Sun, has a temperature of approximately $6000$K and radiates most of the visible light emitted from the Sun. As a result the photosphere is the only part of the Sun usually visible by the human eye (the exception being during eclipses when both the chromosphere and corona can be seen). Just above the photosphere is the chromosphere, extending beyond the surface by $3000$--$5000$km. The temperature ranges between $6000$K at the photospheric boundary, a minimum of $3500$K internally, and $25,000$K approaching the transition region. This narrow layer of depth $100$km lies between the chromosphere and the solar corona and is the point at which the nature of the physics in the solar atmosphere changes rapidly with height. The primary difference is in the extreme temperature difference across the layer, typically ranging from $25,000$K on the chromospheric side, to over $1,000,000$K on the coronal side. TODO mention temperature catastrophe? This coincides with a drop in density of the layer, from TODO to TODO. The other major difference is in the dominance of certain types of dynamics. While the dynamics of the chromosphere are dominated by the fluid dynamics of the plasma, and merely influenced by the magnetic field, the dynamics of the solar corona are dominated by magnetic forces.
+
+TODO emphasise focussing on the corona over other layers
 
 \subsection{Coronal heating problem}
 
@@ -14,40 +16,139 @@ refer to Browning, Hood, Klimchuck
 
 \section{MHD Equations}
 
-TODO copy from kink chapter
+\subsection{The Navier-Stokes equations}
+
+TODO
+
+\subsection{The induction equation}
+
+Magnetohydrodynamics describes electrically conducting fluids, that is fluids which are able to interact with electromagnetic fields. A typical example of a magnetohydrodynamic fluid is molten metal, the investigation of which is key to the understanding of the Earth's molten outer core and its associated magnetic dynamo. In contrast, the Earth's mantle, being made of electrically insulating magma, does not interact with the Earth's magnetic field and would not be modelled as a magnetohydrodynamic fluid. The magnetohydrodynamic equations are a synthesis of the Navier-Stokes equations of fluid dynamics and Maxwell's equations of electromagnetism. The latter set of equations describes the generation of an electric field $\vec{E}$ by a charge density $\rho_c$ through Gauss's law,
+\begin{equation}
+  \label{eq:gauss_law}
+ \nabla \cdot \vec {E} ={\frac {\rho_c }{\varepsilon _{0}}},
+\end{equation}
+the non-existence of monopoles in the magnetic field $\vec{B}$,
+\begin{equation}
+  \label{eq:gauss_law_for_magnetism}
+  \nabla \cdot \vec {B} =0,
+\end{equation}
+the generation of electric fields due to changes in the magnetic field in time $t$ through the Maxwell-Faraday equation,
+\begin{equation}
+  \label{eq:maxwell_faraday}
+ \nabla \times \vec {E} =-{\frac {\partial \vec {B} }{\partial t}},
+\end{equation}
+and the generation of magnetic fields due to currents $\vec{\jmath}$ and changing electric fields through Ampère's law,
+\begin{equation}
+  \label{eq:ampere_law}
+ \nabla \times \vec {B} =\mu _{0}\left(\vec {\jmath} +\varepsilon _{0}{\frac {\partial \vec {E} }{\partial t}}\right).
+\end{equation}
+Written in SI units, these equations use the permittivity $\varepsilon_{0}$ and permeability $\mu_0$ of free space.
+
+Many conducting fluids can be considered electrically neutral, that is on the timescale of fluid motion the charges within the fluid are able to quickly redistribute to nullify any electric forces. This is true for coronal plasmas where the electrons, being much lighter than the ions, are able to very quickly redistribute. This allows Gauss's law to be entirely neglected. The displacement current, the last term in Ampère's law, can also be neglected due to the assumption that fluid motions are non-relativistic, that is the typical fluid velocity is much less than the speed of light, $c$. In order to couple the fluid motion to the electromagnetic fields, a constitutive Ohm's law is also included which describes the generation of currents in response to electric fields. This eventually allows the complete elimination of $\vec{E}$ from the governing equations. In a fluid's rest frame, the current response to an electric field $\vec{E}'$ is
+\begin{equation}
+  \label{eq:rest_frame_ohms_law}
+  \vec{\jmath} = \sigma \vec{E}',
+\end{equation}
+where $\sigma$ is the (finite) conductivity of the fluid. The Lorentz transformation to the frame where the fluid is moving at velocity $\vec{u}$ is
+\begin{equation}
+  \label{eq:resistive_ohms_law}
+  {\vec {E}}+{\vec{u}}\times {\vec {B}}=\eta{\vec {\jmath}},
+\end{equation}
+where we have rewritten the conductivity as the resistivity $\eta = 1/\sigma$. In the limit of perfect, or infinite, conductivity, Ohm's law is written,
+\begin{equation}
+  \label{eq:ideal_ohms_law}
+  {\vec {E}}+{\vec{u}}\times {\vec {B}}=0.
+\end{equation}
+
+Combining the remaining parts of Ampère's law, the Maxwell-Faraday equation, and the resistive Ohm's law results in the induction equation,
+\begin{equation}
+  \label{eq:nonsimple_induction_equation}
+{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \nabla \times (\tfrac{\eta}{\mu_0} \nabla \times \vec{B}),
+\end{equation}
+which, in the limit of uniform resistivity, may be written
+\begin{equation}
+  \label{eq:induction_equation}
+{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \frac{\eta}{\mu_0}\nabla^2 \vec{B}.
+\end{equation}
+This equation essentially describes the advection and generation of a magnetic field due to fluid motions and the diffusion of the field due to resistivity. The magnetic field must still satisfy the solenoidal constraint $\nabla \cdot \vec{B}$.
+
+Additional non-ideal physics like ambipolar diffusion and the Hall effect can be modelled through additional terms in Ohm's law, however in the solar corona these effects are small compared to resistivity so they are neglected.
+
+\subsection{The non-dimensionalised MHD equations}
+
+Combining the fluid equations[TODO ref] and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
+\begin{gather}
+%\begin{equation}
+\label{eq:mhda}
+\frac{D\rho}{Dt} = - \rho \vec{\nabla} \cdot \vec{u},\\
+%\end{equation}
+%\begin{equation}
+\rho\frac{D\vec{u}}{Dt} = -\vec{\nabla} p + \vec{\jmath} \times \vec{B} + \vec{\nabla} \cdot \ten{\sigma},\\
+%\end{equation}
+%\begin{equation}
+\frac{D\vec{B}}{Dt} = (\vec{B} \cdot \vec{\nabla})\vec{u} - (\vec{\nabla} \cdot \vec{u})\vec{B} + \eta \nabla^2 \vec{B},\\
+%\end{equation}
+%\begin{equation}
+\rho\frac{D\varepsilon}{Dt} = -p \vec{\nabla} \cdot \vec{u} + {Q}_{\nu} + {Q}_{\eta},%\\
+\label{eq:energy}
+%\end{equation}
+\end{gather}
+where $\vec{u}$ is the plasma velocity, $\vec{\jmath} = \nabla
+\times \vec{B}$ is the current density, $\ten{\sigma}$ is the viscous
+stress tensor, $\eta = 1/S$ is the normalised resistivity (equivalent
+to the inverse of the Lundquist number $S$), and use has been made of
+the material derivative, $D/Dt = \partial/\partial t + (\vec{u} \cdot
+\vec{\nabla})$. The internal energy density is given by the equation of state for an ideal gas
+\begin{equation}
+\varepsilon = \frac{p}{\rho(\gamma - 1)},
+\end{equation}
+where the specific heat ratio is given by $\gamma = 5/3$. The
+  terms ${Q}_{\nu} = \ten{\sigma} : \vec{\nabla}\vec{u}$ and
+  ${Q}_{\eta} = \eta | \vec{\jmath} |^2$ model Ohmic heating and viscous heating, respectively.
+
+Using the nondimensionalisation scheme found
+in~\cite{arberStaggeredGridLagrangian2001}, reference values for the
+magnetic field $B_0$, length $L_0$ and density $\rho_0$ are chosen to
+align with values typical for a coronal loop. The problem domain is
+non-dimensionalised to $[-2,2] \times [-2,2] \times [-10,10]$ in the
+$x$, $y$ and $z$-directions, respectively. Velocity and time are
+non-dimensionalised using the Alfv\'en speed $u_A = B_0 / \sqrt{\rho_0
+  \mu_0}$ and Alfv\'en crossing time $t_A = L_0/u_A$,
+respectively. Temperature is non-dimensionalised via $T_0 = u_A^2
+\bar{m} / k_B$, where $k_B$ is the Boltzmann constant and $\bar{m}$ is
+the average mass of ions, here taken to be $\bar{m} = 1.2m_p$ (a mass
+typical for the solar corona) where $m_p$ is the proton mass. The
+reference values of other variables are derived from these
+quantities and are listed in Table~\ref{tab:reference-values}. Dimensional quantities can be recovered by multiplying the non-dimensional variables by their respective reference value (e.g. $\vec{B}_{\dim} = B_0 \vec{B}$). All further reference to variables will be to their non-dimensionalised values, unless stated otherwise.
 
 \section{Viscosity}
 
 Physically, viscosity is the internal friction of a fluid arising due to interactions (typically collisions) between the particles making up the fluid. Within the context of MHD, viscosity provides two functions. The first is momentum transport, included in the momentum equation as the divergence of the viscous stress tensor $\ten{\sigma}$, written using Einstein notation for clarity,
-
 \begin{equation}
   \label{eq:viscous_momenum_transport}
-  (\nabla \cdot \ten{\sigma})_j = \nabla_i \sigma_{ij}.
+  (\nabla \cdot \ten{\sigma})_j = \frac{\partial}{\partial x_i} \sigma_{ij}.
 \end{equation}
 
-In three dimensions, the nine components of $\sigma$ quantify the flux (due to viscosity) of each component of momentum in each direction of motion. For example, the $\sigma_{xy}$ component gives the flow of $x$-momentum in the $y$-direction. Due to symmetry arising from viscosity naturally conserving angular momentum, the tensor is itself symmetric, so the component $\sigma_{xy}$ also quantifies the flow of $y$-momentum in the $x$-direction. The second function of viscosity is to convert kinetic into thermal energy through work done by local deformations. This is encoded in a term in the energy equation of the MHD equations, again expressed in Einstein notation,
+In three dimensions, the nine components of $\sigma$ quantify the flux (due to viscosity) of each component of momentum in each direction of motion. For example, the $\sigma_{xy}$ component gives the flow of $x$-momentum in the $y$-direction. Due to symmetry arising from viscosity naturally conserving angular momentum, the tensor is itself symmetric, so the component $\sigma_{xy}$ also quantifies the flow of $y$-momentum in the $x$-direction.
 
+The second function of viscosity is to convert kinetic into thermal energy through work done by local deformations. This is encoded in a term in the energy equation of the MHD equations, again expressed in Einstein notation,
 \begin{equation}
   \label{eq:viscous_heat_generation}
   \ten{\sigma} : \nabla \vec{u} = \sigma_{ij} \frac{\partial u_i}{\partial x_j}.
 \end{equation}
 
-Beyond the physical requirement of conservation of angular momentum, it is assumed that Stokes hypothesis holds, that is bulk viscosity is zero and viscosity does not act under uniform compression or expansion of the fluid. This requires the viscous stress tensor to be trace-free,
-
+Beyond the physical requirement of conservation of angular momentum, it is assumed that Stokes' hypothesis holds, that is bulk viscosity is zero and viscosity does not act under uniform compression or expansion of the fluid. This requires the viscous stress tensor to be trace-free,
 \begin{equation}
   \label{eq:trace_free_tensor}
   \text{tr}(\ten{\sigma}) = 0.
 \end{equation}
 
 Many fluids encountered in daily life are Newtonian fluids, that is the viscous stress arising from any deformation of the fluid is directly proportional to the rate of strain of the deformation,
-
 \begin{equation}
   \label{eq:isotropic_viscous_tensor}
   \ten{\sigma} = \nu \ten{W},
 \end{equation}
-
 where the traceless strain rate tensor $\ten{W}$ is written as
-
 \begin{equation}
   \label{eq:rate_of_strain}
   \ten{W} = \nabla\vec{u} + (\nabla\vec{u})^T - \tfrac{2}{3}(\nabla \cdot \vec{u})\ten{I}.
@@ -55,7 +156,7 @@ where the traceless strain rate tensor $\ten{W}$ is written as
 
 \subsection{Anisotropic Viscosity}
 
-In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/mc$ is the cyclotron frequency. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
+In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in an isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/mc$ is the cyclotron frequency and $c$ is the speed of light. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
 
 A characteristic coronal value of $\omega \tau$ can be calculated using expressions found in Braginskii~\cite{braginskiiTransportProcessesPlasma1965}. The collision time can be written in SI units as,
 \begin{equation}
@@ -67,29 +168,24 @@ and the cyclotron frequency as,
   \label{eq:cyclotron_frequency}
   \omega = 0.8\times10^8 B,
 \end{equation}
-where the Coloumb algorithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical Solar value of $1.2$. A Solar active region could have typical temperatures of around $2\times 10^6$K, and number densities of $n = 3 \times 10^9$, giving $\tau = 0.77$s. The magnetic field can be as strong as $5\times 10^{-3}$T, giving $\omega = 4.1 \times 10^5 \text{s}^{-1}$, resulting in $\omega \tau = 3.16 \times 10^5$. This indicates viscosity in the Solar corona is extremely anisotropic.
+where the Coloumb logarithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical solar value of $1.2$. A solar active region could have typical temperatures of around $2\times 10^6$K, and number densities of $n = 3 \times 10^9$, giving $\tau = 0.77$s. The magnetic field can be as strong as $5\times 10^{-3}$T, giving $\omega = 4.1 \times 10^5 \text{s}^{-1}$, resulting in $\omega \tau = 3.16 \times 10^5$. This indicates viscosity in the solar corona is extremely anisotropic.
 
-For educational purposes, I present a condensed review of Braginskii's qualitative derivation of the form of the anisotropic viscosity stress tensor in a magnetized plasma, and its associated transport parameters~\cite{braginskiiTransportProcessesPlasma1965}. Consider a plasma where, on average, each particle moves a distance $\Delta x$ in the collision time $\tau$ before colliding. After the collision the particle has equal probability of moving to the left and the right. Since we are concerned with the viscous diffusion of momentum, and not advection, we consider the case where the particle flux through some plane $x=x_0$ is zero (that is the number of particles moving through the plane from the left is equal to the number of particles from the right). This implies a uniform number density in the small layer around $x_0$. We do however consider a non-uniform velocity, say $u_y$, which changes slowly enough over the distance $\Delta x$ that we may write
-
+As a basic introduction, I will now present a condensed review of Braginskii's qualitative derivation of the form of the anisotropic viscosity stress tensor in a magnetized plasma, and its associated transport parameters~\cite{braginskiiTransportProcessesPlasma1965}. Consider a plasma where, on average, each particle moves a distance $\Delta x$ in the collision time $\tau$ before colliding. TODO diagram in inkscape. After the collision the particle has equal probability of moving to the left and the right. Since we are concerned with the viscous diffusion of momentum, and not advection, we consider the case where the particle flux through some plane $x=x_0$ is zero (that is the number of particles moving through the plane from the left is equal to the number of particles from the right). This implies a uniform number density in the small layer around $x_0$. We do, however, consider a non-uniform velocity, say $u_y$, which changes slowly enough over the distance $\Delta x$ that we may write
 \begin{equation}
   \label{eq:viscous_derivation_vy}
-u_y (x) = u_y(x_0) + \frac{\partial u_y}{\partial x} |_{x=x_0} (x - x_0).
+u_y (x) \approx u_y(x_0) + \frac{\partial u_y}{\partial x} |_{x=x_0} (x - x_0).
 \end{equation}
 
 Within some time, half the particles in the layer between $x_0 - \Delta x$ and $x_0$ will pass through the plane $x_0$, the other half moving in the opposite direction. The flux of $y$-momentum from the left is
-
 \begin{equation}
   \label{eq:momentum_flux_left}
 F_{+} = \frac{1}{2} \int^{x_0}{x_0 - \Delta x} \frac{1}{\tau} m n u_y(x) \text{dx} = \frac{mn}{2} \left[ u_y(x_0) - \frac{\partial u_y}{\partial x} \frac{\Delta x}{2} \right] \frac{\Delta x}{\tau},
 \end{equation}
-
 and the flux from the right $F_{-}$ can be calculated in a similar manner by considering the flux from the layer between $x_0$ and $x_0 + \Delta x$. The total flux $F = F_+ - F_-$ is
-
 \begin{equation}
   \label{eq:total_momentum_flux}
   F = - \frac{nm(\Delta x)^2}{2\tau} \frac{\partial u_y}{\partial x},
 \end{equation}
-
 giving a qualitative estimate for the size of the $xy$-term of the viscous stress tensor, $\ten{\sigma}_{xy}$. 
 
 \subsection{Alternative formulations of anisotropic viscosity}
@@ -100,12 +196,12 @@ The form of the viscous stress tensor in a magnetized plasma has been derived in
 
 \subsection{Viscosity}
 
-Hollweg gives $\eta_0 = 10^{-17} T^{5/2}\ \text{kg m}^{-1} \text{s}^{-1}$ for a Coulomb logarithm of 22. For temperatures of $T=10^4$ (the initial condition in kinks) to $T=10^8$ (the approximate final temperature in the kink instability) $\eta_0$ ranges between $\eta_0 = 10^{-7}$ and $\eta_0 = 10^3$. For the normalisation used in the kink instabilties; $B_0 = 0.005\ \text{T}$, $L_0 = 10^6\ \text{m}$ and $\rho_0 = 1.67 \times 10^{-12}$, the Alfv\'en velocity is approximately $3.45 \times 10^6 \text{ms}^{-1}$ and hence the range of the Reynolds number is $\text{Re} = \frac{V_A L_0 \rho_0}{\eta_0} = 5.67 \times 10{-3}$--$5.67 \times 10^{7}$. For a more typical active region temperature of $T=10^6 \text{K}$, the Reynolds number is $5.67 \times 10^2$. 
+Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} gives $\eta_0 = 10^{-17} T^{5/2}\ \text{kg m}^{-1} \text{s}^{-1}$ for a Coulomb logarithm of 22. For temperatures of $T=10^4$ to $T=10^8$, $\eta_0$ ranges between $\eta_0 = 10^{-7}$ and $\eta_0 = 10^3$. For the normalisation used in the kink instabilities; $B_0 = 0.005\ \text{T}$, $L_0 = 10^6\ \text{m}$ and $\rho_0 = 1.67 \times 10^{-12}$, the Alfv\'en velocity is approximately $3.45 \times 10^6 \text{ms}^{-1}$ and hence the range of the Reynolds number is $\text{Re} = \frac{V_A L_0 \rho_0}{\eta_0} = 5.67 \times 10{-3}$--$5.67 \times 10^{7}$. For a more typical active region temperature of $T=10^6 \text{K}$, the Reynolds number is $5.67 \times 10^2$. 
 
 \subsection{Resistivity}
 
-Hollweg's expression for the resistivity is $D = 2 \times 10^{9} T^{-3/2} \text{m}^2 \text{s}^{-1}$ [Does this correspond to Spitzer resistivity?]. This assumes the electron temperature is the same as the ion temperature. A temperature of $T=10^6\ \text{K}$ results in $D = 2 \text{m}^2 \text{s}^{-1}$. This corresponds to a Lundquist number of $S = \frac{V_A L_0}{D} = 1.73 \times 10^{12}$. Including the effects of electron pitch-angle scattering or current-driven instabilities can increase the effective resistivity. Exactly how much the resistivity is generally increased by is debated and ultimately depends on the local plasma conditions. Estimates range over Lundquist numbers of $10^{4}$--$10^{8}$ [Add reference to these estimates from Ian Craig's paper].
+Hollweg's expression for the resistivity is $D = 2 \times 10^{9} T^{-3/2} \text{m}^2 \text{s}^{-1}$. This assumes the electron temperature is the same as the ion temperature. A temperature of $T=10^6\ \text{K}$ results in $D = 2 \text{m}^2 \text{s}^{-1}$. This corresponds to a Lundquist number of $S = \frac{V_A L_0}{D} = 1.73 \times 10^{12}$. Including the effects of electron pitch-angle scattering or current-driven instabilities can increase the effective resistivity. Exactly how much the resistivity is generally increased by is debated and ultimately depends on the local plasma conditions. Estimates range over Lundquist numbers of $10^{4}$--$10^{8}$ [TODO Add reference to these estimates from Ian Craig's paper].
 
-What should be noted is the magnetic Prandtl number, the ratio of Lundquist to Reynolds number, could be as large as $\text{Pr}_m = 10^2$ at a temperature of $T=10^6\ \text{K}$, taking into account an extremely large increase in effective resistivity. Realistically, assuming a more moderate increase in effective resistivity, the magnetic Prandtl number could be as high as $10^{6}$.
+TODO figure out when to changes D to eta and eta0 to nu
 
-[Question - Should I stick to speaking exclusively about Reynolds \& Lundquist, or instead viscosity and resistivity?]
+It should be noted is the magnetic Prandtl number, the ratio of Lundquist to Reynolds number, could be as large as $\text{Pr}_m = 10^2$ at a temperature of $T=10^6\ \text{K}$, taking into account an extremely large increase in effective resistivity. Assuming a more moderate increase in effective resistivity, the magnetic Prandtl number could be as high as $10^{6}$. This suggests that viscous heating may be much more important in the corona than Ohmic heating.
