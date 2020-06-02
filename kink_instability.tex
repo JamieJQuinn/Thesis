@@ -97,50 +97,7 @@ twisted flux tube in a Cartesian box of dimension $[-2\text{
 
 \subsection{Model equations}
 
-Non-dimensionalised, the MHD equations take the form
-\begin{gather}
-%\begin{equation}
-\label{eq:mhda}
-\frac{D\rho}{Dt} = - \rho \vec{\nabla} \cdot \vec{u},\\
-%\end{equation}
-%\begin{equation}
-\rho\frac{D\vec{u}}{Dt} = -\vec{\nabla} p + \vec{\jmath} \times \vec{B} + \vec{\nabla} \cdot \ten{\sigma},\\
-%\end{equation}
-%\begin{equation}
-\frac{D\vec{B}}{Dt} = (\vec{B} \cdot \vec{\nabla})\vec{u} - (\vec{\nabla} \cdot \vec{u})\vec{B} + \eta \nabla^2 \vec{B},\\
-%\end{equation}
-%\begin{equation}
-\rho\frac{D\varepsilon}{Dt} = -p \vec{\nabla} \cdot \vec{u} + {Q}_{\nu} + {Q}_{\eta},%\\
-\label{eq:energy}
-%\end{equation}
-\end{gather}
-where $\vec{u}$ is the plasma velocity, $\vec{\jmath} = \nabla
-\times \vec{B}$ is the current density, $\ten{\sigma}$ is the viscous
-stress tensor, $\eta = 1/S$ is the normalised resistivity (equivalent
-to the inverse of the Lundquist number $S$), and use has been made of
-the material derivative, $D/Dt = \partial/\partial t + (\vec{u} \cdot
-\vec{\nabla})$. The internal energy density is given by the equation of state for an ideal gas
-\begin{equation}
-\varepsilon = \frac{p}{\rho(\gamma - 1)},
-\end{equation}
-where the specific heat ratio is given by $\gamma = 5/3$. The
-  terms ${Q}_{\nu} = \ten{\sigma} : \vec{\nabla}\vec{u}$ and
-  ${Q}_{\eta} = \eta | \vec{\jmath} |^2$ model Ohmic heating and viscous heating, respectively.
-
-Using the nondimensionalisation scheme found
-in~\cite{arberStaggeredGridLagrangian2001}, reference values for the
-magnetic field $B_0$, length $L_0$ and density $\rho_0$ are chosen to
-align with values typical for a coronal loop. The problem domain is
-non-dimensionalised to $[-2,2] \times [-2,2] \times [-10,10]$ in the
-$x$, $y$ and $z$-directions, respectively. Velocity and time are
-non-dimensionalised using the Alfv\'en speed $u_A = B_0 / \sqrt{\rho_0
-  \mu_0}$ and Alfv\'en crossing time $t_A = L_0/u_A$,
-respectively. Temperature is non-dimensionalised via $T_0 = u_A^2
-\bar{m} / k_B$, where $k_B$ is the Boltzmann constant and $\bar{m}$ is
-the average mass of ions, here taken to be $\bar{m} = 1.2m_p$ (a mass
-typical for the solar corona) where $m_p$ is the proton mass. The
-reference values of other variables are derived from these
-quantities and are listed in Table~\ref{tab:reference-values}. Dimensional quantities can be recovered by multiplying the non-dimensional variables by their respective reference value (e.g. $\vec{B}_{\dim} = B_0 \vec{B}$). All further reference to variables will be to their non-dimensionalised values, unless stated otherwise.
+THIS IS WHERE MHD EQUATIONS USED TO BE
 
 \begin{table}[t]
 \centering
