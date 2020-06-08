@@ -50,9 +50,11 @@ where $\Delta v$ and $\Delta B$ are the respective differences in the velocity a
 \end{equation}
 where $L_b$ and $L_v$ are the respective widths of the magnetic and velocity shear layers~\cite{einaudiResistiveInstabilitiesFlowing1986}. Again, due to the presence of the guide field, we consider $\Gamma$ projected on to the shear layer. Plotting the radial dependence of these quantities over the shear layers gives an idea of the probable stability. It should be noted that the stability analysis performed in reference~\cite{einaudiResistiveInstabilitiesFlowing1986} is under specific conditions. The presence of viscosity and the guide field in the system studied here require us to use their stability criteria as approximations.
 
+TODO how did we calculate layer thickness, radius, peaks, etc
+
 \section{Results}
 
-\subsection{Evolution of a typical KHI case}
+\subsection{Evolution of a typical case}
 \label{sec:null_point_khi_single_case}
 
 We discuss initially the evolution of the pair of simulations using a resistivity of $\eta = 10^{-4}$ and viscosity $\nu = 10^{-4}$, comparing the two viscosity models. These simulations capture the main features of the null's response to the driver: the formation of a current-vortex sheet in the fan plane, the appearance of counterflows, the growth of both a Kelvin-Helmholtz instability and a fluting instability, and an eventual null collapse. This specific choice of parameters also highlights the differences between the isotropic and the switching viscosity models, mainly the suppression of the KHI in the isotropic case.
@@ -130,6 +132,8 @@ At $t=13$ the instability appears to act as a trigger for extremely energetic re
 
 At $t=13$ the null shows some indication of beginning to reconnect and collapse, shown by the presence of velocity structures around the spine, mainly in the isotropic case. The inner ring of current density has shrunk and is now extremely strong, stronger in the isotropic case than the switching case, although we note the current structure located along the spine is around twice as strong as that around the null.
 
+TODO finish this section.
+
 %\begin{figure}[H]
   %\centering
   %\includegraphics[width=0.48\linewidth]{./images/null_point_khi/slices/v-4r-4-isotropic_Velocity_Vx_x_0.0_0013.pdf}
@@ -180,19 +184,26 @@ At $t=13$ the null shows some indication of beginning to reconnect and collapse,
 
 \subsection{Analysis of parameter study}
 
-The results shown in section~\ref{sec:null_point_khi_single_case} do not dramatically change when varying the viscosity $\nu$. However, variation of the resistivity $\eta$ has a strong impact on the dynamics of the stressed null. Generally, increasing $\eta$ to $10^{-3}$ produces a null that remains unstable to the KHI when using switching viscosity, but shows no sign of collapse. In contrast, decreasing $\eta$ to $10^{-5}$ causes the null to collapse much sooner than in the example case in section~\ref{sec:null_point_khi_single_case}. 
+The results shown in section~\ref{sec:null_point_khi_single_case} do not dramatically change when the viscosity $\nu$ is varied. However, the value of $\eta$ has a strong impact on the dynamics of the stressed null. Generally, increasing $\eta$ to $10^{-3}$ produces a null that remains unstable to the KHI (when using switching viscosity) but shows no sign of collapse. In contrast, decreasing $\eta$ to $10^{-5}$ causes the null to collapse much sooner than in the example case in section~\ref{sec:null_point_khi_single_case}, so much so that the KHI doesn't have time to develop nonlinearly, even in linearly unstable cases. We present first the quantitative effect of varying $\nu$, $\eta$ and the viscosity models on the properties of the shear layers and the resulting stability and development of the KHI. We then focus our analysis on the effect of only $\eta$ on the fluting instability and the null collapse, still comparing the two viscosity models.
 
-eta $10^{-3}$ case - in that the flux of energy injected into the null by the drivers appears to be balanced by dissipative losses [TODO, calculate inputs and outputs]. The effect of the KHI is to increase Ohmic heating through increased reconnection in the fan plane [TODO show this].
+As an aside, in all $\nu = 10^{-3}$ isotropic simulations there's an unexpected, transient artifact in every examined variable. This was also seen in the kink instability simulations in chapter TODO. This is assumed to be due to small-amplitude fast waves created during the initial ramp up, the interaction of which causes the isotropic viscous stress tensor to produce odd effects. It appears to only affect the first time step and the effect is only to slightly increase the viscous heating. Since the affected results don't differ wildly from those of the unaffected $\nu=10{-4}$ simulations we cautiously trust these results.
 
-One major result to note is that decreasing $\eta$ disrupts the KHI. Although the initial instability can be see in the v-3r-5-switching case (below, left), it does not appear to grow in amplitude and is disrupted by the null collapse which happens much earlier in the low $\eta$ cases, starting between $t=8$ and $9$. Increasing $\eta$ appears to reduce the effect of the boundary, producing a much more radially symmetric KHI (below, right).
+\subsubsection{Properties of the shear layers and resultant instability}
 
-TODO check above paragraph in high resolution case. We know the null doesn't collapse as quickly at high res; perhaps the KHI has time to grow.
+We consider here the effect of varying $\nu$ and $\eta$ on the properties of the vorticity and current density rings, comparing the two viscosity models. Properties of the rings such as thickness, radial extent and peak magnitude help to give an understanding of the stability of the current-vortex sheet to the KHI. Generally, these properties vary substantially with $\eta$ for both viscosity models, substantially with $\nu$ in the isotropic cases, but only weakly with $\nu$ in the switching cases. The initial lack of dependence on $\nu$ in the switching cases is expected since the tensor is nearly zero-valued until the breakup of the current-vortex sheet, during and after which the effect of $\nu$ is much more pronounced.
 
-Throughout many of the simulations $\nu$ does not strongly affect the behaviour in the switching case. The is due to the anisotropic part of the tensor being relatively weak and the isotropic part only being switched on only at the null where there isn't appreciable velocity shears.
+TODO 4 plots. Two for each ring, one radius and one thickness. Do similar to Fig 12 in Wyper \& Pontin
 
-In all $\nu = 10^{-3}$ isotropic simulations there's an unexpected, transient artifact in every examined variable. This was also seen in the kink simulations. This is assumed to be due to small-amplitude fast waves created during the initial ramp up, the interaction of which causes the isotropic viscous stress tensor to produce odd effects. It appears to only affect the first time step and slightly increases the viscous heating. Since these results don't differ wildly from those of the $\nu=10{-4}$ simulations we cautiously trust these results.
+Both rings increase in radius as $\eta$ and $\nu$ decrease[TODO ref]. This is a result of the upper and lower Alfv\'en waves being able to travel further before diffusing into the fan plane and forming the shear layers. Due to the shape of the field, this allows the rings to form further from the spine in the radial direction. In the direction out of the fan plane, the thickness of both the current density and vorticity shear layers decreases with decreasing $\eta$ and $\nu$ [TODO plot of thickness over time over all params]. The respective diffusion parameter naturally affects the shear layer most associated with it, that is resistivity affecting the current density layer, and viscosity affecting the vorticity layer. The viscosity affects the peak shear in each layer similarly, with the peak magnitude in either layer increasing with decreasing $\nu$[TODO 2 plots peak velocity and magnetic shear over all params over time]. This can be attributed to the lack of diffusion at lower $\nu$ allowing the same absolute difference over the shear layer in either velocity or magnetic field to exist in a thinner sheet, resulting in a greater derivative across the layer. In contrast, a decrease in $\eta$ results in a higher peak current density, as expected via a similar argument as above, but a lower peak vorticity [TODO check this]. This can be attributed to... TODO Generally, the properties of the switching layers can be considered a limiting case of the isotropic results with $\nu$ taken to zero.
 
-The stability of KHI in the fan plane is determined via inspection of the out of plane velocity for each parameter choice, resulting in the overview of stability in table~\ref{tab:stability}. The stability and nonlinear development is also reflected in the kinetic energies [TODO 3x3 plot of kinetic energies over all parameter choices]. For resistivities of $10^{-3}$ and $10^{-4}$ using the switching model, there appears a signature growth and decay shape, indicative of the KHI. This is also seen in the single unstable isotropic case, $(\eta, \nu) = (10^{-3}, 10^{-5})$. Isotropic cases $(10^{-3}, 10^{-4})$ and $(10^{-4}, 10^{-3})$ show similar initial increases in kinetic energy, however this does not appear to culminate in instability and we do not notice the small amplitude velocity perturbation seen in other marginally stable cases. Prior to $t = 8$ the kinetic energy in these cases appears similar to the fully unstable cases, but with a more shallow gradient. This is due to TODO WHAT.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{param_study/kinetic_energies.pdf}
+  \caption{Kinetic energy against time for each parameter choice. Runs using isotropic viscosity are shown as blue (solid) lines and switching viscosity as orange (dashed) lines. The distinctive energy profile of the Kelvin-Helmholtz instability is apparent in the high and medium resistivity switching cases. Reconnection causing the collapse of the null is noted by the sharp spikes in kinetic energy near the end of the medium and low resistivity simulations. There is little dependence on $\nu$ in the switching cases, barring the low resistivity cases.}%
+  \label{fig:param_study_kinetic_energies}
+\end{figure}
+
+The stability of KHI in the fan plane is determined via inspection of the out of plane velocity for each parameter choice, summarised in table~\ref{tab:stability}. The stability and nonlinear development is also reflected in the kinetic energies [TODO ref]. For resistivities of $\eta = 10^{-3}$ and $10^{-4}$ using the switching model, there appears in the kinetic energy a signature growth and decay shape, indicative of the KHI[TODO ref]. This is also seen in the single unstable isotropic case, $(\eta, \nu) = (10^{-3}, 10^{-5})$. Isotropic cases $(10^{-3}, 10^{-4})$ and $(10^{-4}, 10^{-3})$ show similar initial increases in kinetic energy, however this does not appear to culminate in instability and we do not notice the small amplitude velocity perturbation seen in other marginally stable cases. Prior to $t = 8$ the kinetic energy in these cases appears similar to the fully unstable cases, but with a more shallow gradient. This is due to TODO WHAT.
 
 \begin{table}[]
 \centering
@@ -213,75 +224,31 @@ $10^{-3}$ & $10^{-3}$ & $1$ & Stable                 & Unstable                 
 \label{tab:stability}
 \end{table}
 
-The properties of the vorticity and current density rings vary substantially with $\eta$ for both viscosity models and with $\nu$ in only the isotropic case. The lack of dependence on $\nu$ in the switching case is expected since the tensor is nearly zero-valued until the KHI sets in. Generally, both rings increase in radius as $\eta$ and $\nu$ decrease as a result of the upper and lower Alfv\'en waves being able to travel further before diffusing into the fan plane to create the shear layers. Due to the shape of the field, this also allows the rings to appear wider in the radial direction [TODO Does this make sense?]. In the direction out of the fan plane, the thickness of both the current density and vorticity shear layers decreases with decreasing $\eta$ and $\nu$. The respective diffusion parameter naturally affects the shear layer most associated with it, that is resistivity and the current density layer, and viscosity and the vorticity layer. The viscosity generally affects the peak shear in each layer similarly, with the peak magnitude increasing with decreasing $\nu$. This can be attributed to the lack of diffusion at lower $\nu$ allowing the same absolute difference over the shear layer in either velocity or magnetic field to exist in a thinner sheet, resulting in a greater derivative across the layer. In contrast, a decrease in $\eta$ results in a higher peak current density, as expected due to a similar argument as above, but a lower peak vorticity [TODO check this]. This can be attributed to... TODO Generally, the properties of the switching layers could be considered an extreme case of the isotropic results with $\nu$ taken to zero.
+TODO Plots of fast mach num, delta and vz over switching and isotropic nu=1e-3, eta=1e-3,-4,-5 at time t=2, 4, 6.
 
-TODO plots of thickness, strength and radial extent of current density and vorticity rings
+To further explore the observed stability of the KHI, we investigate how the relevant Mach numbers and instability parameters vary radially, and link those to the stability and growth of the KHI. As an indicator of the stability of the shear layer, we plot the Mach number associated with the fast-mode $M_f = \frac{\Delta v}{\sqrt{c_s^2 + c_A^2}}$, where $\Delta v$ is the difference in velocity over the shear layer, and $c_s$ and $c_A$ are the local sound and Alfv\'en speeds, respectively, as well as the parameter $\Delta = \frac{L_B}{L_v}(M_{A, proj})^{2/3}$, where $L_B$ and $L_v$ are the widths of the respective magnetic and velocity shear layers, and $M_{A, proj}$ is the Alfv\'en velocity of the layer after removing the guide field, i.e. $M_{A, proj} = \frac{\Delta v \sqrt{\rho}}{\Delta B}$ (TODO reword this entire sentence). For the layer to be theoretically unstable to the KHI, $M_f < 2$ and $\Delta > 1$.
 
-TODO based on ring properties (i.e. mach numbers) why do some runs go unstable and others not?
+As a representative sample, we consider the behaviour of both the isotropic and switching models for only $\nu=10^{-3}$ and $\eta$ varying over the range $10^{-5}$--$10^{-3}$.
 
-We now consider the differences apparent in only the switching cases, to investigate the effect of $\nu$ and $\eta$ on the KHI. Before the onset of the KHI the variation in the shear layer properties with $\nu$ are present [TODO are they?] though negligible. Generally, the main differences between simulations with different strengths of viscosity appear during the nonlinear development of the KHI (around $t=9$). After this time, the peaks of both current density and vorticity decrease with decreasing $\nu$ [TODO is this right and if it is why?]. TODO how to show peaks of current density and vorticity? Another plot of peaks after $t=9$? As seen in the example case of section~\ref{sec:null_point_khi_single_case} we find evidence of the KHI promoting slippage reconnection for $\eta = 10^{-3}$ and $10^{-4}$, the two values of $\eta$ that allow the KHI TODO plot of rolls in parallel elec field. Where $\eta=10^{-3}$, the reconnection rate varies little with $\nu$, however the rate increases with decreasing $\nu$ where $\eta=10^{-4}$, caused by TODO WHAT. Alongside the sedate, slippage reconnection, we also find evidence of bursty reconnection in the current density for these value of $\eta$ TODO plot, at $t=TODO$ for $\eta=10^{-3}$ and at the later time of $t=11$ for $\eta=10^{-4}$. Since these current structures are close to grid scale, the accuracy of these results should be viewed with caution, but they are an indicator of the potential for the KHI to promote localised, energetic reconnection events. Both slippage and bursty reconnection is evident in the single KHI-unstable isotropic case, where $\nu=10^{-5}$ and $\eta=10^{-3}$.
+The KHI appears as early as $t=2$ in the azimuthally averaged velocity in the $z$-direction, for all three values of $\eta$ (TODO fig) and all at approximately the same location, around $r=0.5$. This coincides with the initial peak of $M_f$ (Figure TODO). At this time, only the higher of the three resistivity values allows layers with $\Delta > 1$. At $t=6$, the region where $\Delta>1$ now overlaps with the peak of $M_f$ in the medium resistivity case, and the out of plane velocity shows the expected growth of the instability. In contrast, in the lowest resistivity case, $M_f$ is smaller in magnitude and the profile much flatter than for other values of $\eta$, while $\Delta>1$ only for $r>1$ (Figure TODO). As a result, the initial perturbation that appears around $r=0.5$ doesn't overlap with a region of shear allowing its growth before other factors cause the null to collapse and the current-vortex sheet to be disrupted. 
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_2.pdf}
-  \caption{$t=2$}%
-  \label{fig:azimuthal_averages_v-3_2}
-\end{figure}
+Over the same set of parameters, the isotropic viscosity TODO
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/slices/v-3r-5-switching_Velocity_Vz_z_0.0_0002.pdf}
-  \caption{$t=2$}%
-  \label{fig:v-3r-5-switching_Velocity_Vz_z_0_0002}
-\end{figure}
+TODO Plots of fast mach num, delta and vz over isotropic eta=1e-3 and varying nu=1e-3, 4, 5 at time t=2, 4, 6.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_4.pdf}
-  \caption{$t=4$}%
-  \label{fig:azimuthal_averages_v-3_4}
-\end{figure}
+In a similar fashion, in order to understand the effect of $\nu$, we investigate only the isotropic case over a range of parameters, considering only where $\eta=10^{-3}$ and $\nu$ is in the range $10^{-5}$--$10^{-3}$.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_5.pdf}
-  \caption{$t=5$}%
-  \label{fig:azimuthal_averages_v-3_5}
-\end{figure}
+TODO discussion of results
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_7.pdf}
-  \caption{$t=7$}%
-  \label{fig:azimuthal_averages_v-3_7}
-\end{figure}
+\subsubsection{Reconnection in the KHI}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/azimuthal_averages_v-3_10.pdf}
-  \caption{$t=10$}%
-  \label{fig:azimuthal_averages_v-3_10}
-\end{figure}
+We now consider the differences in only the switching cases, to investigate the effect of $\nu$ and $\eta$ specifically on the nonlinear development of the KHI. Before the onset the variation in the shear layer properties with $\nu$ are negligible. Generally, the main effects of different values of $\nu$ appear during the nonlinear development of the KHI, around the time $t=9$. After this time, the peaks of both current density and vorticity decrease with decreasing $\nu$ [TODO is this right and if it is why?]. [TODO how to show peaks of current density and vorticity? Another plot of peaks after $t=9$?] As seen in the example case of section~\ref{sec:null_point_khi_single_case} we find evidence of the KHI promoting slippage reconnection for $\eta = 10^{-3}$ and $10^{-4}$, the two values of $\eta$ that allow the KHI TODO plot of rolls in parallel elec field. Where $\eta=10^{-3}$, the reconnection rate varies little with $\nu$, however the rate increases with decreasing $\nu$ where $\eta=10^{-4}$, caused by TODO WHAT. Alongside the sedate, slippage reconnection, we also find evidence of bursty reconnection in the current density for these value of $\eta$ TODO plot, at $t=TODO$ for $\eta=10^{-3}$ and at the later time of $t=11$ for $\eta=10^{-4}$. Since these current structures are close to grid scale, the accuracy of these results should be viewed with caution, but they are an indicator of the potential for the KHI to promote localised, energetic reconnection events. Both slippage and bursty reconnection is evident in the single KHI-unstable isotropic case, where $\nu=10^{-5}$ and $\eta=10^{-3}$.
 
-Since the value of $\nu$ does not strongly affect the KHI before its nonlinear development, we take the simulation where $\nu = 10^{-3}$ to be representative and focus only on varying $\eta$. We can see the KHI appears as early as $t=2$ in the azimuthally averaged velocity in the $z$-direction, for all three values of $\eta$ (Figure~\ref{fig:azimuthal_averages_v-3_2}) and all at approximately the same location, around $r=0.5$. This can also be clearly seen in the fan plane (Figure TODO properly slice through z of vz at z=0, t=2, v-3r-5), where here $\eta=10{-5}$ but the pattern is similar for other values of $\eta$. Within only two Alfv\'en times it's clear the KHI is able to grow faster when resistivity is greater (Figure~\ref{fig:azimuthal_averages_v-3_4} TODO is this were the figures will end up?). After this time the behaviour for each value of $\eta$ diverges. For high and medium values of $\eta$, the initial instability spreads radially, though more slowly in the medium case. The low, $\eta=10^{-5}$ case shows some evidence of exchange of energy from the magnetic field to the flow, perhaps caused by a small reconnection event, as can be seen from a small dip in the current density colocating with a sudden and transient increase in velocity (Figure~\ref{fig:azimuthal_averages_v-3_4}). This may also be the point at which the isotropic region switches to the switching region (TODO check). If this is the case, the interpolation between the two regions must be made smoother. At $t=7$ the high resistivity case shows further development of the instability (Figure~\ref{fig:azimuthal_averages_v-3_7}). By $t=10$ (Figure~\ref{fig:azimuthal_averages_v-3_10}) the KHI has grown in both high and medium cases, with the energy of the instability peaking at around $r=0.75$ in the high resistivity case, and $r=1.1$ in the medium case.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/mach_numbersv-32.pdf}
-  \caption{Mach numbers at $t=2$}
-  \label{fig:mach_numbersv_32}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\linewidth]{./images/null_point_khi/mach_numbersv-36.pdf}
-  \caption{Mach numbers at $t=6$}
-  \label{fig:mach_numbersv-36}
-\end{figure}
-
-In order to investigate why the KHI grows so slowly in the low resistivity case, it's instructive to study how the relevant Mach numbers and instability parameters vary radially, and link those to the behaviour and stability of the KHI. As an indicator of the stability of the shear layer, we plot the Mach number associated with the fast-mode $M_f = \frac{\Delta v}{\sqrt{c_s^2 + c_A^2}}$, where $\Delta v$ is the difference in velocity over the shear layer, and $c_s$ and $c_A$ are the local sound and Alfv\'en speeds, respectively, as well as the parameter $\Delta = \frac{L_B}{L_v}(M_{A, proj})^{2/3}$, where $L_B$ and $L_v$ are the widths of the respective magnetic and velocity shear layers, and $M_{A, proj}$ is the Alfv\'en velocity of the layer after removing the guide field, i.e. $M_{A, proj} = \frac{\Delta v \sqrt{\rho}}{\Delta B}$ (TODO reword this entire sentence). For the layer to be unstable to the KHI, $M_f < 2$ and $\Delta > 1$. At early times ($t=2$) the initial growth of the instability occurs at $r=0.5$, coinciding with the peak of $M_f$ (Figure~\ref{fig:mach_numbersv_32}). At this time and location, it is only the high resistivity case which shows shear layers with $\Delta > 1$. Both lower resistivity cases are linearly stable to the instability. This changes for the mid resistivity case (TODO decide mid or medium) only around $t=6$ (Figure~\ref{fig:mach_numbersv-36}), where the peak of $M_f$ coincides with the point where $\Delta \approx 1$ and the instability begins to grow.
+\subsubsection{The fluting instability}
 
 TODO what is the behaviour of the fluting instability in all cases?
+
+\subsubsection{The collapse of the null}
 
 TODO For which parameters does the null collapse and what does the reconnection look like?
 
