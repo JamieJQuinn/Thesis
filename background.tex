@@ -20,9 +20,11 @@ refer to Browning, Hood, Klimchuck
 
 TODO
 
-\subsection{The induction equation}
+\subsection{Magnetohydrodynamics and the induction equation}
 
-Magnetohydrodynamics describes electrically conducting fluids, that is fluids which are able to interact with electromagnetic fields. A typical example of a magnetohydrodynamic fluid is molten metal, the investigation of which is key to the understanding of the Earth's molten outer core and its associated magnetic dynamo. In contrast, the Earth's mantle, being made of electrically insulating magma, does not interact with the Earth's magnetic field and would not be modelled as a magnetohydrodynamic fluid. The magnetohydrodynamic equations are a synthesis of the Navier-Stokes equations of fluid dynamics and Maxwell's equations of electromagnetism. The latter set of equations describes the generation of an electric field $\vec{E}$ by a charge density $\rho_c$ through Gauss's law,
+Magnetohydrodynamics (MHD) describes electrically conducting fluids, that is fluids which interact with electromagnetic fields. Typical examples of such fluids are plasmas and molten metals, the investigation of the latter being key to the understanding of the Earth's molten outer core and its associated magnetic dynamo. In contrast, the Earth's mantle, being made of electrically insulating magma, does not interact with the Earth's magnetic field and is not typically modelled as a magnetohydrodynamic fluid. Both small-scale laboratory plasmas, such as those found in current fusion devices, and large-scale astrophysical plasmas, such as those in the interstellar medium, can be effectively modelled using the MHD equations. While the MHD equations have a large range of applicability, they are limited to systems with dynamics at length-scales much larger than the ion skin depth or Larmor radius, and time-scales much longer than the ion gyration time. For these systems, a kinetic approach using the Vlasov or Boltzmann equations is more appropriate. The ideal MHD equations can be recovered from the Boltzmann equation by taking appropriate moments, however we choose to take a more traditional, fluid-based approach here.
+
+The magnetohydrodynamic equations are a synthesis of the Navier-Stokes equations of fluid dynamics and Maxwell's equations of electromagnetism. The latter set of equations describes the generation of an electric field $\vec{E}$ by a charge density $\rho_c$ through Gauss's law,
 \begin{equation}
   \label{eq:gauss_law}
  \nabla \cdot \vec {E} ={\frac {\rho_c }{\varepsilon _{0}}},
@@ -63,7 +65,7 @@ where we have rewritten the conductivity as the resistivity $\eta = 1/\sigma$. I
 Combining the remaining parts of Ampère's law, the Maxwell-Faraday equation, and the resistive Ohm's law results in the induction equation,
 \begin{equation}
   \label{eq:nonsimple_induction_equation}
-{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \nabla \times (\tfrac{\eta}{\mu_0} \nabla \times \vec{B}),
+{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \nabla \times (\eta/\mu_0 \nabla \times \vec{B}),
 \end{equation}
 which, in the limit of uniform resistivity, may be written
 \begin{equation}
@@ -196,7 +198,9 @@ The form of the viscous stress tensor in a magnetized plasma has been derived in
 
 \subsection{Viscosity}
 
-Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} gives $\eta_0 = 10^{-17} T^{5/2}\ \text{kg m}^{-1} \text{s}^{-1}$ for a Coulomb logarithm of 22. For temperatures of $T=10^4$ to $T=10^8$, $\eta_0$ ranges between $\eta_0 = 10^{-7}$ and $\eta_0 = 10^3$. For the normalisation used in the kink instabilities; $B_0 = 0.005\ \text{T}$, $L_0 = 10^6\ \text{m}$ and $\rho_0 = 1.67 \times 10^{-12}$, the Alfv\'en velocity is approximately $3.45 \times 10^6 \text{ms}^{-1}$ and hence the range of the Reynolds number is $\text{Re} = \frac{V_A L_0 \rho_0}{\eta_0} = 5.67 \times 10{-3}$--$5.67 \times 10^{7}$. For a more typical active region temperature of $T=10^6 \text{K}$, the Reynolds number is $5.67 \times 10^2$. 
+Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} gives $\eta_0 = 10^{-17} T^{5/2}\ \text{kg m}^{-1} \text{s}^{-1}$ for a Coulomb logarithm of 22 and $T$ given in units of Kelvin. For temperatures of $T=10^4$K to $T=10^8$K, $\eta_0$ ranges between $\eta_0 = 10^{-7} \text{kg m}^{-1} \text{s}^{-1}$ and $\eta_0 = 10^3 \text{kg m}^{-1} \text{s}^{-1}$. For the normalisation used in, for example, the kink instability chapter~\ref{chp:kink_instability} ($B_0 = 0.005\ \text{T}$, $L_0 = 10^6\ \text{m}$ and $\rho_0 = 1.67 \times 10^{-12}$) the Alfv\'en velocity is approximately $3.45 \times 10^6 \text{ms}^{-1}$ and, as a result, the range of the Reynolds number is $\text{Re} = \frac{V_A L_0 \rho_0}{\eta_0} = 5.67 \times 10^{-3}$--$5.67 \times 10^{7}$. For a more typical active region temperature of $T=10^6 \text{K}$, Re$=5.67 \times 10^2$. 
+
+TODO graph of Reynolds number against temperature.
 
 \subsection{Resistivity}
 
