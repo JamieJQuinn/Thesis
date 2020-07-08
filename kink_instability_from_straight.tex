@@ -1,0 +1,187 @@
+\chapter{Application to the kink instability II: Initially straight}
+
+\graphicspath{{images/kink_instability/}}
+
+\section{Introduction}
+
+In chapter~\ref{chp:kink_instability} we have investigated the dynamics in a magnetic flux rope which is already linearly unstable to the helical kink instability. An alternative way to excite the kink instability is by starting with an initially straight field and applying twisting motions at the boundaries to create a flux rope which eventually becomes unstable to the kink instability. In addition to exciting the kink instability, we find values of the resistivity that allow a fluting instability to be excited instead. To our knowledge, this is the first time a fluting instability in coronal conditions has been studied through 3D numerical simulations. 
+
+\section{Model setup}
+
+To investigate a simple, null-free topology, we start with a straight, uniform field
+\begin{equation}
+\vec{B} = (0, 0, 1)^{\text{T}},
+\end{equation}
+in a flow-free cube of dimension $[-2,2]^3$. The boundaries are such that the magnetic field, density, and energy are fixed to their initial values, and the boundary velocity given below. The spatial derivatives of these variables are also set to zero. We use a grid of size $256^3$ as our mid-resolution numerical domain. 
+
+The fluid is twisted up by prescribing a slowly accelerating, rotating flow in a unit disc at the lower $z$ boundary as
+\begin{equation}
+\vec{u} = v_0 [1 + \tanh((t - 2t_0)/t_0)] \vec{u}_h,
+\end{equation}
+where $\vec{u_h} = (u_x', u_y', 0)^T$ and
+\begin{equation}
+u_x' = 
+  \begin{cases} 
+    -\pi y \frac{\sin(\pi r)}{r} & r^2 \le 1, \\
+    0 & r^2 \geq 1,
+  \end{cases}
+\quad
+u_y' = 
+  \begin{cases} 
+    \pi x \frac{\sin(\pi r)}{r} & r^2 \le 1, \\
+    0 & r^2 \geq 1,
+  \end{cases}
+\end{equation}
+where $r^2 = x^2 + y^2$. The maximum twisting flow, at $r=0.5$, is smoothly ramped up from $0$ to $v_0 = 0.05$ over around four Alv\'en times, slow enough that spurious oscillations caused by the acceleration don't affect the resultant instability. The flow at the upper boundary is identical but in the opposite direction.
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{kink_fieldlines_initial.png}
+  \caption{Initially}
+  \label{fig:initial_kink_field}
+  \end{subfigure}
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{kink_fieldlines_final.png}
+  \caption{After $15$ Alfv\'en times}
+  \label{fig:twisted_kink_field}
+  \end{subfigure}
+  
+  \caption{Trivial topology field lines}
+  \label{fig:kink_field_lines}
+\end{figure}
+
+This configuration produces a z-directed tube of twisted magnetic field that eventually becomes unstable to the helical kink instability and erupts. Although the setup is similar to that of a twisted coronal loop, including the resulting kink instability, it is not intended to be a realistic simulation of an erupting loop. Instead, the intention here is to investigate the differences in the viscosity models in two different topologies under similar stressed conditions.
+
+\section{Results}
+
+The initial reaction to the moving boundaries is two torsional Alfv\'en waves transported along the tube from the upper and lower boundaries to the opposite boundary. These interact and are absorbed upon reaching the opposite boundary. As a result the kinetic energy appears to fluctuate with a period of around $4$, equal to the time taken for a wave to travel the entire length of the domain. This can be seen in figure~\ref{fig:oscillating-kinetic-energy}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{oscillating-kinetic-energy.png}
+  \caption{Kinetic energy oscillations due to initial ramping up of twisting velocity.}
+  \label{fig:oscillating-kinetic-energy}
+\end{figure}
+
+TODO plot iso/switching KE for both kink and fluting
+
+The field continues to be twisted, injecting energy into the magnetic field, until the tube reaches a critical point and an instability is excited. Due to our choice of parameters, we see two different instabilities being excited. The common $m=1$ helical kink mode, seen in figure~\ref{fig:kink_isosurface}, is excited when the resistivity is set to the smaller value of $10^{-4}$, regardless of the choice of the viscosity parameter. The other mode we find is perhaps a resistive kink mode with $m>1$ as has been found in cylindrical tokamaks~\cite{furthTearingModeCylindrical1973a}. This mode is excited when the resistivity is set to the higher value of $10^{-3}$, again regardless of the viscosity, and can be seen in figure~\ref{fig:other_instability_isosurface}. Though of interest, an investigation into the onset and stability of this unknown mode is not the focus of this paper.
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{kink_isosurface.png}
+  \caption{Kink instability when $\eta=10^{-4}$.}
+  \label{fig:kink_isosurface}
+  \end{subfigure}
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=0.8\linewidth]{other_instability_isosurface.png}
+  \caption{Other instability when $\eta=10^{-3}$}
+  \label{fig:other_instability_isosurface}
+  \end{subfigure}
+  
+  \caption{Onset of instabilities visualised as energy isosurfaces.}
+  \label{fig:instability_isosurfaces}
+\end{figure}
+
+At first glance, the behaviour of the two viscous models for each viscosity-resistivity combination is extremely similar. We see the most difference in the models when studying the high-viscosity ($\eta_0 = 10^{-3}$), low-resistivity ($\eta = 10^{-4}$) case, giving a magnetic Prandtl number of $P_r = 10$. 
+
+\subsubsection{High Magnetic Prandtl Number}
+
+Qualitatively, the magnetic field, mass density and energy density evolve similarly using either viscosity model. Slices through the centre of the tube in the $x - z$ plane of the evolution under isotropic viscosity is shown in figures~\ref{fig:mass_density_evolution},~\ref{fig:magnetic_field_evolution} and~\ref{fig:energy_evolution}. As can be seen the kink erupts at some point between times $25$ and $30$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.5\linewidth]{evolution-rho-montaged.png}
+  \caption{Evolution of mass density at times $t=5, 10, 15, 20, 25, 30$ (blue is $\rho = 0.2$, red is $\rho=1.8$)}
+  \label{fig:mass_density_evolution}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.5\linewidth]{evolution-bmag-montaged.png}
+  \caption{Evolution of magnetic field at times $t=5, 10, 15, 20, 25, 30$ (blue is $|\vec{B}| = 1.0$, red is $|\vec{B}|=3.0$)}
+  \label{fig:magnetic_field_evolution}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.5\linewidth]{evolution-energy-montaged.png}
+  \caption{Evolution of energy density at times $t=5, 10, 15, 20, 25, 30$ (blue is $\varepsilon = 10^{-4}$, red is $\varepsilon = 0.2$)}
+  \label{fig:energy_evolution}
+\end{figure}
+
+TODO Add colourbar on evolutions
+
+One major difference between the two models is the fine scale structure introduced by the anisotropic viscosity both in the lead up to the onset of the kink instability, and in the ensuing relaxation of the field, as can be seen in figure~\ref{fig:fine_structure}. In this particular case, \j{at} a time $t=19$, the torsional waves have already interacted over a number of periods and start to produce a dynamic alternating pattern of vortices visible only when using the anisotropic model.
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{high-prandtl-iso-structure.png}
+  \caption{Isotropic}
+  \label{fig:isotropic_fine_structure}
+  \end{subfigure}
+  \begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{high-prandtl-switch-structure.png}
+  \caption{Switching}
+  \label{fig:switching_fine_structure}
+  \end{subfigure}
+  
+  \caption{Structure in $u_y$ at $t=19$, before the onset of the kink instability.}
+  \label{fig:fine_structure}
+\end{figure}
+
+Looking at results employing the anisotropic model, but through the lense of the viscous force produced as if we were using the isotropic model, we see that the pattern seen in~\ref{fig:switching_fine_structure} would be opposed by extremely high damping forces, shown in figure~\ref{fig:pattern-damping-switch-isoforce}, where the alternating pattern of the direction of force matches up with the pattern of velocity. The actual forces experienced are those produced by the anisotropic viscosity model, seen in figure~\ref{fig:pattern-damping-switch-switchforce}, which show no such damping pattern, thus when using anisotropic viscosity the velocity pattern appears.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pattern-damping-switch-isoforce.png}
+  \caption{Isotropic viscous force in the $y$-direction at $t=19$.}
+  \label{fig:pattern-damping-switch-isoforce}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pattern-damping-switch-switchforce.png}
+  \caption{Anisotropic viscous force in the $y$-direction at $t=19$.}
+  \label{fig:pattern-damping-switch-switchforce}
+\end{figure}
+
+What is interesting is that, specifically at $t=19$, the isotropic viscous force shows only glimpses of this pattern-opposition. It seems the vortices that produce this fine structure are in fact damped earlier, at $t=18$, as seen by comparing the forces produced by the isotropic viscosity in figure~\ref{fig:pattern-damping-iso-visc-force-18} with the velocity pattern found in figure~\ref{fig:pattern-damping-switch-vel-18}. This initial precursor velocity is damped in the isotropic case, leading to the lack of the fine structure pattern at later times. 
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pattern-damping-switch-vel-18.png}
+  \caption{Precursor to fine structure in $u_y$, using anisotropic viscosity, at $t=18$.}
+  \label{fig:pattern-damping-switch-vel-18}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pattern-damping-iso-visc-force-18.png}
+  \caption{Isotropic viscous force in $y$-direction opposing fine structure formation.}
+  \label{fig:pattern-damping-iso-visc-force-18}
+\end{figure}
+
+TODO Look at pertubation in form of x-vel and lorentz forces
+
+Another major difference between the two models is the eruption time of the instabilities. Plotting the kinetic energy over time gives a clear indication that using the anisotropic model leads to the instability erupting much sooner, with the delay totalling nearly an entire Alfv\'en time. This could in part be due to the \j{Dig into why this is happening. Is it boundary effects that sets of the instability? Anisotropic visc will not damp x velocities, so reflections will be greater. Is this a factor?}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{delayed-onset-kinetic-energy.png}
+  \caption{The kinetic energy increase associated with the instability eruption occurs sooner in the anisotropic case.}
+  \label{fig:delayed-onset-kinetic-energy}
+\end{figure}
+
+\subsection{Low magnetic Prandtl number}
+
+TODO fluting analysis similar to above
