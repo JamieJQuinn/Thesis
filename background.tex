@@ -123,7 +123,9 @@ typical for the solar corona) where $m_p$ is the proton mass. The
 reference values of other variables are derived from these
 quantities and are listed in Table~\ref{tab:reference-values}. Dimensional quantities can be recovered by multiplying the non-dimensional variables by their respective reference value (e.g. $\vec{B}_{\dim} = B_0 \vec{B}$). All further reference to variables will be to their non-dimensionalised values, unless stated otherwise.
 
-\section{Viscosity}
+\section{Anisotropic Viscosity}
+
+\subsection{Viscosity}
 
 Physically, viscosity is the internal friction of a fluid arising due to interactions (typically collisions) between the particles making up the fluid. Within the context of MHD, viscosity provides two functions. The first is momentum transport, included in the momentum equation as the divergence of the viscous stress tensor $\ten{\sigma}$, written using Einstein notation for clarity,
 \begin{equation}
@@ -145,7 +147,7 @@ Beyond the physical requirement of conservation of angular momentum, it is assum
   \text{tr}(\ten{\sigma}) = 0.
 \end{equation}
 
-Many fluids encountered in daily life are Newtonian fluids, that is the viscous stress arising from any deformation of the fluid is directly proportional to the rate of strain of the deformation,
+Many fluids encountered in nature are Newtonian fluids, that is the viscous stress arising from any deformation of the fluid is directly proportional to the rate of strain of the deformation,
 \begin{equation}
   \label{eq:isotropic_viscous_tensor}
   \ten{\sigma} = \nu \ten{W},
@@ -155,8 +157,19 @@ where the traceless strain rate tensor $\ten{W}$ is written as
   \label{eq:rate_of_strain}
   \ten{W} = \nabla\vec{u} + (\nabla\vec{u})^T - \tfrac{2}{3}(\nabla \cdot \vec{u})\ten{I}.
 \end{equation}
+As a result of a viscous stress tensor being symmetric and traceless, we may alternatively write the viscous heating term, equation~\ref{eq:viscous_heat_generation} as
+\begin{equation}
+  \label{eq:viscous_heat_generation2}
+  \ten{\sigma} : \nabla \vec{u} = \frac{1}{2} \ten{\sigma} : \ten{W}.
+\end{equation}
 
-\subsection{Anisotropic Viscosity}
+\subsection{Anisotropic viscous tensors}
+
+The form of the viscous stress tensor in a magnetized plasma has been derived in a number of ways, to varying degrees of accuracy. The derivations typically use the methods of kinetic theory, taking moments of the Boltzmann-Maxwell equations, to arrive at approximations to the viscosity, among other types of molecular transport. A first approximation of the stress tensor can be found in the 1939 work of Chapman and Cowling~\cite{chapmanMathematicalTheoryNonuniform1970}. Their results show that the stress response to a rate of strain can be split into the responses to three types of motion: compression or dilation along the field, deformations in the plane transverse to the field, and deformations in the plane including the field. The latter two responses can each be further split into two parts, giving five distinct contributions to the stress tensor in total. This natural splitting of the tensor in response to various kinds of strain is discussed in depth by Kaufman~\cite{kaufmanPlasmaViscosityMagnetic1960}. In the same article, Kaufman presents both an illustrative description of the drift and perpendicular components of the tensor, and a derivation of the full tensor from a more simplified Boltzmann equation than is used by Chapman and Cowling. The tensor derived by Braginskii~\cite{braginskiiTransportProcessesPlasma1965} is perhaps the most well known and includes accurate approximations to the five viscous transport parameters. The parallel component of the stress tensor has been derived without use of kinetic theory by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, showing the viscous response to parallel motions to be a result of collisions repartitioning anisotropies in the thermal pressure.
+
+We initially present an overview of Braginskii's simplified derivation of the form and magnitude of the various tensor components. This is given as an intuition-building illustration of the physics rather than a rigorous, mathematical derivation of the tensor, which can be found in~\cite{braginskiiTransportProcessesPlasma1965}. We then present the full Braginskii tensor in the its usual form, a modified form useful for simulations, and the full switching tensor for completeness, relegating the main discussion of the switching tensor to chapter~\ref{chp:switching_model}.
+
+\subsection{Simplified derivation of Braginskii tensor}
 
 In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in an isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/mc$ is the cyclotron frequency and $c$ is the speed of light. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
 
@@ -190,9 +203,72 @@ and the flux from the right $F_{-}$ can be calculated in a similar manner by con
 \end{equation}
 giving a qualitative estimate for the size of the $xy$-term of the viscous stress tensor, $\ten{\sigma}_{xy}$. 
 
-\subsection{Alternative formulations of anisotropic viscosity}
+\subsection{Full Braginskii tensor}
 
-The form of the viscous stress tensor in a magnetized plasma has been derived in a number of ways, to varying degrees of accuracy. The derivations typically use the methods of kinetic theory, taking moments of the Boltzmann-Maxwell equations, to arrive at approximations to the viscosity, among other types of molecular transport. A first approximation of the stress tensor can be found in the 1939 work of Chapman and Cowling~\cite{chapmanMathematicalTheoryNonuniform1970}. Their results show that the stress response to a rate of strain can be split into the responses to three types of motion: compression or dilation along the field, deformations in the plane transverse to the field, and deformations in the plane including the field. The latter two responses can each be further split into two parts, giving five distinct contributions to the stress tensor in total. This natural splitting of the tensor in response to various kinds of strain is discussed in depth by Kaufman~\cite{kaufmanPlasmaViscosityMagnetic1960}. In the same article, Kaufman presents both an illustrative description of the drift and perpendicular components of the tensor, and a derivation of the full tensor from a more simplified Boltzmann equation than is used by Chapman and Cowling. The tensor derived by Braginskii~\cite{braginskiiTransportProcessesPlasma1965} is perhaps the most well known and includes accurate approximations to the five viscous transport parameters. The parallel component of the stress tensor has been derived without use of kinetic theory by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, showing the viscous response to parallel motions to be a result of collisions repartitioning anisotropies in the thermal pressure. 
+The full Braginskii viscous stress tensor can be written in a number of ways. Braginskii's original formulation is written with the magnetic field aligned with the $z$-axis so we present here the more general formulation of Hogan~\cite{hoganCollisionalTransportMomentum1984}, described as the sum of five tensor components $\ten{W}^{(i)}$ with associated transport parameters $\eta_i$,
+\begin{equation}
+\label{eq:braginskii_tensor}
+\ten{\sigma}__{\text{brag}} = \eta_0 \ten{W}^{(0)} + \eta_1 \ten{W}^{(1)} + \eta_2 \ten{W}^{(2)} + \eta_3 \ten{W}^{(3)} + \eta_4 \ten{W}^{(4)}.
+\end{equation}
+
+As discussed in~\cite{kaufmanPlasmaViscosityMagnetic1960}, there are three types of motion that give rise to the five tensor components: compression or dilation along the field, deformations in the plane transverse to the field, and deformations in the plane including the field. The first type of motion gives rise to the parallel term,
+\begin{equation}
+  \label{eq:braginskii_parallel_term}
+  \ten{W}^{(0)} = \frac{3}{2}(\ten{W}\vec{b}\cdot\vec{b}) \left( \vec{b} \otimes \vec{b} - \frac{1}{3}\ten{I} \right),
+\end{equation}
+where $\vec{b} = \vec{B}/|\vec{B}|$ is the unit vector in the direction of the field. The second and third types of motion give rise to two types of stress, two perpendicular terms,
+\begin{align}
+\ten{W}^{(1)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}) + \frac{1}{2}(\ten{\ten{W}}\vec{b} \cdot \vec{b})(\ten{I} - \vec{b} \otimes \vec{b}), \\
+\ten{W}^{(2)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}(\vec{b} \otimes \vec{b}) + (\vec{b} \otimes \vec{b})\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}),  \\
+\end{align}
+and two terms often called the drift or gyroviscous terms,
+\begin{align}
+\ten{W}^{(3)} &= \frac{1}{2} \ten{Z}\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}) - \frac{1}{2}(\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}\ten{Z}, \\
+\ten{W}^{(4)} &= (\ten{Z}\ten{\ten{W}}\vec{b}) \otimes \vec{b} + \vec{b} \otimes (\ten{Z} \ten{\ten{W}} \vec{b}), \\
+\label{eq:drift_terms}
+\end{align}
+where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$, where we use the standard double dot product $\ten{A}:\ten{B} = A_iB_i$.
+
+Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation}). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically, Braginskii's expressions are used where applicable.
+
+The parallel viscosity coefficient $\eta_0$ is identical to the dynamic viscosity coefficient of an unmagnetised plasma and depends on the ion number density $n$, temperature $T$ and collision time $\tau$ via the expression,
+\begin{equation}
+  \label{eq:parallel_visc_coeff}
+  \eta_0 = 0.96 n T \tau.
+\end{equation}
+For simplicity, the dimensionless quantity $x = \omega \tau$ is used, as is done in~\cite{braginskiiTransportProcessesPlasma1965}. The two perpendicular coefficients are written,
+\begin{equation}
+  \label{eq:perp_visc_coeff}
+  \eta_2(x) = \frac{\eta_0}{0.96 \Delta} \left( \tfrac{6}{5} x^2 + 2.23 \right), \quad \eta_1 = \eta_2(2x),
+\end{equation}
+where
+\begin{equation}
+  \label{eq:delta}
+\Delta = 2.23 + 4.03x^2 + x^4.
+\end{equation}
+The drift coefficients are written,
+\begin{equation}
+  \label{eq:drift_visc_coeff}
+  \eta_4(x) = \frac{\eta_0}{0.96 \Delta} x \left( x^2 + 2.38 \right), \quad \eta_3 = \eta_4(2x).
+\end{equation}
+The relative strength of the five terms is important in considering which are most significant in the solar corona. Equations~\ref{eq:drift_visc_coeff} and~\ref{eq:perp_visc_coeff} show that the drift terms are of the order $\eta_0/(\omega \tau)$ and the perpendicular terms are of the order $\eta_0/(\omega \tau)^2$.
+
+The origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. As illustrated by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, the parallel viscous stress can be modelled as the result of pressure anisotropies being repartitioned by particle collisions. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. The inclusion of collisions again acts to repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}.
+
+While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. As a result, both the drift stresses are orthogonal to $\ten{W}$ and by equation~\ref{eq:viscous_heat_generation2}, they produce no viscous dissipation. Despite this, the drift terms can still meaningfully participate in dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}. However, for a model of viscosity applicable in the solar corona, where $\omega\tau \gg 1$ generally, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be neglected. While a similar argument suggests the even weaker perpendicular terms should be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
+
+\subsection{Limit of strong magnetic field}
+
+As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, we may write the strong-field approximation to the Braginskii tensor as,
+\begin{equation}
+  \label{eq:strong_field_approx}
+\ten{\sigma} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b} ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
+\end{equation}
+Even more moderate, quiet sun values for the magnetic field, $B\approx 10^6$, and temperature, $T\approx 10^6$, give $\omega\tau \approx 10^4$, suggesting this approximate is valid throughout most of the solar corona~\cite{morganGlobalConditionsSolar2017}. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an abundant feature in the global, coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}, meaning any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate the viscous response in the limit of weak magnetic field.
+
+\subsection{Limit of weak magnetic field}
+
+While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for the numerical simulation of plasmas in magnetic fields which include null points. This can be seen by noticing that the 
 
 \section{Magnitude of transport parameters}
 
