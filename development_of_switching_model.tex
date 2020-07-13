@@ -1,10 +1,11 @@
 \chapter{Development of the switching model}
+\label{chp:switching_model}
 
 \section{The switching model}
 
-TODO Include brief introduction of switching model, make clear it's David and Luigi's work
+The switching model is a model of viscosity that approximates the full Braginskii tensor throughout most of the solar corona. In strong magnetic fields, the Braginskii tensor can be approximated by the purely parallel term while in weak or null fields, the tensor reduces to fully isotropic, Newtonian viscosity. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. However, at the resolutions typically studied in 3D MHD simulations (between $300$ and $1000$ grid points per dimension) null points may be poorly resolved. This is particularly true in simulations where null points are dynamically created and are not the main object of investigation. By stripping out the perpendicular and drift elements of the full Braginskii tensor, the switching model presents a cleaner, better-resolved viscous model by focusing on what are, in many cases, the most physically important parts of anisotropic viscosity in the solar corona: the parallel and isotropic components. The idea at the core of the model is the interpolation between the parallel and isotropic tensors, mirroring the way in which the Braginskii tensor changes in strong and weak fields.
 
-TODO include toy problems?
+
 
 \section{Implementation in Lare3D}
 
