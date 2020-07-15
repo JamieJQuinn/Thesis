@@ -171,19 +171,19 @@ We initially present an overview of Braginskii's simplified derivation of the fo
 
 \subsection{Simplified derivation of Braginskii tensor}
 
-In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in an isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/mc$ is the cyclotron frequency and $c$ is the speed of light. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
+In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in an isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/m$ is the cyclotron frequency. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
 
 A characteristic coronal value of $\omega \tau$ can be calculated using expressions found in Braginskii~\cite{braginskiiTransportProcessesPlasma1965}. The collision time can be written in SI units as,
 \begin{equation}
   \label{eq:collision_time}
-  \tau = 0.82 \times 10^{6} \frac{T^{3/2}}{n},
+  \tau = 0.82 \times 10^{-6} \frac{T^{3/2}}{n},
 \end{equation}
 and the cyclotron frequency as,
 \begin{equation}
   \label{eq:cyclotron_frequency}
-  \omega = 0.8\times10^8 B,
+  \omega = 0.96\times10^8 B,
 \end{equation}
-where the Coloumb logarithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical solar value of $1.2$. A solar active region could have typical temperatures of around $2\times 10^6$K, and number densities of $n = 3 \times 10^9$, giving $\tau = 0.77$s. The magnetic field can be as strong as $5\times 10^{-3}$T, giving $\omega = 4.1 \times 10^5 \text{s}^{-1}$, resulting in $\omega \tau = 3.16 \times 10^5$. This indicates viscosity in the solar corona is extremely anisotropic.
+where the Coloumb logarithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical solar value of $1.2$. The expression for $\tau$ differs from that given by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} due to the more accurate inclusion of the mass fraction here. A solar active region could have typical temperatures of around $2\times 10^6$K, and number densities of $n = 3 \times 10^3\text{m}^{-3}$, giving $\tau = 0.773$s. The magnetic field can be as strong as $5\times 10^{-3}$T, giving $\omega = 4.79 \times 10^5 \text{s}^{-1}$, resulting in $\omega \tau = 3.70 \times 10^5$. This indicates viscosity in most of the solar corona is highly anisotropic.
 
 As a basic introduction, I will now present a condensed review of Braginskii's qualitative derivation of the form of the anisotropic viscosity stress tensor in a magnetized plasma, and its associated transport parameters~\cite{braginskiiTransportProcessesPlasma1965}. Consider a plasma where, on average, each particle moves a distance $\Delta x$ in the collision time $\tau$ before colliding. TODO diagram in inkscape. After the collision the particle has equal probability of moving to the left and the right. Since we are concerned with the viscous diffusion of momentum, and not advection, we consider the case where the particle flux through some plane $x=x_0$ is zero (that is the number of particles moving through the plane from the left is equal to the number of particles from the right). This implies a uniform number density in the small layer around $x_0$. We do, however, consider a non-uniform velocity, say $u_y$, which changes slowly enough over the distance $\Delta x$ that we may write
 \begin{equation}
@@ -229,14 +229,38 @@ and two terms often called the drift or gyroviscous terms,
 \end{align}
 where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$, where we use the standard double dot product $\ten{A}:\ten{B} = A_iB_i$.
 
-Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation}). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically, Braginskii's expressions are used where applicable.
+Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation}). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically. Braginskii's expressions are used where applicable.
+
+\begin{figure}[t]
+  \centering
+    \begin{subfigure}{0.49\textwidth}
+      \includegraphics[width=\linewidth]{brag_coeffs.pdf}
+      \caption{Dependence of $\eta_1$ and $\eta_3$ on magnetic field strength, using a typical coronal value of $\tau = 0.77$.}
+      \label{fig:brag_coeffs}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+      \includegraphics[width=\linewidth]{visc_dep_on_temp.pdf}
+      \caption{Dependence of $\eta_0$ and corresponding Reynolds number $Re$ on temperature. Typical values used in the calculation of $Re$ are a field strength of $B = 5$mT, a length of $L = 1$Mm and a density of $\rho = 1.67 \times 10^{-12}$.}
+      \label{fig:visc_dep_on_temp}
+    \end{subfigure}
+\caption{Dependence of transport parameters on magnetic field strength and temperature.}
+\label{fig:visc_dep}%
+\end{figure}
 
 The parallel viscosity coefficient $\eta_0$ is identical to the dynamic viscosity coefficient of an unmagnetised plasma and depends on the ion number density $n$, temperature $T$ and collision time $\tau$ via the expression,
 \begin{equation}
   \label{eq:parallel_visc_coeff}
-  \eta_0 = 0.96 n T \tau.
+  \eta_0 = 0.83 \times 10^{-10} n T \tau \text{kg m}^{-1}\text{s}^{-1},
 \end{equation}
-For simplicity, the dimensionless quantity $x = \omega \tau$ is used, as is done in~\cite{braginskiiTransportProcessesPlasma1965}. The two perpendicular coefficients are written,
+or,
+\begin{equation}
+  \label{eq:parallel_visc_coeff2}
+  \eta_0 = 0.68 \times 10^{-16} T^{5/2} \text{kg m}^{-1}\text{s}^{-1}.
+\end{equation}
+Figure~\ref{fig:visc_dep_on_temp} shows the dependence of $\eta_0$ on temperature over a range of typical coronal temperatures, along with the dependence of a typical Reynolds number on temperature. Even at moderate temperatures of $10^6$, the coefficient of viscosity remains sizeable. As shall be explored later, this is in contrast to the value of resisitvity, which remains relatively small over this temperature range. This has implications for theoretical predictions of dominant dissipation mechanisms in the corona.
+
+For simplicity, the dimensionless quantity $x = \omega \tau$ is used in the expressions for the remaining transport parameters, as is done in~\cite{braginskiiTransportProcessesPlasma1965} and all coefficients have identical units to $\eta_0$. The two perpendicular coefficients are written,
 \begin{equation}
   \label{eq:perp_visc_coeff}
   \eta_2(x) = \frac{\eta_0}{0.96 \Delta} \left( \tfrac{6}{5} x^2 + 2.23 \right), \quad \eta_1 = \eta_2(2x),
@@ -251,24 +275,71 @@ The drift coefficients are written,
   \label{eq:drift_visc_coeff}
   \eta_4(x) = \frac{\eta_0}{0.96 \Delta} x \left( x^2 + 2.38 \right), \quad \eta_3 = \eta_4(2x).
 \end{equation}
-The relative strength of the five terms is important in considering which are most significant in the solar corona. Equations~\ref{eq:drift_visc_coeff} and~\ref{eq:perp_visc_coeff} show that the drift terms are of the order $\eta_0/(\omega \tau)$ and the perpendicular terms are of the order $\eta_0/(\omega \tau)^2$.
+The relative strength of the five terms is important in considering which are most significant in the solar corona. The drift coefficients are of the order $\eta_0/(\omega \tau)$ and the perpendicular coefficients are of the order $\eta_0/(\omega \tau)^2$.
 
 The origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. As illustrated by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, the parallel viscous stress can be modelled as the result of pressure anisotropies being repartitioned by particle collisions. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. The inclusion of collisions again acts to repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}.
 
-While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. As a result, both the drift stresses are orthogonal to $\ten{W}$ and by equation~\ref{eq:viscous_heat_generation2}, they produce no viscous dissipation. Despite this, the drift terms can still meaningfully participate in dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}. However, for a model of viscosity applicable in the solar corona, where $\omega\tau \gg 1$ generally, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be neglected. While a similar argument suggests the even weaker perpendicular terms should be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
+While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. As a result, both the drift stresses are orthogonal to $\ten{W}$ and by equation~\ref{eq:viscous_heat_generation2}, they produce no viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While the drift terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis is broadly focused on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
 
 \subsection{Limit of strong magnetic field}
 
-As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, we may write the strong-field approximation to the Braginskii tensor as,
+As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, the strong-field approximation to the Braginskii tensor is written,
 \begin{equation}
   \label{eq:strong_field_approx}
-\ten{\sigma} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b} ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
+\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b} ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
 \end{equation}
-Even more moderate, quiet sun values for the magnetic field, $B\approx 10^6$, and temperature, $T\approx 10^6$, give $\omega\tau \approx 10^4$, suggesting this approximate is valid throughout most of the solar corona~\cite{morganGlobalConditionsSolar2017}. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an abundant feature in the global, coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}, meaning any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate the viscous response in the limit of weak magnetic field.
+In a local coordinate system where the magnetic field is aligned with $b$, the tensor is
+\begin{equation}
+  \label{eq:z_aligned_strong_field_approx}
+\ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 \ten{W}_{zz} ( \text{diag}(0,0,1) - \tfrac{1}{3} \ten{I}),
+\end{equation}
+where diag$(a,b,c)$ is the diagonal $3\times3$ matrix with the values $a$, $b$ and $c$ along the diagonal. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\ref{eg:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
+\begin{equation}
+  \label{eq:z_aligned_iso}
+  \ten{\sigma}_{\text{iso}}_{zz} = \ten{\sigma}_{\text{brag}}_{zz} = \eta_0 \ten{W}_{zz}.
+\end{equation}
+In the strong-field regime, the only motion damped by viscosity is non-uniform compression or dilation of the plasma. 
+
+This approximation is valid even for more moderate, quiet sun condition, where values of the magnetic field, $B\approx 10^6$, and temperature, $T\approx 10^6$, give $\omega\tau \approx 10^4$~\cite{morganGlobalConditionsSolar2017}. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an abundant feature in the coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}. Any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate viscosity in the limit of weak magnetic field.
 
 \subsection{Limit of weak magnetic field}
 
-While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for the numerical simulation of plasmas in magnetic fields which include null points. This can be seen by noticing that the 
+While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $b$ in equations~\ref{eg:braginskii_parallel_term}--\ref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $b$ near the null would involve division by the magnitude of the field, a quantity close to or exactly zero, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\ref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
+\begin{eqnarray}\label{eq:brag_new}
+\ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{2|\vec{B}|^4}(\ten{W}\vec{B}\cdot\vec{B})(\vec{B}\otimes\vec{B})\\% \label{new1} \\
+\nonumber
+& &+~ \frac{\eta_1-\eta_0}{2|\vec{B}|^2}(\ten{W}\vec{B}\cdot\vec{B})\ten{I}\\% \label{new2}\\
+\nonumber
+& &+~ \frac{\eta_2-\eta_1}{|\vec{B}|^2}[\ten{W}(\vec{B}\otimes\vec{B})+(\vec{B}\otimes\vec{B})\ten{W}] \\%\label{new3}\\
+%& & +~\frac12\eta_3(\ten{ZW}-\ten{WZ}) \\
+%& &+~\left(\eta_4-\frac12\eta_3\right)[(\ten{ZW}\vec{b})\otimes\vec{b} + \vec{b}\otimes(\ten{ZW}\vec{b})]  \\
+\nonumber
+& &+~ \eta_1\ten{W},%\label{new4}
+\end{eqnarray}
+the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to explicitly check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\ref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
+
+\subsection{The transition from isotropic to anisotropic}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=1.0\linewidth]{brag_coeffs2.pdf}
+  \caption{Coefficients of the terms in equation~\ref{eq:brag_new2}, normalised against $\eta_0$.}%
+  \label{fig:brag_coeffs2}
+\end{figure}
+
+The form of the Braginskii tensor as written in equation~\ref{eq:brag_new} is nearly in a form useful in understanding how quickly the tensor transitions from isotropic to anisotropic with changing magnetic field strength, since the isotropic component is completely isolated. Similarly, the parallel component can be isolated by further rewriting the tensor as,
+\begin{eqnarray}\label{eq:brag_new2}
+\ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{3|\vec{B}|^4}\ten{W}^{(0)}\\% \label{new1} \\
+\nonumber
+& &+~ \frac{2}{3}\frac{\eta_1-\eta_2}{|\vec{B}|^2}(\ten{W}\vec{B}\cdot\vec{B})\ten{I}\\% \label{new2}\\
+\nonumber
+& &+~ \frac{\eta_2-\eta_1}{|\vec{B}|^2}[\ten{W}(\vec{B}\otimes\vec{B})+(\vec{B}\otimes\vec{B})\ten{W}] \\%\label{new3}\\
+\nonumber
+& &+~ \eta_1\ten{W},%\label{new4}
+\end{eqnarray}
+Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2}. Over an extremely small range of $|\vec{B}|$, the Braginskii tensor goes from completely isotropic to nearly completely parallel. It is only over that same range that the coefficients corresponding to the perpendicular viscosity become notable. This small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}. 
+
+In the simulations of magnetic null points found in chapter~\ref{chp:null_point_khi}, the magnetic field strength changes linearly in the $x$-direction, from $|\vec{B}|=0$T to $5\times 10^{-3}$T over one spatial unit, giving a gradient of $5\times 10^{-3}$T$/L_x$. Using a resolution of $640$ grid points in the $x$-direction and a simulation domain of size $7$, the grid spacing is $\Delta x \approx 0.01$, meaning the jump in magnetic field from a grid point located at the null to the next grid point is $5\times 10^{-5}$T. This large jump completely ignores the transition from isotropic to anisotropic and results in a lack of isotopic heating near the null, where some 
 
 \section{Magnitude of transport parameters}
 
