@@ -3,6 +3,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 from plotting_parameters import *
 
 def latexify(fig_width=None, fig_height=None, columns=1, square=False):
@@ -89,3 +91,12 @@ def create_axes(n_columns=1, axis_side='left', subplots_rows=1, subplots_columns
 def save_plot(filename):
     plt.savefig(filename, pad_inches=PAD_INCHES, bbox_inches = 'tight')
     plt.show()
+
+def attach_colorbar(axis, im, side='right'):
+    divider = make_axes_locatable(axis)
+    cax = divider.append_axes(side, size="5%", pad=0.05)
+    if side == 'right' or side =='left':
+        orientation = 'vertical'
+    else:
+        orientation = 'horizontal'
+    plt.colorbar(im, cax=cax, orientation=orientation)
