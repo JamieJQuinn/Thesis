@@ -1,0 +1,221 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import sys
+import importlib
+import math
+
+import numpy as np
+from scipy import special
+from scipy import interpolate
+import matplotlib.pyplot as plt
+
+sys.path.insert(0,'../shared')
+
+import plotting
+importlib.reload(plotting)
+from plotting import *
+
+outdir = "../../images/background/"
+```
+
+```{python}
+def calc_kappa(a):
+    kappa_erfi = 1/2.0*(1 + 1/(4*a)) - np.exp(2*a)/(2*np.sqrt(2*np.pi*a)*special.erfi(np.sqrt(2*a)))
+    kappa_erfi[0] = 1.0/3
+    return kappa_erfi
+
+def calc_s(a):
+    s = 1.0 - 3.0*calc_kappa(a)
+    s[a>70] = 1.0
+    s[a<0.1] = 0.0
+    return s
+```
+
+```{python}
+# Concentration param
+aMax = 100
+a = np.linspace(0, aMax, num=1000)
+a[0] = 1.0
+
+s = calc_s(a)
+fig, axis = create_axes(2)
+plt.plot(a, s)
+# plt.plot(a, kappa_erfi)
+plt.xlabel(r"$a$")
+plt.ylabel(r"$s$")
+plt.ylim(0, 1)
+plt.xlim(0, aMax)
+
+plt.show()
+```
+
+```{python}
+def calc_tau(T, n):
+    return 0.82e-6*T**(1.5)/n
+
+TEMP = 2e6
+NUM_DENSITY = 3e3
+TAU = calc_tau(TEMP, NUM_DENSITY)
+print(TAU)
+```
+
+```{python}
+ELECTRON_CHARGE = 1.60217662e-19
+PROTON_MASS = 1.6726219e-27
+
+def calc_omega(B):
+    return ELECTRON_CHARGE * B / PROTON_MASS
+
+print(ELECTRON_CHARGE/PROTON_MASS)
+print("For field strength of B=5e-3T, omega = ", calc_omega(5e-3))
+```
+
+```{python}
+def calc_x(B):
+    return TAU*calc_omega(B)
+
+print("Typical x_i:", calc_x(5e-3))
+```
+
+```{python}
+def calc_delta(x):
+    return 2.23 + 4.03*x**2 + x**4
+```
+
+```{python}
+def calc_eta_2(B):
+    x = calc_x(B)
+    return (6.0/5.0 * x**2 + 2.23)/calc_delta(x)
+
+def calc_eta_2_small_B(B):
+    x = calc_x(B)
+    return 1.0 + (6.0/5.0 - 4.03)/2.23*x**2 - (6/5-4.03**2 + 2.23)/2.23**2 * x**4
+
+def calc_eta_1_small_B(B):
+    return calc_eta_2_small_B(2*B)
+
+def calc_eta_1(B):
+    return calc_eta_2(2*B)
+
+def calc_eta_4(B):
+    x = calc_x(B)
+    return x*(x**2 + 2.38)/calc_delta(x)
+
+def calc_eta_3(B):
+    return calc_eta_4(2*B)
+```
+
+```{python}
+def a_hat(a0, B):
+    return a0*B**2
+```
+
+```{python}
+B0 = 5e-3
+B_max = 1e-7
+B = np.linspace(0, B_max, 100)
+
+a0 = 1e16
+
+a = a0*np.power(B, 2)
+a[0] = 1
+
+s = calc_s(a)
+eta_1 = calc_eta_1(B)
+eta_2 = calc_eta_2(B)
+eta_3 = calc_eta_3(B)
+eta_4 = calc_eta_4(B)
+
+fig, axis = create_axes(2)
+axis.plot(B, eta_1, label=r"$\eta_1$")
+# axis.plot(B, eta_2, label=r"$\eta_2$")
+axis.plot(B, eta_3, label=r"$\eta_3$")
+# axis.plot(B, eta_4, label=r"$\eta_4$")
+axis.set_xlabel(r"$|B|$")
+# axis.set_ylabel(r"$\eta_1, \eta_3$")
+axis.set_ylim(0, 1.1)
+axis.set_xlim(0, B[-1])
+axis.set_xticks([0, 5e-8, 1e-7])
+plt.legend(frameon=False)
+save_plot(outdir+"brag_coeffs.pdf")
+
+b1 = (3.0 + eta_1 - 4.0*eta_2)/3.0
+# b2 = (eta_2 - eta_1)*2.0/3.0
+b3 = eta_2 - eta_1
+
+fig, axis = create_axes(2)
+axis.plot(B, b1, label=r"$(3\eta_0 + \eta_1 - 4\eta_2)/3$")
+# axis.plot(B, b2, label=r"$(\eta_2 - \eta_1)$")
+axis.plot(B, b3, label=r"$\eta_2 - \eta_1$")
+axis.plot(B, eta_1, label=r"$\eta_1$")
+axis.set_xlabel(r"$|B|$")
+# axis.set_ylabel(r"$s$")
+axis.set_ylim(0.0, 1.1)
+axis.set_xlim(0, B[-1])
+axis.set_xticks([0, 5e-8, 1e-7])
+plt.legend(frameon=False)
+save_plot(outdir+"brag_coeffs_2.pdf")
+
+brag_zz = (3+4*eta_1 - 4*eta_2)/3
+brag_xz = eta_2
+brag_xx = (1-eta_1)/2
+brag_xy = eta_1
+
+fig, axis = create_axes(2)
+axis.plot(B, brag_zz, label=r"$1.0$")
+axis.plot(B, brag_xz, label=r"$\eta_{2}$")
+axis.plot(B, brag_xx, label=r"$(\eta_{0} - \eta_1)/2$")
+axis.plot(B, brag_xy, label=r"$\eta_{1}$")
+axis.set_xlabel(r"$|B|$")
+# axis.set_ylabel(r"$s$")
+axis.set_ylim(0, 1.1)
+axis.set_xlim(0, B[-1])
+axis.set_xticks([0, 5e-8, 1e-7])
+plt.legend(frameon=False)
+plt.show()
+
+# plt.plot(B, 1-np.power(s, 2))
+
+
+# plt.plot(B, a)
+# plt.plot(a, kappa_erfi)
+```
+
+```{python}
+def calc_eta0(T):
+    return 0.68e-16*np.power(T, 5/2)
+
+def calc_resistivity(T):
+    return 2e9*np.power(T, -3/2)
+
+V0 = 3.45e6
+L0 = 1e6
+RHO0 = 1.67e-12
+
+temp = np.linspace(1e4, 1e8, 100)
+viscosity = calc_eta0(temp)
+resistivity = calc_resistivity(temp)
+
+Re = V0*L0*RHO0/viscosity
+S = V0*L0/resistivity
+
+fig, axis = create_axes(2)
+axis.loglog(temp, viscosity, label=r'$\eta_0$')
+axis.loglog(temp, Re, label=r'Re')
+# axis.loglog(temp, resistivity, label='S')
+plt.legend(frameon=False)
+save_plot(outdir+"visc_dep_on_temp.pdf")
+```
