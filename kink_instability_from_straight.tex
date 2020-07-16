@@ -12,7 +12,7 @@ To investigate a simple, null-free topology, we start with a straight, uniform f
 \begin{equation}
 \vec{B} = (0, 0, 1)^{\text{T}},
 \end{equation}
-in a flow-free cube of dimension $[-2,2]^3$. The boundaries are such that the magnetic field, density, and energy are fixed to their initial values, and the boundary velocity given below. The spatial derivatives of these variables are also set to zero. We use a grid of size $256^3$ as our mid-resolution numerical domain. 
+in a cube of dimension $[-2,2]^3$. The velocity is set everywhere to $0$. The boundaries are such that the magnetic field, density, and energy are fixed to their initial values, and the boundary velocity given below. The spatial derivatives of these variables are also set to zero. The resolution of the grid is $256$ grid points per direction. 
 
 The fluid is twisted up by prescribing a slowly accelerating, rotating flow in a unit disc at the lower $z$ boundary as
 \begin{equation}
@@ -39,21 +39,20 @@ where $r^2 = x^2 + y^2$. The maximum twisting flow, at $r=0.5$, is smoothly ramp
   \begin{subfigure}{.45\textwidth}
   \centering
   \includegraphics[width=0.8\linewidth]{kink_fieldlines_initial.png}
-  \caption{Initially}
+  \caption{$t=0$}
   \label{fig:initial_kink_field}
   \end{subfigure}
   \begin{subfigure}{.45\textwidth}
   \centering
   \includegraphics[width=0.8\linewidth]{kink_fieldlines_final.png}
-  \caption{After $15$ Alfv\'en times}
+  \caption{$t=15$}
   \label{fig:twisted_kink_field}
   \end{subfigure}
-  
-  \caption{Trivial topology field lines}
+  \caption{Magnetic field lines before and after twisting motion.}
   \label{fig:kink_field_lines}
 \end{figure}
 
-This configuration produces a z-directed tube of twisted magnetic field that eventually becomes unstable to the helical kink instability and erupts. Although the setup is similar to that of a twisted coronal loop, including the resulting kink instability, it is not intended to be a realistic simulation of an erupting loop. Instead, the intention here is to investigate the differences in the viscosity models in two different topologies under similar stressed conditions.
+This configuration produces a $z$-directed tube of twisted magnetic field that eventually becomes unstable to the helical kink instability and erupts. Although the setup is similar to that of a twisted coronal loop, including the resulting kink instability, it is not intended to be a realistic simulation of an erupting loop. Instead, the intention here is to investigate the differences in the viscosity models in two different topologies under similar stressed conditions.
 
 \section{Results}
 
@@ -68,7 +67,7 @@ The initial reaction to the moving boundaries is two torsional Alfv\'en waves tr
 
 TODO plot iso/switching KE for both kink and fluting
 
-The field continues to be twisted, injecting energy into the magnetic field, until the tube reaches a critical point and an instability is excited. Due to our choice of parameters, we see two different instabilities being excited. The common $m=1$ helical kink mode, seen in figure~\ref{fig:kink_isosurface}, is excited when the resistivity is set to the smaller value of $10^{-4}$, regardless of the choice of the viscosity parameter. The other mode we find is perhaps a resistive kink mode with $m>1$ as has been found in cylindrical tokamaks~\cite{furthTearingModeCylindrical1973a}. This mode is excited when the resistivity is set to the higher value of $10^{-3}$, again regardless of the viscosity, and can be seen in figure~\ref{fig:other_instability_isosurface}. Though of interest, an investigation into the onset and stability of this unknown mode is not the focus of this paper.
+The field continues to be twisted, injecting energy into the magnetic field, until the tube reaches a critical point and an instability is excited. Due to our choice of parameters, we see two different instabilities being excited. The common $m=1$ helical kink mode, seen in figure~\ref{fig:kink_isosurface}, is excited when the resistivity is set to the smaller value of $10^{-4}$, regardless of the choice of the viscosity parameter. The other mode we find is perhaps a resistive kink mode with $m>1$ as has been found in cylindrical tokamaks~\cite{furthTearingModeCylindrical1973a}. This mode is excited when the resistivity is set to the higher value of $10^{-3}$, again regardless of the viscosity, and can be seen in figure~\ref{fig:other_instability_isosurface}. Though of interest, an investigation into the onset and stability of this unknown mode is not the focus of this chapter.
 
 \begin{figure}[t]
   \centering
@@ -88,6 +87,8 @@ The field continues to be twisted, injecting energy into the magnetic field, unt
   \caption{Onset of instabilities visualised as energy isosurfaces.}
   \label{fig:instability_isosurfaces}
 \end{figure}
+
+TODO what time are the figures at?
 
 At first glance, the behaviour of the two viscous models for each viscosity-resistivity combination is extremely similar. We see the most difference in the models when studying the high-viscosity ($\eta_0 = 10^{-3}$), low-resistivity ($\eta = 10^{-4}$) case, giving a magnetic Prandtl number of $P_r = 10$. 
 
@@ -173,7 +174,9 @@ What is interesting is that, specifically at $t=19$, the isotropic viscous force
 
 TODO Look at pertubation in form of x-vel and lorentz forces
 
-Another major difference between the two models is the eruption time of the instabilities. Plotting the kinetic energy over time gives a clear indication that using the anisotropic model leads to the instability erupting much sooner, with the delay totalling nearly an entire Alfv\'en time. This could in part be due to the \j{Dig into why this is happening. Is it boundary effects that sets of the instability? Anisotropic visc will not damp x velocities, so reflections will be greater. Is this a factor?}
+Another major difference between the two models is the eruption time of the instabilities. Plotting the kinetic energy over time gives a clear indication that using the anisotropic model leads to the instability erupting much sooner, with the delay totalling nearly an entire Alfv\'en time. This could in part be due to the 
+
+TODO Dig into why this is happening. Is it boundary effects that sets of the instability? Anisotropic visc will not damp x velocities, so reflections will be greater. Is this a factor?
 
 \begin{figure}[t]
   \centering

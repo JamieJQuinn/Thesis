@@ -4,7 +4,7 @@
 
 \section{Lare1D}
 
-LARE, an abbreviation of LAgragian-REmap, is a numerical scheme used to solve partial differential equations like those found in fluid dynamics and magnetohydrodynamics. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original, Eulerian grid. This two step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
+LARE, an abbreviation of LAgragian-REmap, is a numerical scheme used to solve partial differential equations like those found in fluid dynamics and magnetohydrodynamics. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original, Eulerian grid. This two-step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
 
 As a consequence of the Lagrangian step, the equations are solved in a much simpler form than if they were to be solved in equivalent Eulerian form. The disadvantage of this is that a complex remap step must be introduced. However, once the remap problem is solved, and it is only a complicated but tractable problem of geometry, it is not necessary to change the step when the physics are changed. Like other finite-volume methods, the method requires only local communication, that is a computation on a single cell requires only information from nearby cells. This locality reduces the overhead associated with communication between nodes when implementing the method on large clusters and makes the method viable for large-scale simulations. 
 
@@ -13,17 +13,17 @@ Here, we present the implementation and tests of a 1D LARE scheme applied to the
 \subsection{The physical model}
 For an ideal, inviscid fluid we use the 1D Euler equations, describing the change in density $\rho$ due to expansion or compression of the fluid through spatial change in the flow velocity $u$,
 \begin{equation}
-  \frac{D \rho}{Dt} + \rho\frac{\partial u}{\partial t}{x} = 0,\\
+  \frac{D \rho}{Dt} + \rho\frac{\partial u}{\partial x} = 0,\\
   \label{eqn-lare1d-density}
 \end{equation}
 the change in velocity due to a difference in pressure $p$,
 \begin{equation}
-  \frac{D u}{Dt} + \frac{1}{\rho}\frac{\partial p}{\partial t}{x} = 0,\\
+  \frac{D u}{Dt} + \frac{1}{\rho}\frac{\partial p}{\partial x} = 0,\\
   \label{eqn-lare1d-velocity}
 \end{equation}
 the change in internal energy $\varepsilon$ due to expansion or compression,
 \begin{equation}
-  \frac{D \varepsilon}{Dt} + \frac{p}{\rho}\frac{\partial u}{\partial t}{x} = 0,\\
+  \frac{D \varepsilon}{Dt} + \frac{p}{\rho}\frac{\partial u}{\partial x} = 0,\\
   \label{eqn-lare1d-energy}
 \end{equation}
 and an ideal equation of state,
@@ -61,24 +61,26 @@ As illustrated in figure~\ref{fig:staggered_grid}, the grid on which the variabl
 
 Due to the staggered grid, we define the derivative of the velocity at the centre of a cell to be the first-order, central finite-difference of the velocity at the boundaries,
 \begin{equation}
-  {\left( \frac{\partial u}{\partial t}{x} \right)}_i = \frac{u_i - u_{i-1}}{dxb_i},
+  {\left( \frac{\partial u}{\partial x} \right)}_i = \frac{u_i - u_{i-1}}{dxb_i},
   \label{}
 \end{equation}
 and similarly we define the derivative of pressure (or any of the other cell-centred variables) at the boundaries,
 \begin{equation}
-  {\left( \frac{\partial p}{\partial t}{x} \right)}_i = \frac{p_i - p_{i-1}}{dxc_i}.
+  {\left( \frac{\partial p}{\partial x} \right)}_i = \frac{p_i - p_{i-1}}{dxc_i}.
   \label{}
 \end{equation}
 
 \subsection{The Lagrangian Step}
-The Lagrangian step is made up of a predictor-corrector scheme, a type of time-integration scheme that approximates an implicit scheme. Each timestep is split into two substeps, the first calculating an approximation of the pressure, and the second using this pressure to advance all other variables to the next full timestep. Here we start at timestep $n$, the predictor step advances the pressure to timestep $n+1/2$ and then finally the corrector step advances the remaining variables to timestep $n+1$.
+The Lagrangian step uses a kind of predictor-corrector scheme to advance the system one timestep. Each timestep is split into two substeps, the first calculating an approximation of the pressure, and the second using this pressure to advance all other variables to the next full timestep. Here we start at timestep $n$, the predictor step advances the pressure to timestep $n+1/2$ and then finally the corrector step advances the remaining variables to timestep $n+1$.
+
+As a brief aside, it's unclear whether this type of numerical integration scheme could be considered a ``true'' predictor-corrector scheme, or instead an explicit Runge-Kutta method. Predictor-corrector schemes typically provide a prediction of the system at a single advanced timestep using an explicit method and then correct the values at that timestep using an implicit method~\cite{butcherNumericalMethodsOrdinary2004}. In contrast, an explicit Runge-Kutta scheme advances the system using multiple approximate solutions at intermediate timesteps. It is my opinion that this scheme is better described as a Runge-Kutta method. However the full 3D MHD code, Lare3D, and its corresponding literature~\cite{arberStaggeredGridLagrangian2001} uses predictor-corrector nomenclature, so those terms are used here for consistency with~\cite{arberStaggeredGridLagrangian2001}.
+
 \paragraph{The Predictor Step}
-It can be shown by Taylor expansion that calculating $u^{n+1}$, $\varepsilon^{n+1}$ and $\rho^{n+1}$ to second order only requires calculating $p^{n+1/2}$ to first order. This is done using equation~\eqref{eqn-lare1d-equation-of-state},
+It can be shown by Taylor expansion that calculating $u^{n+1}$, $\varepsilon^{n+1}$ and $\rho^{n+1}$ to second order only requires calculating $p^{n+1/2}$ to first order. Using equation~\eqref{eqn-lare1d-equation-of-state},
 \begin{equation}
   p_i^{n+1/2} = \varepsilon_i^{n+1/2}(\gamma-1)\rho_i^{n+1/2}.
   \label{eqn-predictor-pressure}
 \end{equation}
-
 The energy density at the half timestep is calculated from the discretisation of equation~\eqref{eqn-lare1d-energy},
 \begin{equation}
   \varepsilon_i^{n+1/2} = \varepsilon_i^{n} - \frac{dt}{2} \frac{1}{\rho_i^n} \frac{u_i^n - u_{i-1}^n}{dxb_i^n}p_i^{n+1/2}.
@@ -126,7 +128,7 @@ This allows the advancement of the energy to the next full timestep, calculated 
 We update the grid separation,
 \begin{align}
   dxb_i^{n+1} &=  dxb_i^n + dt(u_i^{n+1/2} - u_{i-1}^{n+1/2}),\\
-  dxc_i^{n+1} &=  (dxb_i + dxb_{i+1})/2,
+  dxc_i^{n+1} &=  (dxb_i^{n+1} + dxb_{i+1}^{n+1})/2,
   \label{eqn-lagrangian-grid-update}
 \end{align}
 and finally the density,
@@ -136,11 +138,9 @@ and finally the density,
 \end{equation}
 
 \subsection{Remap Step}
-Updating the variables during the Lagrangian step distorts the grid from its original state. The remap step rectifies this by mapping the variables from the distorted Lagrangian grid back to the original undeformed grid in a way that ensures conservation of mass. 
+Updating the variables during the Lagrangian step distorts the grid from its original state. The remap step rectifies this by mapping the variables from the distorted Lagrangian grid to the original, undeformed grid. We initially remap the density before switching to a mass coordinate to remap the energy and velocity. Using the mass coordinate has the benefit of conserving mass during the remap step.
 
-The remapping process requires no physics beyond the requirements that we conserve mass and energy, that is it is a purely geometrical exercise and the problem-specific physics are contained entirely in the Lagrangian step. This is advantageous when applying the scheme to a general set of problems since once the remap step is realised and implemented, the entire scheme can be adapted to a specific problem by changing only the equations in the Lagrangian step. It should also be noted that although the implementation detailed here takes one Lagrangian step per remap step, some LARE implementations take many Lagrangian steps, until the grid distortion becomes greater than some criteria, before a single remap step is taken. The following remap process could be used to remap a distortion created over multiple Lagrangian steps and only requires data from before and after the deformation of the grid. 
-
-In order to successfully conserve mass we initially remap the density and then use the mass coordinate as a new measure of distance to remap the energy and velocity. 
+The remapping process is a purely geometrical exercise and the problem-specific physics are contained entirely in the Lagrangian step. This is advantageous when applying the scheme to a general set of problems since once the remap step is realised and implemented, the entire scheme can be adapted to a specific problem by changing only the equations in the Lagrangian step. Major changes in geometry such as a different coordinate system or the inclusion of periodic boundary conditions would, however, require some adaptation in the remap step. Although the implementation detailed in this chapter takes one Lagrangian step per remap step, some LARE implementations take many Lagrangian steps, continuing until the distortion of the grid becomes greater than some criteria, only then performing a remap step. The following remap process could be used to remap a distortion created over multiple Lagrangian steps and only requires data from before and after the entire deformation of the grid. 
 
 \paragraph{The Density Remap}
 Due to the flow, after a single Lagrangian step an amount of mass $dM_i$ leaves the $i$-th Eulerian cell via the right hand side and an amount $dM_{i-1}$ enters via the left hand side, as shown in figure (TODO). The mass remaining in the cell is given by
@@ -168,7 +168,7 @@ Geometrically we can see that,
 \begin{align}
   \delta =  \frac{1}{2} dxb_i' - \frac{1}{2} \bar{u}_i dt = \frac{1}{2} dxb_i'(1-\psi),
 \end{align}
-where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$ TODO CHECK U BAR ISNT ABSOLUTE. The calculation of $\partial\rho_i'/ \partial x'$ is done with the use of flux limiters, discussed in section \ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
+where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$. The calculation of $\partial\rho_i'/ \partial x'$ is done with the use of flux limiters, discussed in section \ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
 \begin{equation}
 dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\partial t}{x'} \right) \bar{u}_i dt,
 \label{eqn-remap-mass-diff}
@@ -210,29 +210,46 @@ Hence,
 \end{equation}
 Since we are storing $\varepsilon$ in $x$-space, not in mass space, we use the fact that
 \begin{equation}
-  d\xi_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i\rho_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i \frac{\partial \varepsilon_i}{\partial t}{x}
+  d\xi_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i\rho_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i \frac{\partial \varepsilon_i}{\partial x}
 \end{equation}
 to rewrite $dE_i$ as
 \begin{equation}
-  dE_i = \left( \varepsilon_i' + \frac{1}{2}dxb_i\frac{\partial \varepsilon_i'}{\partial t}{x} \left( 1 - \frac{dM_i}{\rho_i dxb_i} \right) \right)dM_i,
+  dE_i = \left( \varepsilon_i' + \frac{1}{2}dxb_i\frac{\partial \varepsilon_i'}{\partial x} \left( 1 - \frac{dM_i}{\rho_i dxb_i} \right) \right)dM_i,
   \label{eqn-remap-energy-difference}
 \end{equation}
 where calculation of $\partial \varepsilon_i'/\partial\xi$ is again done using flux limiters and is discussed in section~\ref{sec-flux-limiters}. This final equation coupled with equation \eqref{eqn-remap-specific-energy-density} completes the specific energy density remap.
 
-\subsection{The Velocity Remap}
+\subsection{The velocity remap}
 \label{sec-remap-velocity}
 The velocity remap is nearly identical to the specific energy density remap completed within equations \eqref{eqn-remap-specific-energy-density} and \eqref{eqn-remap-energy-difference} so a derivation will not be given, however since the velocity is defined at cell centres, some of the relevant variables must be interpolated. The two equations required to remap the velocity are 
 \begin{align}
-  dU_i &= \left( u_i' + \frac{1}{2}dxc_i\frac{\partial u_i'}{\partial t}{x} \left( 1 - \frac{dM_{i+1/2}}{\rho_{i+1/2} dxc_i} \right) \right)dM_{i+1/2},\\
+  dU_i &= \left( u_i' + \frac{1}{2}dxc_i\frac{\partial u_i'}{\partial x} \left( 1 - \frac{dM_{i+1/2}}{\rho_{i+1/2} dxc_i} \right) \right)dM_{i+1/2},\\
   u_i^{n+1}  &= \frac{1}{dxc_i \rho_{i+1/2}^{n+1}}(u_i' dxc_i \rho_{i+1/2} + dU_{i-1} - dU_i),
 \end{align}
 where we have replaced the boundary distance $dxb$ with the cell centre distance $dxc$, mass is interpolated using a simple average, $dM_{i+1/2} = (dM_{i} + dM_{i+1})/2$ and the density is interpolated using equation \eqref{eqn-lagrangian-density-interpolation}. Once again, the derivative $\partial u_i' / \partial x$ is found using flux limiters. 
 
+\subsection{Constraints on the timestep}
+Lagrangian-remap schemes are often considered to be unconditionally stable and do not have a CFL condition like many explicit numerical schemes~\cite{batesMultiplyUpstreamSemiLagrangianAdvective1982}. Despite this, the remap step detailed previously makes some assumptions about how the grid deforms during the Lagrangian step, namely a gridpoint cannot be advected more than one grid separation away from its original position, and no grid separations may shrink to zero. The former condition, requiring the gridpoint advection to be less than the grid separation, appears similar to a standard CFL condition and is written,
+\begin{equation}
+  \label{eq:grid_condition1}
+  dt < \frac{dxb_i}{|u_i|}\ \forall i.
+\end{equation}
+The latter condition, requiring all grid separation remain positive, can be written using equation~\ref{eqn-predictor-boundary-distance} as,
+\begin{equation}
+  \label{}
+  dxb_i^n + \frac{dt}{2}(u_i^n - u_{i-1}^n) > 0,
+\end{equation}
+or, more explicitly,
+\begin{equation}
+  \label{eq:grid_condition2}
+  dt < 2\frac{dxb_i^n}{u_{i-1}^n - u_{i}^n}\ \forall i\  \text{where}\ u_{i-1}^n > u_{i}.
+\end{equation}
+Without these two conditions, were the velocity great enough, the grid may deform so much that the remap step would not be able to correctly remap the variables. With a more complex remap step, the assumptions about the grid deformation and corresponding timestep constraints could be relaxed.
+
 \subsection{Expansion to 3D}
 The 3D version of this remap step is of course much more involved geometrically but it follows an analogous path. Cell boundaries would be represented as cell planes and the boundary valued variables defined either on cell face centres or cell corners. In TODO REF ARBER the cell face centres are chosen due to the cell corners introducing unnecessarily complex geometrical problems.
 
-\subsection{Limits of the Remap Step}
-Looking at figure TODO DENSITY REMAP we can see a flaw in the remap step. What if the fluid moves so fast that the entire Eulerian cell is displaced? That is to say what if $\bar{u}_{i-1} dt > dxb_i$? The remap process would be unable to map the correct pieces of displaced mass to the Eulerian cells. A more robust (though much more complex) remap process could be constructed to handle this but a simpler solution would be to impose the limit that $\bar{u}_{i-1} dt < dxb_i$ over the entire grid. In practical tests this limit didn't appear to be breached, though I suspect small breaches of it would not cause solutions to explode, rather just lose mass erroneously. The limit could be breached in cases of very high fluid velocity or if too many Lagrangian steps were take per remap step.
+
 \section{Numerical Tools}
 \subsection{Flux Limiters}
 \label{sec-flux-limiters}
@@ -253,8 +270,6 @@ Looping over all grid points the updated velocity, velocity at half-timestep, de
 Completing one cycle of the simulation, the density and energy are remapped back to the original Eulerian grid using equations \eqref{eqn-remap-density}, \eqref{eqn-remap-mass-diff}, \eqref{eqn-remap-energy-difference} and \eqref{eqn-remap-specific-energy-density}. Once the relevant interpolations are complete, the velocity remap is achieved using the equations given in section \ref{sec-remap-velocity}. It is at this stage that the flux limiters are used to obtain the derivatives of density, energy and velocity with respect to $x$.
 
 \subsection{Language and Library Choice}
-This example of a LARE scheme was implemented in C++. This was due to the fact that it stradles well the boundary between speed and modern useability. The \emph{getopt} and \emph{json} libraries were used to allow input from a JSON file allowing for better flexibility. The unit testing library \emph{Catch} TODO REF was used to write some basic unit tests that greatly sped up any refactoring. Since this is a one-dimensional problem with limited complexity, there was no need to include parallelism in the code, though due to the lack of coupling between far apart grid points, it would a reasonably simple problem to parallelise.
-
-Some helper tools were also written in Python and running scripts in bash. Due to the strong numerical and plotting libraries available for Python, it is a natural choice of language to write certain tools in, particularly tools for constructing initial condition data files and analysis tools. The iteration cycle is also extremely fast for Python, so writing quick and dirty tools is almost pleasant.
+This example of a LARE scheme was implemented in C++, a language which balances computational speed and usability. The \emph{getopt} and \emph{json} libraries were used to allow input from a JSON file allowing for better flexibility. The unit testing library \emph{Catch} was used to write unit tests. Since this is a one-dimensional problem with limited complexity, there was no need to include parallelism in the code, though due to computations being well-localise, it would be a reasonably simple problem to parallelise using similar approaches to those commonly applied to finite-difference and finite-volume codes. Some helper tools were also written in Python and running scripts in bash. Due to the mature numerical and plotting libraries available for Python, it is a natural choice of language to write tools in.
 
 \section{Extension to 3D}
