@@ -1,5 +1,7 @@
 \chapter{Background Physics}
 
+\graphicspath{{images/background/}}
+
 \section{Introduction to solar physics}
 
 \subsection{Layers of the Sun}
@@ -208,7 +210,7 @@ giving a qualitative estimate for the size of the $xy$-term of the viscous stres
 The full Braginskii viscous stress tensor can be written in a number of ways. Braginskii's original formulation is written with the magnetic field aligned with the $z$-axis so we present here the more general formulation of Hogan~\cite{hoganCollisionalTransportMomentum1984}, described as the sum of five tensor components $\ten{W}^{(i)}$ with associated transport parameters $\eta_i$,
 \begin{equation}
 \label{eq:braginskii_tensor}
-\ten{\sigma}__{\text{brag}} = \eta_0 \ten{W}^{(0)} + \eta_1 \ten{W}^{(1)} + \eta_2 \ten{W}^{(2)} + \eta_3 \ten{W}^{(3)} + \eta_4 \ten{W}^{(4)}.
+\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} + \eta_1 \ten{W}^{(1)} + \eta_2 \ten{W}^{(2)} + \eta_3 \ten{W}^{(3)} + \eta_4 \ten{W}^{(4)}.
 \end{equation}
 
 As discussed in~\cite{kaufmanPlasmaViscosityMagnetic1960}, there are three types of motion that give rise to the five tensor components: compression or dilation along the field, deformations in the plane transverse to the field, and deformations in the plane including the field. The first type of motion gives rise to the parallel term,
@@ -218,18 +220,18 @@ As discussed in~\cite{kaufmanPlasmaViscosityMagnetic1960}, there are three types
 \end{equation}
 where $\vec{b} = \vec{B}/|\vec{B}|$ is the unit vector in the direction of the field. The second and third types of motion give rise to two types of stress, two perpendicular terms,
 \begin{align}
-\ten{W}^{(1)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}) + \frac{1}{2}(\ten{\ten{W}}\vec{b} \cdot \vec{b})(\ten{I} - \vec{b} \otimes \vec{b}), \\
-\ten{W}^{(2)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}(\vec{b} \otimes \vec{b}) + (\vec{b} \otimes \vec{b})\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}),  \\
+\ten{W}^{(1)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{W}(\ten{I} - \vec{b} \otimes \vec{b}) + \frac{1}{2}(\ten{W}\vec{b} \cdot \vec{b})(\ten{I} - \vec{b} \otimes \vec{b}), \\
+\ten{W}^{(2)} &= (\ten{I} - \vec{b} \otimes \vec{b})\ten{W}(\vec{b} \otimes \vec{b}) + (\vec{b} \otimes \vec{b})\ten{W}(\ten{I} - \vec{b} \otimes \vec{b}),  \\
 \end{align}
 and two terms often called the drift or gyroviscous terms,
 \begin{align}
-\ten{W}^{(3)} &= \frac{1}{2} \ten{Z}\ten{\ten{W}}(\ten{I} - \vec{b} \otimes \vec{b}) - \frac{1}{2}(\ten{I} - \vec{b} \otimes \vec{b})\ten{\ten{W}}\ten{Z}, \\
-\ten{W}^{(4)} &= (\ten{Z}\ten{\ten{W}}\vec{b}) \otimes \vec{b} + \vec{b} \otimes (\ten{Z} \ten{\ten{W}} \vec{b}), \\
+\ten{W}^{(3)} &= \frac{1}{2} \ten{Z}\ten{W}(\ten{I} - \vec{b} \otimes \vec{b}) - \frac{1}{2}(\ten{I} - \vec{b} \otimes \vec{b})\ten{W}\ten{Z}, \\
+\ten{W}^{(4)} &= (\ten{Z}\ten{W}\vec{b}) \otimes \vec{b} + \vec{b} \otimes (\ten{Z} \ten{W} \vec{b}), \\
 \label{eq:drift_terms}
 \end{align}
 where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$, where we use the standard double dot product $\ten{A}:\ten{B} = A_iB_i$.
 
-Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation}). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically. Braginskii's expressions are used where applicable.
+Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically. Braginskii's expressions are used where applicable.
 
 \begin{figure}[t]
   \centering
@@ -293,10 +295,10 @@ In a local coordinate system where the magnetic field is aligned with $b$, the t
   \label{eq:z_aligned_strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 \ten{W}_{zz} ( \text{diag}(0,0,1) - \tfrac{1}{3} \ten{I}),
 \end{equation}
-where diag$(a,b,c)$ is the diagonal $3\times3$ matrix with the values $a$, $b$ and $c$ along the diagonal. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\ref{eg:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
+where diag$(a,b,c)$ is the diagonal $3\times3$ matrix with the values $a$, $b$ and $c$ along the diagonal. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\ref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
 \begin{equation}
   \label{eq:z_aligned_iso}
-  \ten{\sigma}_{\text{iso}}_{zz} = \ten{\sigma}_{\text{brag}}_{zz} = \eta_0 \ten{W}_{zz}.
+  (\ten{\sigma}_{\text{iso}})_{zz} = (\ten{\sigma}_{\text{brag}})_{zz} = \eta_0 \ten{W}_{zz}.
 \end{equation}
 In the strong-field regime, the only motion damped by viscosity is non-uniform compression or dilation of the plasma. 
 
@@ -304,7 +306,7 @@ This approximation is valid even for more moderate, quiet sun condition, where v
 
 \subsection{Limit of weak magnetic field}
 
-While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $b$ in equations~\ref{eg:braginskii_parallel_term}--\ref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $b$ near the null would involve division by the magnitude of the field, a quantity close to or exactly zero, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\ref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
+While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $b$ in equations~\ref{eq:braginskii_parallel_term}--\ref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $b$ near the null would involve division by the magnitude of the field, a quantity close to or exactly zero, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\ref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
 \begin{eqnarray}\label{eq:brag_new}
 \ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{2|\vec{B}|^4}(\ten{W}\vec{B}\cdot\vec{B})(\vec{B}\otimes\vec{B})\\% \label{new1} \\
 \nonumber
@@ -322,24 +324,22 @@ the anisotropic terms and isotropic term are clearly separated. The grouping of 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=1.0\linewidth]{brag_coeffs2.pdf}
+  \includegraphics[width=0.5\linewidth]{brag_coeffs_2.pdf}
   \caption{Coefficients of the terms in equation~\ref{eq:brag_new2}, normalised against $\eta_0$.}%
   \label{fig:brag_coeffs2}
 \end{figure}
 
 The form of the Braginskii tensor as written in equation~\ref{eq:brag_new} is nearly in a form useful in understanding how quickly the tensor transitions from isotropic to anisotropic with changing magnetic field strength, since the isotropic component is completely isolated. Similarly, the parallel component can be isolated by further rewriting the tensor as,
 \begin{eqnarray}\label{eq:brag_new2}
-\ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{3|\vec{B}|^4}\ten{W}^{(0)}\\% \label{new1} \\
+\ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{3}\ten{W}^{(0)}\\% \label{new1} \\
 \nonumber
-& &+~ \frac{2}{3}\frac{\eta_1-\eta_2}{|\vec{B}|^2}(\ten{W}\vec{B}\cdot\vec{B})\ten{I}\\% \label{new2}\\
-\nonumber
-& &+~ \frac{\eta_2-\eta_1}{|\vec{B}|^2}[\ten{W}(\vec{B}\otimes\vec{B})+(\vec{B}\otimes\vec{B})\ten{W}] \\%\label{new3}\\
+& &+~ (\eta_2-\eta_1)[\ten{W}(\vec{b}\otimes\vec{b})+(\vec{b}\otimes\vec{b})\ten{W} - \frac{2}{3}(\ten{W}\vec{b}\cdot\vec{b})\ten{I}] \\%\label{new3}\\
 \nonumber
 & &+~ \eta_1\ten{W},%\label{new4}
 \end{eqnarray}
-Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2}. Over an extremely small range of $|\vec{B}|$, the Braginskii tensor goes from completely isotropic to nearly completely parallel. It is only over that same range that the coefficients corresponding to the perpendicular viscosity become notable. This small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}. 
+Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2}. Over the extremely small range between $|\vec{B}| = 0$ T and $10^{-7}$ T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively notable before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}. 
 
-In the simulations of magnetic null points found in chapter~\ref{chp:null_point_khi}, the magnetic field strength changes linearly in the $x$-direction, from $|\vec{B}|=0$T to $5\times 10^{-3}$T over one spatial unit, giving a gradient of $5\times 10^{-3}$T$/L_x$. Using a resolution of $640$ grid points in the $x$-direction and a simulation domain of size $7$, the grid spacing is $\Delta x \approx 0.01$, meaning the jump in magnetic field from a grid point located at the null to the next grid point is $5\times 10^{-5}$T. This large jump completely ignores the transition from isotropic to anisotropic and results in a lack of isotopic heating near the null, where some 
+In the simulations of magnetic null points found in chapter~\ref{chp:null_point_khi}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ to even begin to resolve the region of transition. Whether this region is physically significant is unknown, however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution and better resolve the viscosity transition region, however these can be complex to implement in already existing codes. A simpler way to improve the resolution is to artificially scale $|\vec{B}|$ in the expression~\ref{eq:perp_visc_coeff} to enlarge the isotropic region to resolvable scales. While this approach is less physically realistic, its use may give a useful indication of how physically important the viscosity transition region is.
 
 \section{Magnitude of transport parameters}
 
