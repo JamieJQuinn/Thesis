@@ -141,10 +141,10 @@ for i in range(1, 10):
 ```
 
 ```{python}
-run_folder = "v-3r-5-switching"
+run_folder = "v-4r-4-switching"
 sdf_folder = data_folder + p_study_folder + run_folder + "/Data/"
 
-for i in range(1, 10):
+for i in range(1, 15):
     print(i)
     sdfFile = sdf.read(format_filename(sdf_folder, i))
     
@@ -248,31 +248,70 @@ z_min = -0.1
 z_max = 0.1
 
 linestyles = ['-', '--', ':']
-labels = [r'$\eta = 10^{-3}$', r'$\eta = 10^{-4}$', r'$\eta = 10^{-5}$']
+colours = ['C2', 'C3', 'C4']
+labels = [r'$\nu = 10^{-5}, \eta = 10^{-3}$', r'$\nu = 10^{-4}, \eta = 10^{-4}$', r'$\nu = 10^{-3}, \eta = 10^{-5}$']
 
-for i in range(1, 11):
+for i in [8]:
     print(i)
-    fig, axes = plt.subplots(3, 1)
-    for j, run_folder in enumerate(["v-3r-3-switching", "v-3r-4-switching", "v-3r-5-switching"]):
+    fig, axes = create_axes(1, subplots_rows=2, sharex=True)
+    for j, run_folder in enumerate(["v-5r-3-switching", "v-4r-4-switching", "v-3r-5-switching"]):
         print(run_folder)
         sdf_folder = data_folder + p_study_folder + run_folder + "/Data/"
         sdfFile = sdf.read(format_filename(sdf_folder, i))
         fast_mach, alfven_mach, delta1 = \
         calc_mach_numbers(sdfFile, r_min, r_max, z_min, z_max)
         r = np.linspace(r_min, r_max, num=fast_mach.size)
-        axes[0].plot(r, fast_mach, linestyles[j], label=labels[j])
-        axes[1].plot(r, alfven_mach, linestyles[j])
-        axes[2].plot(r, delta1, linestyles[j])
+        axes[0].plot(r, fast_mach, linestyles[j], label=labels[j],
+                    color=colours[j])
+#         axes[1].plot(r, alfven_mach, linestyles[j])
+        axes[1].plot(r, delta1, linestyles[j],
+                    color=colours[j])
         straight_line = np.zeros_like(r) + 1.0
-        axes[2].plot(r, straight_line, 'k')
-        axes[0].set_title("fast_mach")
-        axes[1].set_title("alfven_mach")
-        axes[2].set_title("delta")
-    fig.legend()
+        axes[1].plot(r, straight_line, 'k', linewidth=0.5)
+        axes[0].set_ylabel(r"$M_f$")
+#         axes[1].set_title("alfven_mach")
+        axes[1].set_ylabel(r"$\Delta$")
+    axes[0].set_xlim(r_min, r_max)
+    axes[1].set_xlim(r_min, r_max)
+    axes[0].set_ylim(0, 0.5)
+    axes[1].set_ylim(0, 5)
+    plt.legend()
     plt.show()
-    fig.savefig("../../images/null_point_khi/mach_numbersv-3" + str(i) + ".pdf")
+#     fig.savefig("../../images/null_point_khi/mach_numbersv-3" + str(i) + ".pdf")
 ```
 
 ```{python}
+r_min = 0.2
+r_max = 2.0
 
+z_min = -0.1
+z_max = 0.1
+
+linestyles = ['-', '--', ':']
+colours = ['C2', 'C3', 'C4']
+labels = [r'$\nu = 10^{-5}, \eta = 10^{-3}$', r'$\nu = 10^{-4}, \eta = 10^{-4}$', r'$\nu = 10^{-3}, \eta = 10^{-5}$']
+
+for i in [8]:
+    print(i)
+    fig, axes = create_axes(2, subplots_rows=2)
+    for j, run_folder in enumerate(["v-5r-3-isotropic", "v-4r-4-isotropic", "v-3r-5-isotropic"]):
+        print(run_folder)
+        sdf_folder = data_folder + p_study_folder + run_folder + "/Data/"
+        sdfFile = sdf.read(format_filename(sdf_folder, i))
+        fast_mach, alfven_mach, delta1 = \
+        calc_mach_numbers(sdfFile, r_min, r_max, z_min, z_max)
+        r = np.linspace(r_min, r_max, num=fast_mach.size)
+        axes[0].plot(r, fast_mach, linestyles[j],
+                     label=labels[j], color=colours[j])
+#         axes[1].plot(r, alfven_mach, linestyles[j])
+        axes[1].plot(r, delta1, linestyles[j],
+                    color=colours[j])
+        straight_line = np.zeros_like(r) + 1.0
+        axes[1].plot(r, straight_line, 'k', linewidth=0.5)
+        axes[0].set_ylabel(r"$M_f$")
+#         axes[1].set_title("alfven_mach")
+        axes[1].set_ylabel(r"$\Delta$")
+    fig.legend()
+    plt.show()
+#     fig.savefig("../../images/null_point_khi/mach_numbersv-3" + str(i) + ".pdf")
 ```
