@@ -5,7 +5,6 @@ import sdf
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from plotting import latexify, save_plot
 from plotting_parameters import *
@@ -53,6 +52,54 @@ def get_variable_data(sdfFile, variable_name):
         return calc_parallel_electric_field(sdfFile)
     else:
         return get_variable(sdfFile, variable_name).data
+
+def get_variable_slice(sdfFile, variable_name, slice_dim, slice_loc):
+    if variable_name == "lorentz_force_x":
+        return calc_lorentz_force_component_slice(sdfFile, "x", slice_dim, slice_loc)
+    elif variable_name == "lorentz_force_y":
+        return calc_lorentz_force_component_slice(sdfFile, "y", slice_dim, slice_loc)
+    elif variable_name == "lorentz_force_z":
+        return calc_lorentz_force_component_slice(sdfFile, "z", slice_dim, slice_loc)
+    elif variable_name == "current_density_x":
+        return calc_current_slice(sdfFile, slice_dim, slice_loc)[0]
+    elif variable_name == "current_density_y":
+        return calc_current_slice(sdfFile, slice_dim, slice_loc)[1]
+    elif variable_name == "current_density_z":
+        return calc_current_slice(sdfFile, slice_dim, slice_loc)[2]
+    elif variable_name == "magnitude_current_density":
+        return np.linalg.norm(
+            calc_current_slice(sdfFile, slice_dim, slice_loc),
+            axis=0)
+    elif variable_name == "vorticity_density_x":
+        return calc_vorticity_slice(sdfFile, slice_dim, slice_loc)[0]
+    elif variable_name == "vorticity_density_y":
+        return calc_vorticity_slice(sdfFile, slice_dim, slice_loc)[1]
+    elif variable_name == "vorticity_density_z":
+        return calc_vorticity_slice(sdfFile, slice_dim, slice_loc)[2]
+    elif variable_name == "magnitude_vorticity_density":
+        return np.linalg.norm(
+            calc_vorticity_slice(sdfFile, slice_dim, slice_loc),
+            axis=0)
+    elif variable_name == "pressure_force_x":
+        return calc_pressure_force_component_slice(sdfFile, "x", slice_dim, slice_loc)
+    elif variable_name == "pressure_force_y":
+        return calc_pressure_force_component_slice(sdfFile, "y", slice_dim, slice_loc)
+    elif variable_name == "pressure_force_z":
+        return calc_pressure_force_component_slice(sdfFile, "z", slice_dim, slice_loc)
+    elif variable_name == "magnetic_tension_x":
+        return calc_magnetic_tension_force_component_slice(sdfFile, "x", slice_dim, slice_loc)
+    elif variable_name == "magnetic_tension_y":
+        return calc_magnetic_tension_force_component_slice(sdfFile, "y", slice_dim, slice_loc)
+    elif variable_name == "magnetic_tension_z":
+        return calc_magnetic_tension_force_component_slice(sdfFile, "z", slice_dim, slice_loc)
+    elif variable_name == "isotropic_viscous_force_x":
+        return calc_isotropic_viscous_force_component_slice(sdfFile, "x", slice_dim, slice_loc)
+    elif variable_name == "isotropic_viscous_force_y":
+        return calc_isotropic_viscous_force_component_slice(sdfFile, "y", slice_dim, slice_loc)
+    elif variable_name == "isotropic_viscous_force_z":
+        return calc_isotropic_viscous_force_component_slice(sdfFile, "z", slice_dim, slice_loc)
+    else:
+        return get_slice(sdfFile, variable_name, slice_dim, slice_loc)
 
 def calc_centred_velocity(var):
     x_av = var[1:,:,:] + var[:-1,:,:]
@@ -143,14 +190,6 @@ def get_magnetic_field(sdfFile):
 
     return mag_field
 
-def attach_colorbar(axis, im, side='right'):
-    divider = make_axes_locatable(axis)
-    cax = divider.append_axes(side, size="5%", pad=0.05)
-    if side == 'right' or side =='left':
-        orientation = 'vertical'
-    else:
-        orientation = 'horizontal'
-    plt.colorbar(im, cax=cax, orientation=orientation)
 
 def plot_slice(sdfFile, variable_name, dimension, slice_loc,
                cbar=INCLUDE_CBARS,
@@ -272,6 +311,248 @@ def get_magnitude_current(sdfFile):
 
     return mag_curl(bx, by, bz, dx, dy, dz)
 
+def calc_current_slice(sdfFile, slice_dim, slice_loc):
+    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
+    by = get_variable_data(sdfFile, "Magnetic_Field_By")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
+
+    bx, by, bz = centre_magnetic_field(bx, by, bz)
+
+    slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
+    indices_around_slice = (slice_index-1, slice_index, slice_index+1)
+
+    slice_dim = sanitise_dimension(slice_dim)
+
+    bx = bx.take(indices_around_slice, axis=slice_dim)
+    by = by.take(indices_around_slice, axis=slice_dim)
+    bz = bz.take(indices_around_slice, axis=slice_dim)
+
+    dx = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    cx, cy, cz = calc_curl(bx, by, bz, dx)
+
+    cx = np.squeeze(cx[1:-1,:,:])
+    cy = np.squeeze(cy[:,1:-1,:])
+    cz = np.squeeze(cz[:,:,1:-1])
+
+    return (cx, cy, cz)
+
+def calc_vorticity_slice(sdfFile, slice_dim, slice_loc):
+    vx = get_variable_data(sdfFile, "Velocity_Vx")
+    vy = get_variable_data(sdfFile, "Velocity_Vy")
+    vz = get_variable_data(sdfFile, "Velocity_Vz")
+
+    slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
+    indices_around_slice = (slice_index-1, slice_index, slice_index+1)
+
+    slice_dim = sanitise_dimension(slice_dim)
+
+    vx = vx.take(indices_around_slice, axis=slice_dim)
+    vy = vy.take(indices_around_slice, axis=slice_dim)
+    vz = vz.take(indices_around_slice, axis=slice_dim)
+
+    dx = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    cx, cy, cz = calc_curl(vx, vy, vz, dx)
+
+    cx = np.squeeze(cx[1:-1,:,:])
+    cy = np.squeeze(cy[:,1:-1,:])
+    cz = np.squeeze(cz[:,:,1:-1])
+
+    return (cx, cy, cz)
+
+def differentiate(var, dimension, dx):
+    # Differentiate var along given dimension (either string or index)
+    # using central difference. dx is vector of grid spacing (dx, dy, dz)
+    if type(dimension) is str:
+        dimension = get_dimension_index(dimension)
+
+    var_length = var.shape[dimension]
+    ip = np.arange(2, var_length)
+    im = np.arange(0, var_length-2)
+
+    return (var.take(ip, axis=dimension) - var.take(im, axis=dimension))/(2.0*dx[dimension])
+
+
+def calc_curl_component(var1, var2, dimension, dx):
+    # Calculates the curl of var using var1 and var2 as the components involved in the curl
+    # dx here is a vector of (dx, dy, dz)
+    if type(dimension) is str:
+        dimension = get_dimension_index(dimension)
+
+    if dimension == 0:
+        return differentiate(var2, "y", dx)[:,:,1:-1] - differentiate(var1, "z", dx)[:,1:-1,:]
+    elif dimension == 1:
+        return -(differentiate(var2, "x", dx)[:,:,1:-1] - differentiate(var1, "z", dx)[1:-1,:,:])
+    elif dimension == 2:
+        return differentiate(var2, "x", dx)[:,1:-1,:] - differentiate(var1, "y", dx)[1:-1,:,:]
+
+def calc_cross_component(var1, var2, dimension):
+    if type(dimension) is str:
+        dimension = get_dimension_index(dimension)
+
+    if dimension == 0:
+        return var1[1]*var2[2] - var1[2]*var2[1]
+        # return - var1[2]*var2[1]
+        # return var1[1]*var2[2]
+    elif dimension == 1:
+        return -(var1[0]*var2[2] - var1[2]*var2[0])
+    elif dimension == 2:
+        return var1[0]*var2[1] - var1[1]*var2[0]
+
+def calc_curl(varx, vary, varz, dx):
+    return (
+        calc_curl_component(vary, varz, "x", dx),
+        calc_curl_component(varx, varz, "y", dx),
+        calc_curl_component(varx, vary, "z", dx)
+    )
+
+def sanitise_dimension(dim):
+    if type(dim) is str:
+        return get_dimension_index(dim)
+    else:
+        return dim
+
+def get_thick_slice(var, slice_dim, slice_index):
+    # Returns a 3 gridpoint thick slice of the given variable
+    indices_around_slice = (slice_index-1, slice_index, slice_index+1)
+    return var.take(indices_around_slice, axis=slice_dim)
+
+def calc_pressure_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc):
+    var_dim = sanitise_dimension(var_dim)
+    slice_dim = sanitise_dimension(slice_dim)
+    pressure = get_variable_data(sdfFile, "pressure")
+    slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
+    # if slice_dim == var_dim:
+    pressure = get_thick_slice(pressure, slice_dim, slice_index)
+    # else:
+        # pressure = pressure.take(slice_index, axis=slice_dim)
+
+    dx = get_dx_dy_dz(sdfFile, cell_centre=True)
+    pressure_gradient = -differentiate(pressure, var_dim, dx)
+
+    for idx in [0,1,2]:
+        if idx != var_dim:
+            pressure_gradient = pressure_gradient.take(np.arange(1, pressure_gradient.shape[idx]-1), axis = idx)
+
+    pressure_gradient = np.squeeze(pressure_gradient)
+    return pressure_gradient
+
+def get_velocity_component(sdfFile, var_dim):
+    return get_variable_data(sdfFile, "Velocity_V" + var_dim)
+
+def calc_second_derivative(var, dimension, dx):
+    # calculate second deriative of var along given dimensionension (either string or index)
+    # using central difference. dx is vector of grid spacing (dx, dy, dz)
+    dimension = sanitise_dimension(dimension)
+
+    var_length = var.shape[dimension]
+    ip = np.arange(2, var_length)
+    i = np.arange(1, var_length-1)
+    im = np.arange(0, var_length-2)
+
+    return (var.take(ip, axis=dimension) - 2.0*var.take(i, axis=dimension) + var.take(im, axis=dimension))/(dx[dimension]**2)
+
+def calc_laplacian(var, dx):
+    ddx = calc_second_derivative(var, "x", dx)
+    for idx in [1, 2]:
+        ddx = ddx.take(np.arange(1, ddx.shape[idx]-1), axis = idx)
+
+    ddy = calc_second_derivative(var, "y", dx)
+    for idx in [0, 2]:
+        ddy = ddy.take(np.arange(1, ddy.shape[idx]-1), axis = idx)
+
+    ddz = calc_second_derivative(var, "z", dx)
+    for idx in [0, 1]:
+        ddz = ddz.take(np.arange(1, ddz.shape[idx]-1), axis = idx)
+
+    return ddx + ddy + ddz
+
+def calc_isotropic_viscous_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc):
+    vel = get_velocity_component(sdfFile, var_dim)
+    var_dim = sanitise_dimension(var_dim)
+    slice_dim = sanitise_dimension(slice_dim)
+    slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
+    vel = get_thick_slice(vel, slice_dim, slice_loc)
+    dx = get_dx_dy_dz(sdfFile)
+
+    laplacian = calc_laplacian(vel, dx)
+    laplacian = laplacian.take(0, axis=slice_dim)
+
+    return laplacian
+
+def calc_lorentz_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc):
+    slice_dim = sanitise_dimension(slice_dim)
+    var_dim = sanitise_dimension(var_dim)
+
+    bx, by, bz = get_thick_slice_magnetic_field(sdfFile, slice_dim, slice_loc)
+
+    dx = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    # calculate current density
+    cx, cy, cz = calc_curl(bx, by, bz, dx)
+
+    # Get into correct dimensions
+    cx = np.squeeze(cx[1:-1,:,:])
+    cy = np.squeeze(cy[:,1:-1,:])
+    cz = np.squeeze(cz[:,:,1:-1])
+
+    # properly slice field now
+    bx = bx.take(1, axis=slice_dim)
+    by = by.take(1, axis=slice_dim)
+    bz = bz.take(1, axis=slice_dim)
+
+    bx = bx[1:-1,1:-1]
+    by = by[1:-1,1:-1]
+    bz = bz[1:-1,1:-1]
+
+    return calc_cross_component((cx, cy, cz), (bx, by, bz), var_dim)
+
+def get_thick_slice_magnetic_field(sdfFile, slice_dim, slice_loc):
+    slice_dim = sanitise_dimension(slice_dim)
+    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
+    by = get_variable_data(sdfFile, "Magnetic_Field_By")
+    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
+
+    bx, by, bz = centre_magnetic_field(bx, by, bz)
+
+    slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
+    indices_around_slice = (slice_index-1, slice_index, slice_index+1)
+
+    # Take chunk of field around slice
+    bx = bx.take(indices_around_slice, axis=slice_dim)
+    by = by.take(indices_around_slice, axis=slice_dim)
+    bz = bz.take(indices_around_slice, axis=slice_dim)
+
+    return bx, by, bz
+
+def calc_magnetic_pressure_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc):
+    var_dim = sanitise_dimension(var_dim)
+    slice_dim = sanitise_dimension(slice_dim)
+
+    bx, by, bz = get_thick_slice_magnetic_field(sdfFile, slice_dim, slice_loc)
+
+    dx = get_dx_dy_dz(sdfFile, cell_centre=True)
+
+    magnetic_pressure = np.sqrt(bx*bx + by*by + bz*bz) * 0.5
+
+    mag_press_grad = differentiate(magnetic_pressure, var_dim, dx)
+
+    for idx in [0,1,2]:
+        if idx != var_dim:
+            mag_press_grad = mag_press_grad.take(np.arange(1, mag_press_grad.shape[idx]-1), axis = idx)
+
+    mag_press_grad = np.squeeze(mag_press_grad)
+
+    return mag_press_grad
+
+def calc_magnetic_tension_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc):
+    lorentz_force = calc_lorentz_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc)
+    mag_press_grad = calc_magnetic_pressure_force_component_slice(sdfFile, var_dim, slice_dim, slice_loc)
+
+    return lorentz_force + mag_press_grad
+
+
 def get_magnitude_current_at(sdfFile, zSliceIdx, xLimits = (0,-1), yLimits=(0,-1)):
     bx = slice_variable(\
         get_variable(sdfFile, "Magnetic_Field_bx_centred"),\
@@ -319,18 +600,44 @@ def get_dimension_index(dimension):
     elif dimension == "z":
         return 2
 
-def length_to_index(sdfFile, x, dimension):
+def length_to_index(sdfFile, x, dimension, relative=False):
+    """converts length along dimension to index distance"""
     if type(dimension) is str:
         dimension = get_dimension_index(dimension)
-    
+
     extents = sdfFile.Grid_Grid.extents
     dims = sdfFile.Grid_Grid.dims
-    
+
     x0 = extents[dimension]
     xN = extents[dimension + 3]
     N = dims[dimension]
-    
-    return int((x - x0)/(xN-x0) * (N-1))
+
+    dx = (xN-x0)/(N-1)
+
+    if relative:
+        # Don't move origin
+        return int(x/dx)
+    else:
+        # Move point to origin before converting
+        return int((x - x0)/dx)
+
+def index_to_length(sdfFile, idx, dimension, relative=False):
+    if type(dimension) is str:
+        dimension = get_dimension_index(dimension)
+
+    extents = sdfFile.Grid_Grid.extents
+    dims = sdfFile.Grid_Grid.dims
+
+    x0 = extents[dimension]
+    xN = extents[dimension + 3]
+    N = dims[dimension]
+
+    dx = (xN-x0)/(N-1)
+
+    if relative:
+        return idx*dx
+    else:
+        return idx*dx + x0
 
 def dimensionalise_temperature(tempIn):
     B0 = 5
