@@ -3,13 +3,120 @@
 
 \section{The switching model}
 
-The switching model is a model of viscosity that approximates the full Braginskii tensor throughout most of the solar corona. In strong magnetic fields, the Braginskii tensor can be approximated by the purely parallel term while in weak or null fields, the tensor reduces to fully isotropic, Newtonian viscosity. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. However, at the resolutions typically studied in 3D MHD simulations (between $300$ and $1000$ grid points per dimension) null points may be poorly resolved. This is particularly true in simulations where null points are dynamically created and are not the main object of investigation. By stripping out the perpendicular and drift elements of the full Braginskii tensor, the switching model presents a cleaner, better-resolved viscous model by focusing on what are, in many cases, the most physically important parts of anisotropic viscosity in the solar corona: the parallel and isotropic components. The idea at the core of the model is the interpolation between the parallel and isotropic tensors, mirroring the way in which the Braginskii tensor changes in strong and weak fields.
+As illustrated in chapter~\ref{chp:background}, the Braginskii model of viscosity fails to capture the transition between isotropic and anisotropic viscosity in the vicinity of magnetic null points. Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution and better resolve the viscosity transition region, however approaches like these can be complex to implement in existing codes. A simpler way to improve the resolution is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\ref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. The scaling factor applied to $|\vec{B}|$ effectively controls the interpolation between isotropic and parallel tensors. Going a step further and considering more general forms of interpolation, we can construct a variety of viscosity models useful in different circumstances and incorporating different physics.
 
+The switching model is a model of viscosity that approximates the full Braginskii tensor throughout most of the solar corona. In strong magnetic fields, the Braginskii tensor can be approximated by the purely parallel term while in weak or null fields, the tensor reduces to that of fully isotropic, Newtonian viscosity. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. However, at the resolutions typically studied in 3D MHD simulations (between $300$ and $1000$ grid points per dimension) null points are likely to be poorly resolved. This is particularly true in simulations where null points are not the main focus of the simulation, but are dynamically created by some process. By stripping out the perpendicular and drift elements of the full Braginskii tensor, the switching model presents a cleaner, better-resolved viscous model by focusing on what are, in many cases, the most physically important parts of anisotropic viscosity in the solar corona: the parallel and isotropic components. The idea at the core of the model is the interpolation between the parallel and isotropic tensors, mirroring the way in which the Braginskii tensor changes in strong and weak fields.
 
+\subsection{The switching function}
+
+The switching model takes the form of an interpolation between the isotropic and parallel tensors,
+\begin{equation}
+  \label{eq:switching_model_simple}
+\ten{\sigma}_{\text{swi}} = \eta_0 \left( 1 - s^2 \right) \ten{W} + \eta_0 s^2 \ten{W}^{(0)},
+\end{equation}
+or
+\begin{equation}
+  \label{eq:switching_model}
+\ten{\sigma}_{\text{swi}} = \eta_0 \left( 1 - s^2 \right) \ten{W} + \eta_0 s^2 \left[\frac{3}{2}(\ten{W}\vec{b}\cdot\vec{b}) \left( \vec{b} \otimes \vec{b} - \frac{1}{3}\ten{I} \right)\right],
+\end{equation}
+where the interpolation is governed by the square of the interpolation function, $s^2$. This takes the form,
+\begin{equation}
+  \label{eq:switching_function}
+s(|\vec{B}|) = \frac{3 \exp[2a]}{2\sqrt{2\pi a} \text{erfi}[\sqrt{2a}]} - \frac{1}{2}\left[ 1 + \frac{3}{4a} \right],
+\end{equation}
+where $a(|\vec{B}|)$ is a constitutive function which controls the sensitivity of the interpolation function to a change in magnetic field strength. Note also the use of erfi, the imaginary error function.
+
+\subsection{Derivation of the switching function}
+
+The switching function is derived as a result of deriving the structure tensor $\ten{H}$, which encodes the anisotropy of the momentum transport. The following derivation of $\ten{H}$ is related to that of~\cite{gasserHyperelasticModellingArterial2006} who use a similar method to derive a structure tensor to model the orientations of collagen fibres in arterial walls. 
+
+For the purposes of this derivation, we assume the magnetic field is non-zero, allowing us to use the unit vector $\vec{b} = \vec{B}/|\vec{B}|$. Physically, this direction gives the preferred orientation of momentum transport~\cite{braginskiiTransportProcessesPlasma1965}.
+
+We consider a probability density function $f_{\vec{x}} : \mathbb{S}^2 \to \mathbb{R}^+$ defined over the unit sphere $\mathbb{S}^2$, where $f_\vec{x}(\vec{t}) \text{d}\omega$ gives the probability of the momentum transport through the position $\vec{x}$ orienting along $\vec{t}$ within the solid angle d$\omega$. The density function must then satisfy the normalisation condition,
+\begin{equation}
+  \label{eq:normalisation_condition}
+  \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t}) \text{d}\omega = 1.
+\end{equation}
+
+Since we are considering a viscous model for use in single-fluid MHD, we assume the viscous transport is invariant under the transformation $\vec{b} \to -\vec{b}$. As a result, $f_\vec{x}(\vec{t} = f_\vec{x}(-\vec{t}$ and the first moment of the distribution is zero. The second moment is the variance tensor, written
+\begin{equation}
+  \label{eq:variance_tensor}
+\ten{M} = \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t}\vec{t} \otimes \vec{t} \text{d}\omega.
+\end{equation}
+Using an orthonormal basis ${\vec{e}_1, \vec{e}_2, \vec{e}_3}$, $\ten{M}$ can be rewritten as
+\begin{equation}
+  \label{eq:variance_tensor_basis}
+  \ten{M} = \sum_{i,j=1}^{3} \alpha_{ij} \vec{e}_i \otimes \vec{e}_j,
+\end{equation}
+where
+\begin{equation}
+  \label{eq:variance_components}
+\alpha_{ij} = \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t} t_i t_j \text{d}\omega,
+\end{equation}
+with $t_i$ being the components of $\vec{t}$ in our chosen basis.
+
+Without loss of generality, we consider a basis where the magnetic field is aligned with $\vec{e}_3$, that is $\vec{e}_3 = \vec{b}$. We may then characterise $\vec{t}$ in terms of two Euler angles, $\theta \in [0, \pi]$ and $\phi \in [0, 2\pi)$,
+\begin{equation}
+  \label{eq:t_in_euler}
+\vec{t} = \sin \theta \cos \phi \vec{e}_1 + \sin \theta \sin \phi \vec{e}_2 + \cos \theta \vec{e}_3.
+\end{equation}
+By rotational symmetry around $\vec{e}_3$, the density function must be independent of $\phi$, hence the normalisation condition becomes
+\begin{equation}
+  \label{eq:normalisation_condition2}
+\frac{1}{2} \int_0^{\pi} f_{\vec{x}} (\theta) \sin \theta \text{d} \theta = 1,
+\end{equation}
+and the variance tensor reduces to a diagonal tensor with components
+\begin{equation}
+  \label{eq:variance_diagonals}
+\alpha_{11} = \alpha_{22} = \kappa, \quad \alpha_{33} = 1-2\kappa, \quad \kappa = \frac{1}{4} \int_0^{\pi} f_{\vec{x}} (\theta) \sin^3 \theta \text{d} \theta.
+\end{equation}
+The full variance tensor can then be written in any basis as
+\begin{equation}
+  \label{eq:variance_tensor_compact}
+\ten{M} = \kappa \ten{I} + (1-3\kappa) \vec{b} \otimes \vec{b}.
+\end{equation}
+
+The parameter $\kappa$ is called the dispersion parameter and measures the anisotropy of the momentum transport, dependent on the strength of the local magnetic field. By inspecting equation~\ref{eq:variance_tensor_compact}, we can see that the momentum transport is fully parallel to the field for $\kappa = 0$ and completely isotropic for $\kappa = 1/3$. Where $1/3 < \kappa < 1/2$, the momentum transport aligns itself along directions perpendicular to the field, however we know that this is unphysical; for any non-zero strength of magnetic field the preferred direction of momentum transport is parallel to the field. Hence, we limit the dispersion parameter to
+\begin{equation}
+  \label{eq:dispersion_limits}
+0 \leq \kappa \leq 1/3.
+\end{equation}
+
+The preceding analysis has been performed using a general orientation density function $f_\vec{x}(\vec{t})$, however in order to proceed further, we much choose a specific form for the distribution. A natural choice is the transversely isotropic and $\pi$-periodic von Mises distribution which essentially maps the normal distribution onto the unit sphere. Modifying the distribution to satisfy the normalisation condition~\ref{eq:normalisation_condition2}, it is written
+\begin{equation}
+  \label{eq:von_mises}
+f_{\vec{x}}(\theta) = 2 \sqrt{\frac{2a}{\pi}} \frac{\exp(2a \cos^2 \theta)}{\text{erfi}(\sqrt{2a})},
+\end{equation}
+where erfi$(x) = -i$erf$(ix)$ is the imaginary error function and $a$ is a positive quantity called the concentration parameter. As $a \to 0$, $f_{\vec{x}} \to 1$, modelling isotropic momentum transport, while as $a \to + \infty$, $f_{\vec{X}}$ tends to the Dirac delta function, modelling strong-field, parallel momentum transport. Hence, this distribution models the behaviour we are looking for.
+
+TODO Plot von Mises dist like in MacTaggart et al along with kappa and s
+
+For convenience, we use the traceless part of the variance tensor $\ten{M}$,
+\begin{equation}
+  \label{eq:structure_tensor}
+\ten{H} = \ten{M} - \tfrac{1}{3} \ten{I} = s \left ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I} \right), \quad s = 1 - 3\kappa,
+\end{equation}
+where we have introduced the interpolation function $s$, first stated in equation~\ref{eq:switching_function}. The tensor $\ten{H}$ is similar in form to $\ten{W}^{(0)}$, .
 
 \section{Implementation in Lare3D}
 
-TODO include material from reports
+The strain rate tensor $\ten{W}$ is calculated in the code as
+\begin{verbatim}
+sxx = (2.0_num * dvxdx - dvydy - dvzdz) * third
+\end{verbatim}
+for the diagonal elements \verb|sxx|, \verb|syy| and \verb|szz| and
+\begin{verbatim}
+sxy = dvxy * 0.5_num
+\end{verbatim}
+for the off-diagonal elements \verb|sxy|, \verb|sxz| and \verb|syz|. Since $\ten{W}$ is a symmetrical tensor, only six components need to be calculated. The gradients of velocity, \verb|dv*|, are calculated using first order finite differences between appropriate velocity components. Note, the calculation of $\ten{W}$ in the code is a factor of a half smaller than the definition of $\ten{W}$ used in this thesis, equation~\ref{eq:rate_of_strain}. This is rectified during the calculation of the viscous stress tensor, where a factor of two is included.
+
+\subsection{Spline representation of interpolation function}
+
+Using a piecewise polynomial spline, s was splined using a maple script as below
+```
+INSERT MAPLE SCRIPT
+
+```
 
 \section{Initial tests}
 
