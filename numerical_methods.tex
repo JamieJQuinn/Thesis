@@ -70,12 +70,12 @@ and similarly we define the derivative of pressure (or any of the other cell-cen
   \label{}
 \end{equation}
 
-\subsection{The Lagrangian Step}
+\subsection{The Lagrangian step}
 The Lagrangian step uses a kind of predictor-corrector scheme to advance the system one timestep. Each timestep is split into two substeps, the first calculating an approximation of the pressure, and the second using this pressure to advance all other variables to the next full timestep. Here we start at timestep $n$, the predictor step advances the pressure to timestep $n+1/2$ and then finally the corrector step advances the remaining variables to timestep $n+1$.
 
-As a brief aside, it's unclear whether this type of numerical integration scheme could be considered a ``true'' predictor-corrector scheme, or instead an explicit Runge-Kutta method. Predictor-corrector schemes typically provide a prediction of the system at a single advanced timestep using an explicit method and then correct the values at that timestep using an implicit method~\cite{butcherNumericalMethodsOrdinary2004}. In contrast, an explicit Runge-Kutta scheme advances the system using multiple approximate solutions at intermediate timesteps. It is my opinion that this scheme is better described as a Runge-Kutta method. However the full 3D MHD code, Lare3D, and its corresponding literature~\cite{arberStaggeredGridLagrangian2001} uses predictor-corrector nomenclature, so those terms are used here for consistency with~\cite{arberStaggeredGridLagrangian2001}.
+It's unclear whether this type of numerical integration scheme could be considered a ``true'' predictor-corrector scheme, or instead an explicit Runge-Kutta method. Predictor-corrector schemes typically provide a prediction of the system at a single advanced timestep using an explicit method and then correct the values at that timestep using an implicit method~\cite{butcherNumericalMethodsOrdinary2004}. In contrast, an explicit Runge-Kutta scheme advances the system using multiple approximate solutions at intermediate timesteps. It is my opinion that this scheme is better described as a Runge-Kutta method. However the full 3D MHD code, Lare3D, and its corresponding literature~\cite{arberStaggeredGridLagrangian2001} uses predictor-corrector nomenclature, so those terms are used here for consistency with~\cite{arberStaggeredGridLagrangian2001}.
 
-\paragraph{The Predictor Step}
+\paragraph{The predictor step}
 It can be shown by Taylor expansion that calculating $u^{n+1}$, $\varepsilon^{n+1}$ and $\rho^{n+1}$ to second order only requires calculating $p^{n+1/2}$ to first order. Using equation~\eqref{eqn-lare1d-equation-of-state},
 \begin{equation}
   p_i^{n+1/2} = \varepsilon_i^{n+1/2}(\gamma-1)\rho_i^{n+1/2}.
@@ -101,7 +101,7 @@ and feeding this into the calculation of the volume change, and thus the updated
   \label{eqn-predictor-density}
 \end{equation}
 
-\paragraph{Corrector Step}
+\paragraph{The corrector step}
 \label{sec-corrector-step}
 After the half-timestep pressure has been calculated, the velocity, energy and grid spacing are all advanced to time index $n+1$. The velocity is calculated through the discretisation of equation~\eqref{eqn-lare1d-velocity},
 \begin{equation}
@@ -137,13 +137,13 @@ and finally the density,
   \label{}
 \end{equation}
 
-\subsection{Remap Step}
+\subsection{The remap step}
 Updating the variables during the Lagrangian step distorts the grid from its original state. The remap step rectifies this by mapping the variables from the distorted Lagrangian grid to the original, undeformed grid. We initially remap the density before switching to a mass coordinate to remap the energy and velocity. Using the mass coordinate has the benefit of conserving mass during the remap step.
 
 The remapping process is a purely geometrical exercise and the problem-specific physics are contained entirely in the Lagrangian step. This is advantageous when applying the scheme to a general set of problems since once the remap step is realised and implemented, the entire scheme can be adapted to a specific problem by changing only the equations in the Lagrangian step. Major changes in geometry such as a different coordinate system or the inclusion of periodic boundary conditions would, however, require some adaptation in the remap step. Although the implementation detailed in this chapter takes one Lagrangian step per remap step, some LARE implementations take many Lagrangian steps, continuing until the distortion of the grid becomes greater than some criteria, only then performing a remap step. The following remap process could be used to remap a distortion created over multiple Lagrangian steps and only requires data from before and after the entire deformation of the grid. 
 
 \paragraph{The Density Remap}
-Due to the flow, after a single Lagrangian step an amount of mass $dM_i$ leaves the $i$-th Eulerian cell via the right hand side and an amount $dM_{i-1}$ enters via the left hand side, as shown in figure (TODO). The mass remaining in the cell is given by
+Due to the flow, after a single Lagrangian step an amount of mass $dM_i$ leaves the $i$-th Eulerian cell via the right hand side and an amount $dM_{i-1}$ enters via the left hand side, as shown in figure~\ref{fig:mass_movement}. The mass remaining in the cell is given by
 \begin{equation}
   \rho^{n+1}_i dxb_i = \rho'_i dxb'_i - dM_i + dM_{i-1},
   \label{eqn-remap-mass-in-cell}
@@ -154,15 +154,20 @@ where we use $\rho_i$ without the dash to denote the density before the Lagrangi
   \label{eqn-remap-density}
 \end{equation}
 
-TODO FIGURE
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.7\linewidth]{mass_movement.pdf}
+  \caption{Advection of mass from one cell to an adjacent cell.}%
+  \label{fig:mass_movement}
+\end{figure}
 
-As can be seen from figure TODO, since we are considering $\rho_i$ to be piecewise linear, the mass leaving the right hand side is given by
+As can be seen from figure~\ref{fig:mass_movement}, since we are considering $\rho_i$ to be piecewise linear, the mass leaving the right hand side is given by
 \begin{equation}
   dM_i = \rho_c \bar{u}_i dt,
 \end{equation}
 where $\bar{u}$ denotes the velocity of the boundary which, as seen in equation \eqref{eqn-lagrangian-grid-update}, is given by the half-timestep velocity $u_i^{n+1/2}$. If multiple Lagrangian timesteps were being taken, the single distance $\bar{u}_i dt$ would be replaced by the total distance that the boundary moved. The density of the part of the cell that has moved beyond the right hand side boundary is given by
 \begin{equation}
-  \rho_c = \rho_i' + \delta \frac{\partial \rho_i'}{\partial t}{x'}.
+  \rho_c = \rho_i' + \delta \frac{\partial \rho_i'}{\partial x'}.
 \end{equation}
 Geometrically we can see that,
 \begin{align}
@@ -170,7 +175,7 @@ Geometrically we can see that,
 \end{align}
 where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$. The calculation of $\partial\rho_i'/ \partial x'$ is done with the use of flux limiters, discussed in section \ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
 \begin{equation}
-dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\partial t}{x'} \right) \bar{u}_i dt,
+dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\partial x'} \right) \bar{u}_i dt,
 \label{eqn-remap-mass-diff}
 \end{equation} 
 and using equation \eqref{eqn-remap-density} we complete the remap of the density.
@@ -192,13 +197,13 @@ where $dE_i$ is the amount of energy being advected out of the cell through the 
 \end{equation}
 where we have again made use of mass conservation, $dxb_i \rho_i = dxb_i' \rho_i'$.
 
-Drawing a similar figure to TODO DENSITY FIG leads us to geometrically calculate $dE_i$ to be
+Drawing a similar figure to~\ref{fig:mass_movement} leads us to geometrically calculate $dE_i$ to be
 \begin{equation}
   dE_i = \varepsilon_c dM_i.
 \end{equation}
 It can be seen that
 \begin{equation}
-  \varepsilon_c = \varepsilon_i' + \delta \frac{\partial \varepsilon_i'}{\partial t}{\xi},
+  \varepsilon_c = \varepsilon_i' + \delta \frac{\partial \varepsilon_i'}{\partial xi},
 \end{equation}
 and
 \begin{equation}
@@ -206,11 +211,11 @@ and
 \end{equation}
 Hence, 
 \begin{equation}
-  dE_i = \left( \varepsilon_i' + \frac{1}{2}\frac{\partial \varepsilon_i'}{\partial t}{\xi} (d\xi_i - dM_i) \right)dM_i.
+  dE_i = \left( \varepsilon_i' + \frac{1}{2}\frac{\partial \varepsilon_i'}{\partial \xi} (d\xi_i - dM_i) \right)dM_i.
 \end{equation}
 Since we are storing $\varepsilon$ in $x$-space, not in mass space, we use the fact that
 \begin{equation}
-  d\xi_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i\rho_i \frac{\partial \varepsilon_i'}{\partial t}{\xi} = dxb_i \frac{\partial \varepsilon_i}{\partial x}
+  d\xi_i \frac{\partial \varepsilon_i'}{\partial \xi} = dxb_i\rho_i \frac{\partial \varepsilon_i'}{\partial \xi} = dxb_i \frac{\partial \varepsilon_i}{\partial x}
 \end{equation}
 to rewrite $dE_i$ as
 \begin{equation}
