@@ -173,7 +173,13 @@ Geometrically we can see that,
 \begin{align}
   \delta =  \frac{1}{2} dxb_i' - \frac{1}{2} \bar{u}_i dt = \frac{1}{2} dxb_i'(1-\psi),
 \end{align}
-where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$. The calculation of $\partial\rho_i'/ \partial x'$ is done with the use of flux limiters, discussed in section \ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
+where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$. The calculation of $\partial\rho_i'/ \partial x'$ is performed using a third-order upwind method, given by
+\begin{equation}
+  \label{eq:upwind_method}
+D_i = \frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_i - f_{i-1}}{dxb_{i-1}}, \quad \bar{u_i} > 0,\\
+D_i = \frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_{i+2} - f_{i+1}}{dxb_{i+1}}, \quad \bar{u_i} \leq 0.
+\end{equation}
+The corresponding method for variables located at the boundaries uses the same formulae but with $dxb$ replaced by $dxc$. As is explained in section~\ref{sec:shock_capturing}, the naive application of this method can lead to numerical issues so, in practice, the gradient $D_i$ is limited using the flux limiter described in section~\ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
 \begin{equation}
 dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\partial x'} \right) \bar{u}_i dt,
 \label{eqn-remap-mass-diff}
@@ -252,16 +258,81 @@ or, more explicitly,
 Without these two conditions, were the velocity great enough, the grid may deform so much that the remap step would not be able to correctly remap the variables. With a more complex remap step, the assumptions about the grid deformation and corresponding timestep constraints could be relaxed.
 
 \subsection{Expansion to 3D}
-The 3D version of this remap step is of course much more involved geometrically but it follows an analogous path. Cell boundaries would be represented as cell planes and the boundary valued variables defined either on cell face centres or cell corners. In TODO REF ARBER the cell face centres are chosen due to the cell corners introducing unnecessarily complex geometrical problems.
+The 3D version of this remap step is of course much more involved geometrically but it follows an analogous path. Cell boundaries would be represented as cell planes and the boundary valued variables defined either on cell face centres or cell corners. In~\cite{arberStaggeredGridLagrangian2001} the cell face centres are chosen due to the cell corners introducing unnecessarily complex geometrical problems.
 
+\section{Shock capturing techniques}
+\label{sec:shock_capturing}
 
-\section{Numerical Tools}
+In hyperbolic systems of PDEs such as that given in equations~\ref{eqn-lare1d-density}--\ref{eqn-lare1d-energy} discontinuous solutions like shock waves are valid. While shock waves (or shocks) do have some physical width in real systems, they are typically so thin compared to the larger scales of the system that they are treated as discontinuities mathematically. Numerical solvers which aim to represent a solution on a finite grid of points struggle to provide enough resolution to accurately resolve a shock. When under-resolved, high-resolution numerical solvers may overestimate the shock, creating an overshoot in the solution and introducing spurious oscillations in the wake of the shock, known as the carbuncle phenomenon~\cite{rodionovArtificialViscosityCure2019}. Two methods of dealing with these unwanted oscillations are used in this code: flux limiters, which restricts spatial gradients and maintains monotonicity, and shock viscosity, which acts to better resolve the shock by spreading it over numerous grid points. The use of these techniques in both the 1D code and lare3d are detailed here.
+
 \subsection{Flux Limiters}
 \label{sec-flux-limiters}
 
-TODO
+Flux limiters are numerical tools applied to high-resolution schemes to reduce the spurious oscillations associated with such schemes by restricting the flux through some numerical interface. In practice, this often involves the restriction of spatial gradients, so flux limiters are often called slope limiters. A wide variety of flux limiters have been developed, however attention here is restricted to total variation diminishing (TVD) schemes, specifically that of van Leer~\cite{vanleerUltimateConservativeDifference1997}. For a review of other TVD schemes, see~\cite{zhangReviewTVDSchemes2015}, and for a review of the related essentially non-oscillatory scheme, see~\cite{shuHighOrderENO1999a}. 
+
+To measure the degree of oscillation in a quantity $q$, the total variation of the discretised quantity is defined as
+\begin{equation}
+  \label{eq:total_variation}
+TV(q) = \sum_{i=1}^{N} | q_i - q_{i-1} |.
+\end{equation}
+Any oscillation which is generated in the wake of a shock generates local maxima and minima which increase the total variation. TVD schemes aim to maintain, or at least decrease, this measure. As a result, a shock, which by its nature is monotonic, should remain monotonic when a TVD scheme is applied. A good TVD scheme should also only weakly affect maxima and minima which are true features of the solution.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.7\linewidth]{van_leer_flux_limiter}
+  \caption{The gradient at index $i$, $D_i$ (solid line) is limited to the gradient $D_i^{mono}$ (heavy solid line) to ensure the value of $f_i$ extrapolated to the left-hand boundary of the cell is less than the average value of the neighbouring cell, $f_{i-1}$. This diagram is a modified reproduction of that found in~\cite{vanleerUltimateConservativeDifference1997}.}%
+  \label{fig:van_leer_flux_limiter}
+\end{figure}
+
+Consider the cells shown in figure~\ref{fig:van_leer_flux_limiter}, where we wish to calculate the gradient of the quantity $f$ at the index $i$. This scheme is valid regardless of method of discretisation of the gradient so we label this gradient $D_i$ for now. The monotonicity requirement of van Leer requires the value of $f$, extrapolated to the boundary to the right to be less than the average value of that cell, $f_{i+1}$. For a cell centred variable, this condition can be written
+\begin{equation}
+  \label{eq:flux_limiter1}
+f_i + \tfrac{1}{2}D_i^{mono} dxb_i < f_{i+1} \quad \text{or} \quad D_i^{mono} < 2 (f_{i+1} - f_i) / dxb_i.
+\end{equation}
+Correspondingly, the value of $f$ extrapolated to the left must be greater than $f_{i-1}$ giving
+\begin{equation}
+  \label{eq:flux_limiter2}
+f_i - \tfrac{1}{2}D_i^{mono} dxb_i > f_{i-1} \quad \text{or} \quad D_i^{mono} < 2 (f_{i} - f_{i-1}) / dxb_i.
+\end{equation}
+When the gradients are reversed, a similar set of conditions exists to maintain monotonicity.
+
+These conditions on $D_i^{mono}$ are met if
+\begin{equation}
+  \label{eq:flux_limiter3}
+D_i^{mono} = s \min(|D_i|, 2 | f_{i+1} - f_i |, 2 |f_i - f_{i-1}|),
+\end{equation}
+where
+\begin{equation}
+  \label{eq:flux_limiter4}
+s =
+\left\{
+	\begin{array}{ll}
+		\text{sign}(D_i)  & \mbox{if } \text{sign}(D_i) = \text{sign}(f_{i+1} - f_i) = \text{sign}(f_{i} - f{i-1}) \\
+		0 & \mbox{otherwise}
+	\end{array}
+\right.
+\end{equation}
+The action of this second part of the limiter, represented by $s$, can be understood by considering a few example cases. The outputted gradient is only non-zero when the gradient $D_i$ aligns with neighbouring gradients, that is the signs of the gradients are all equal, as is the case in figure~\ref{fig:van_leer_flux_limiter}. In this case, the outputted slope is either the original slope if the monotonicity conditions are met, or a first-order approximation otherwise, as given by equation~\ref{eq:flux_limiter3}. In all other cases, for example where the cell $i$ represents a maxima or minima, the outputted gradient is zero to ensure monotonicity.
+
 \subsection{Shock Viscosity}
-TODO
+
+Shock viscosity (or artificial viscosity) is a method of artificially spreading the shock over multiple grid points, thus capturing the shock. An alternative to this, used particularly in supersonic aerodynamics, is the use of shock fitting techniques, where the location of the shock is determined numerically (or analytically if the location is known a priori) and the grid shaped to fit the shock and align the discontinuity with the grid points~\cite{paciorriShockfittingTechnique2D2009}.
+
+Mirroring the choice of shock viscosity used in lare3d~\ref{arberStaggeredGridLagrangian2001}, which is that of Wilkins~\cite{wilkinsUseArtificialViscosity1980a}, the artificial viscosity $q$ is taken to be
+\begin{equation}
+  \label{eq:artificial_viscosity}
+q = c_1 \rho c_s | \Delta u | + c_2^2 \rho (\Delta u)^2,
+\end{equation}
+where $c_s^2 = \gamma p / \rho$ is the sound speed, $\Delta u$ is the difference in velocity across the shock, and $c_1$ and $c_2$ are constants to be optimised by experiment. This is an extension of the widely-used von Neumann-Richtmyer shock viscosity~\cite{vonneumannMethodNumericalCalculation1950}. The scalar $q$ is added to the thermal pressure during the predictor stage of the Lagrangian step. Since the artificial viscosity is modifying the pressure, the energy equation must gain an additional term incorporating the heat generated by the shock viscosity, which takes the form $-q\Delta u/\rho$. To ensure this term only heats, it should only be included where $\Delta u < 0$. 
+
+In the full 3D code, shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. In that case, the viscosity takes the form
+\begin{equation}
+  \label{eq:3d_shock_viscosity}
+q = c_1 \rho c_f L |s| + c_2 L^2 \rho s^2,
+\end{equation}
+where $L$ and $s$ are the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\ref{eq:3d_shock_viscosity} reduces to equation~\ref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate.
+
+It should be noted that, for the purposes of writing the 1D version of LARE, shock viscosity is included, however in the numerical experiments performed in the remainder of this thesis, shock viscosity is turned off unless stated. This is due to the shock viscosity interfering with the results of investigating anisotropic viscosity.
 
 \section{Implementation}
 \subsection{Full recipe}
@@ -274,7 +345,7 @@ Looping over all grid points the updated velocity, velocity at half-timestep, de
 \paragraph{Remap Step}
 Completing one cycle of the simulation, the density and energy are remapped back to the original Eulerian grid using equations \eqref{eqn-remap-density}, \eqref{eqn-remap-mass-diff}, \eqref{eqn-remap-energy-difference} and \eqref{eqn-remap-specific-energy-density}. Once the relevant interpolations are complete, the velocity remap is achieved using the equations given in section \ref{sec-remap-velocity}. It is at this stage that the flux limiters are used to obtain the derivatives of density, energy and velocity with respect to $x$.
 
-\subsection{Language and Library Choice}
-This example of a LARE scheme was implemented in C++, a language which balances computational speed and usability. The \emph{getopt} and \emph{json} libraries were used to allow input from a JSON file allowing for better flexibility. The unit testing library \emph{Catch} was used to write unit tests. Since this is a one-dimensional problem with limited complexity, there was no need to include parallelism in the code, though due to computations being well-localise, it would be a reasonably simple problem to parallelise using similar approaches to those commonly applied to finite-difference and finite-volume codes. Some helper tools were also written in Python and running scripts in bash. Due to the mature numerical and plotting libraries available for Python, it is a natural choice of language to write tools in.
+\subsection{Language and library choice}
+This example of a LARE scheme was implemented in C++, a language which effectively balances computational speed and usability. The \emph{getopt} and \emph{json} libraries were used to take input from a JSON file allowing for better runtime flexibility. The unit testing library \emph{Catch} was used as the testing framework. Since this is a one-dimensional problem with limited complexity, there was no need to include parallelism in the code, although due to the computations being well-localised, it would be reasonably simple to parallelise the code using similar approaches to those commonly applied to finite-difference and finite-volume codes. Some helper tools were also written in Python and running scripts in bash. Due to the mature numerical and plotting libraries available for Python, it is a natural choice of language for developing tools.
 
 \section{Extension to 3D}
