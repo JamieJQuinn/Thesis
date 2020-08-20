@@ -45,17 +45,17 @@ which describes the change in a quantity as it moves with the flow $\vec{u}$.
 Modelling conservation of mass, the continuity equation describes the change in density $\rho$ due to the compression or dilation of the flow,
 \begin{equation}
 \frac{D\rho}{Dt} = - \rho \vec{\nabla} \cdot \vec{u}.
-\label{eq:continuity}
+\label{eq:ns_continuity}
 \end{equation}
 The momentum equation is an application of Newton's second law and models the conservation of momentum in a fluid with a scalar thermal pressure $p$ and viscous stress tensor $\ten{\sigma}$,
 \begin{equation}
 \rho\frac{D\vec{u}}{Dt} = -\vec{\nabla} p + \vec{\nabla} \cdot \ten{\sigma}.
-\label{eq:momentum}
+\label{eq:ns_momentum}
 \end{equation}
 The energy equation is given as
 \begin{equation}
 \rho\frac{D\varepsilon}{Dt} = -p \vec{\nabla} \cdot \vec{u} + \ten{\sigma} : \vec{\nabla}\vec{u},
-\label{eq:energy}
+\label{eq:ns_energy}
 \end{equation}
 and describes the change in internal thermal energy due to work done by pressure and viscous heating. This system of equations must be closed by an additional equation of state which. As given later, the ideal equation of state is sufficient, for the purposes of describing coronal plasma.
 
@@ -117,7 +117,7 @@ This equation essentially describes the advection and generation of a magnetic f
 
 Additional non-ideal physics like ambipolar diffusion and the Hall effect can be modelled through additional terms in Ohm's law, however in the solar corona these effects are small compared to resistivity so they are neglected.
 
-In order to describe the effect of the magnetic field on the fluid, additional terms must be added to the momentum~\ref{eq:momentum} and energy~\ref{eq:energy} equations. The Lorentz force describes the force exerted by the magnetic field on the fluid and is given by
+In order to describe the effect of the magnetic field on the fluid, additional terms must be added to the momentum~\ref{eq:ns_momentum} and energy~\ref{eq:ns_energy} equations. The Lorentz force describes the force exerted by the magnetic field on the fluid and is given by
 \begin{equation}
   \label{eq:lorentz_force}
 \vec{\jmath} \times \vec{B}.
@@ -125,13 +125,12 @@ In order to describe the effect of the magnetic field on the fluid, additional t
 TODO check units of this term
 Due to the way in which the field interacts with the flow[TODO why is this?], this force cannot do work and is not included in the energy equation. This does not necessarily mean the magnetic field cannot impart energy to the fluid. When the fluid is resistive, the dissipation of currents can heat the fluid through a process called Joule or Ohmic heating. This is modelled in the energy equation by the term
 \begin{equation}
-  \label{eq:ohmic_heating}
 \eta | \vec{\jmath} |^2.
 \end{equation}
 
 \subsection{The non-dimensionalised MHD equations}
 
-Combining the fluid equations~\ref{eq:continuity}--~\ref{eq:energy} and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
+Combining the fluid equations~\ref{eq:ns_continuity}--~\ref{eq:ns_energy} and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
 \begin{gather}
 %\begin{equation}
 \label{eq:mhda}
