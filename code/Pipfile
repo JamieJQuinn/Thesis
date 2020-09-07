@@ -12,6 +12,8 @@ numpy = "*"
 matplotlib = "*"
 scipy = "*"
 ipympl = "*"
+sympy = "*"
+pyevtk = "*"
 
 [requires]
 python_version = "3.7"
