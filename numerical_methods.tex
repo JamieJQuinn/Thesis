@@ -250,6 +250,8 @@ Without this condition a large enough velocity could deform the grid so much tha
 \subsection{Expansion to 3D}
 The 3D version of this remap step is of course much more involved geometrically but it follows an analogous path. Cell boundaries would be represented as cell planes and the boundary valued variables defined either on cell face centres or cell corners. In~\cite{arberStaggeredGridLagrangian2001} the cell face centres are chosen due to the cell corners introducing unnecessarily complex geometrical problems.
 
+\todo{this needs extending}
+
 \section{Shock capturing techniques}
 \label{sec:shock_capturing}
 
@@ -269,7 +271,7 @@ Any oscillation which is generated in the wake of a shock generates local maxima
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.7\linewidth]{van_leer_flux_limiter}
+  \includegraphics[width=0.4\linewidth]{van_leer_flux_limiter}
   \caption{The gradient at index $i$, $D_i$ (solid line) is limited to the gradient $D_i^{mono}$ (heavy solid line) to ensure the value of $f_i$ extrapolated to the left-hand boundary of the cell is less than the average value of the neighbouring cell, $f_{i-1}$. This diagram is a modified reproduction of that found in~\cite{vanleerUltimateConservativeDifference1997}.}%
   \label{fig:van_leer_flux_limiter}
 \end{figure}
@@ -318,7 +320,7 @@ where $c_s^2 = \gamma p / \rho$ is the sound speed, $\Delta u$ is the difference
 In the full 3D code, the shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, now modelled as a tensor similar to that of Newtonian viscosity, takes the form
 \begin{equation}
   \label{eq:3d_shock_viscosity}
-\ten{sigma}_{ij}^{shock} = (c_1 \rho c_f L |s| + c_2 L^2 \rho s^2) \ten{W},
+\ten{\sigma}_{shock} = (c_1 \rho c_f L |s| + c_2 L^2 \rho s^2) \ten{W},
 \end{equation}
 where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\ref{eq:3d_shock_viscosity} reduces to equation~\ref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
 
@@ -444,27 +446,29 @@ This is only one possible way to evaluate a numerical solution. As shall be seen
       \caption{Focused parameter search}%
       \label{fig:shock_parameter_search}
     \end{subfigure}
-    \caption{Wide and focused parameter searches over the shock viscosity parameters $\sigma_1$ and $\sigma_2$, giving overall optimal values of $\sigma_1 = 0.77$ and $\sigma_2 = 0$ (crosses). The optimal values are calculated as those values which minimise the error given by equation~\ref{eq:total_error}. The colour is added to aid visibility and represents the error $E$.}
+    \caption{Wide and focused parameter searches over the shock viscosity parameters $c_1$ and $c_2$, giving overall optimal values of $c_1 = 0.77$ and $c_2 = 0$ (crosses). The optimal values are calculated as those values which minimise the error given by equation~\ref{eq:total_error}. The colour is added to aid visibility and represents the error $E$. }
 \label{fig:shock_parameter_searches}%
 \end{figure}
 
-Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ as a function of $\sigma_1$ and $\sigma_2$. Using a resolution of $N=500$, an initial parameter study of $2500$ points covering $\sigma_1, \sigma_2 \in [0, 10]$ was run and found optimal values of $\sigma_1 = 0.8$ and $\sigma_2 = 0$. A more focused study of $5000$ points further optimised these values to $\sigma_1 = 0.77$ and $\sigma_2 = 0$.
+\todo{change the labels in param fig to c1 and c2}
+
+Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ as a function of $c_1$ and $c_2$. Using a resolution of $N=500$, an initial parameter study of $2500$ points covering $c_1, c_2 \in [0, 10]$ was run and found optimal values of $c_1 = 0.8$ and $c_2 = 0$. A more focused study of $5000$ points further optimised these values to $c_1 = 0.77$ and $c_2 = 0$.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{shock_viscosity_variables.pdf}
-  \caption{Solutions to the Sod problem for various values of the shock parameters at $t=0.2$ and for a resolution of $N=500$. The solution is plotted in the region $0.8 \leq x \leq 0.9$ to focus the shock itself. The analytical solution is also shown. Without shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using the optimal values of $\sigma_1 = 0.77$ and $\sigma_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, but at the expense of the shock being smeared over many grid points. Using values of $\sigma_1 = 0.1$ and $\sigma_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot, tracks the shock location better than no shock viscosity. Although using these values results in a more accurate, steeper shock gradient, the optimal values track the shock location more accurately.}%
+  \caption{Solutions to the Sod problem for various values of the shock parameters at $t=0.2$ and for a resolution of $N=500$. The solution is plotted in the region $0.8 \leq x \leq 0.9$ to focus the shock itself. The analytical solution is also shown. Without shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using the optimal values of $c_1 = 0.77$ and $c_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, but at the expense of the shock being smeared over many grid points. Using values of $c_1 = 0.1$ and $c_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot, tracks the shock location better than no shock viscosity. Although using these values results in a more accurate, steeper shock gradient, the optimal values track the shock location more accurately.}%
   \label{fig:shock_viscosity_variables}
 \end{figure}
 
-While the optimal values minimise the error given in equation~\ref{eq:total_error}, using a lower $\sigma_1$ and higher $\sigma_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
+While the optimal values minimise the error given in equation~\ref{eq:total_error}, using a lower $c_1$ and higher $c_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
 
 \subsubsection{Effect of resolution}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=1.0\linewidth]{resolution_study.pdf}
-  \caption{Solutions to the Sod problem for resolutions of $N=50,\ 100,$ and $500$ (solid lines). The analytical solution is also shown (dotted line). The solutions at resolutions $N=50$ and $N=100$ are shown with dots at the grid point locations. The solution given for $t=0.2$ and the shock viscosity parameters are $\sigma_1 = 0.77$ and $\sigma_2 = 0$.}
+  \caption{Solutions to the Sod problem for resolutions of $N=50,\ 100,$ and $500$ (solid lines). The analytical solution is also shown (dotted line). The solutions at resolutions $N=50$ and $N=100$ are shown with dots at the grid point locations. The solution given for $t=0.2$ and the shock viscosity parameters are $c_1 = 0.77$ and $c_2 = 0$.}
   \label{fig:resolution_study}
 \end{figure}
 
