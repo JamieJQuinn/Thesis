@@ -3,7 +3,7 @@
 
 \graphicspath{{images/background/}}
 
-In this chapter I introduce the physics required to understand the remainder of the thesis. To give context to the work I present an overview of the layers of the Sun, including a  summary of recent developments in coronal heating. Next, I present the magnetohydrodynamic equations and a detailed introduction to the anisotropic nature of viscosity in a magnetised plasma.
+In this chapter I introduce the physics required to understand the remainder of the thesis. To give context to the work I present an overview of the layers of the Sun, including a summary of recent developments in coronal heating. Then, I present the magnetohydrodynamic equations. Finally, I give a detailed introduction to the anisotropic nature of viscosity in a magnetised plasma and a review of modelling efforts so far.
 
 \section{Introduction to solar physics}
 
@@ -490,3 +490,7 @@ The form of the Braginskii tensor as written in equation~\ref{eq:brag_new} is ne
 Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2}. Over the extremely small range between $|\vec{B}| = 0$ T and $10^{-7}$ T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively significant before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}.
 
 In the simulations of magnetic null points found in chapter~\ref{chp:null_point_khi}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ to even begin to resolve the region of transition. Whether this region is physically significant is unknown, however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. Chapter~\ref{chp:switching_model} details how a novel model of viscosity, the switching model, helps to better resolve the viscous transition region.
+
+\section{Conclusion}
+
+\todo{conclusion}
