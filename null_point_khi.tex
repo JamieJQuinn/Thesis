@@ -1,4 +1,4 @@
-\chapter{The effect of viscosity on the Kelvin-Helmholtz instability in the fan plane of a null point}
+\chapter{Application to a dynamically twisted null point}
 \label{chp:null_point_khi}
 
 \graphicspath{{images/null_point_khi/}}
@@ -31,12 +31,7 @@ The domain is a box of length $7$ in the $x$ and $y$ directions and $0.5$ in the
   \label{fig:field_line_plots/v-4r-4-iso-field-8}
 \end{figure}
 
-The velocity driver at the upper and lower boundaries is identical to that used in chapter~\ref{chp:kink_instability_straight} with the exception that the radial dependence is given by
-\begin{equation}
-  \label{eq:khi_radial_twisting_function}
-  u_r(r) = 1 + \tanh(1 - r_d r^2),
-\end{equation}
-and the driver parameters are now $u_0 = 0.5$, $t_r = 0.25$ and $r_d = 36$. The peak velocity after the ramping time is still $u_0$. The driver twists the footpoints of the upper and lower spines of the null point, dragging the field and introducing twist throughout the entire null point (figure~\ref{fig:field_line_plots/v-4r-4-iso-field-8}). This field and driver is similar to the setup of Wyper and Pontin~\cite{wyperKelvinHelmholtzInstabilityCurrentvortex2013}.
+The velocity driver at the upper and lower boundaries is similar to that used in chapter~\ref{chp:kink_instability_straight} but with modified driver parameters of $u_0 = 0.09$, $u_{r0} = 5.56$, $t_r = 0.25$ and $r_d = 36$. The peak velocity after the ramping time is still $u_0$. The driver twists the footpoints of the upper and lower spines of the null point, dragging the field and introducing twist throughout the entire null point (figure~\ref{fig:field_line_plots/v-4r-4-iso-field-8}). This field and driver is similar to the setup of Wyper and Pontin~\cite{wyperKelvinHelmholtzInstabilityCurrentvortex2013}.
 
 The main parameter study required 18 simulations to be run in total; one per viscosity model for each of the 9 parameter choices. As a result we chose a relatively low resolution of $320$ grid points in each direction. A higher resolution pair of simulations were run for each viscosity model at the resolution of $640$ grid points. As well as forming the basis for a detailed analysis, these simulations provide evidence that the lower resolution simulations have suitably converged. 
 
@@ -361,12 +356,10 @@ Just as is found in the single case shown in section~\ref{sec:null_point_khi_sin
 
 In this chapter I have compared two models of viscosity applied to a magnetic null point which has been dynamically twisted at its footpoints in such a way that a current-vortex sheet forms in the fan plane. This sheet has the potential to become unstable to the KHI. It was found that increased viscous dissipation has a stabilising effect on the sheet, especially when the isotropic model is employed. This is due to viscosity thickening the sheet, increasing its stability. The presence of the instability enhances reconnection locally within the sheet.
 
-This numerical experiment has also shown that a null point can spontaneously collapse when subjected to a high degree of twist in its spines. The collapse is driven by spine-fan reconnection and its development is strongly influenced by the unravelling of the twisted spines. This may have an effect on the null's ability to undergo oscillatory reconnection (see~\cite{thurgoodThreedimensionalOscillatoryMagnetic2017}).
+This numerical experiment has also shown that a null point can spontaneously collapse when subjected to a high degree of twist in its spines. The collapse is driven by spine-fan reconnection and its development is strongly influenced by the unravelling of the twisted spines. This may have an effect on the ability of the null to undergo oscillatory reconnection (see~\cite{thurgoodThreedimensionalOscillatoryMagnetic2017}).
 
 What are consequences \& implications of results?
 
 What are downsides?
-
-TODO
 
 In hindsight, the resolution could have been better balanced by using more grid points in the relatively long $x$ and $y$ directions than the relatively short $z$ direction. A non-uniform grid could have been used, with higher resolution focused near the null point. We believe this would have sped up the runtime of the simulations and provided slightly better quantitative results, particularly for the simulations using low values for the resistivity and viscosity. however the results as presented have been verified with higher resolution tests of a sample of simulations. These were performed at double the resolution of $640$ grid points per dimension. .
