@@ -4,9 +4,11 @@
 
 \graphicspath{{images/numerical_methods/}}
 
+\todo{introduction}
+
 \section{Lare1D}
 
-LARE, an abbreviation of LAgragian-REmap, is a numerical scheme used to solve partial differential equations like those found in fluid dynamics and magnetohydrodynamics. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original, Eulerian grid. This two-step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
+Lare3d, an abbreviation of LAgragian-REmap 3d, is a numerical scheme used to solve partial differential equations like those found in fluid dynamics and magnetohydrodynamics. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original, Eulerian grid. This two-step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
 
 As a consequence of the Lagrangian step, the equations are solved in a much simpler form than if they were to be solved in equivalent Eulerian form. The disadvantage of this is that a complex remap step must be introduced. However, once the remap problem is solved, and it is only a complicated but tractable problem of geometry, it is not necessary to change the step when the physics are changed. Like other finite-volume methods, the method requires only local communication, that is a computation on a single cell requires only information from nearby cells. This locality reduces the overhead associated with communication between nodes when implementing the method on large clusters and makes the method viable for large-scale simulations. 
 
@@ -59,7 +61,7 @@ It describes how a quantity within a parcel of fluid changes as that parcel is a
 \label{fig:grid_and_remap}%
 \end{figure}
 
-As illustrated in figure~\ref{fig:staggered_grid}, the grid on which the variables are defined is staggered, that is the velocity is defined at the boundary of the cells, and all other variables are defined at cell centres. This is in contrast to collocated grids where all variables are defined at the same locations on a single grid. Without staggering, our specific choice of the spatial discretisation of derivatives would result in two sets of decoupled equations, one associated with even indices and one with odd. This problem, often called the checkerboard problem, can result in numerical instability and is a common numerical issue in computational fluid dynamics generally~\cite{ferzigerComputationalMethodsFluid2002}. Additionally, it has been found that the use of a staggered grid can improve the accuracy of a finite-difference scheme with little extra computational overhead~\cite{rojanaratanangkulePerformanceHighOrder2015}. However, a staggered grid is more complex to implement, requiring careful consideration of the precise locations of derivatives and the handling of two separate grids. 
+As illustrated in figure~\ref{fig:staggered_grid}, the grid on which the variables are defined is staggered, that is the velocity is defined at the boundary of the cells, and all other variables are defined at cell centres. This is in contrast to collocated grids where all variables are defined at the same locations on a single grid. Without staggering, our specific choice of the spatial discretisation of derivatives would result in two sets of decoupled equations, one associated with even indices and one with odd. This decoupling can cause a numerical instability often called the checkerboard problem and is a common numerical issue in computational fluid dynamics generally~\cite{ferzigerComputationalMethodsFluid2002}. Additionally, it has been found that the use of a staggered grid can improve the accuracy of a finite-difference scheme with little extra computational overhead~\cite{rojanaratanangkulePerformanceHighOrder2015}. However, a staggered grid is more complex to implement, requiring careful consideration of the precise locations of derivatives and the handling of two separate grids. 
 
 Due to the staggered grid, we define the derivative of the velocity at the centre of a cell to be the first-order, central finite-difference of the velocity at the boundaries,
 \begin{equation}
@@ -178,8 +180,11 @@ Geometrically we can see that,
 where we have extracted  written $\psi = \bar{u}_i dt / dxb_i'$. The calculation of $\partial\rho_i'/ \partial x'$ is performed using a third-order upwind method, given by
 \begin{equation}
   \label{eq:upwind_method}
-D_i = \frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_i - f_{i-1}}{dxb_{i-1}}, \quad \bar{u_i} > 0,\\
-D_i = \frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_{i+2} - f_{i+1}}{dxb_{i+1}}, \quad \bar{u_i} \leq 0.
+D_i = 
+\begin{cases}
+\frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_i - f_{i-1}}{dxb_{i-1}}, \quad \bar{u_i} > 0,\\
+\frac{2-\psi_i}{3} \frac{f_{i+1} - f_i}{dxb_i} + \frac{1+\phi_i}{3}\frac{f_{i+2} - f_{i+1}}{dxb_{i+1}}, \quad \bar{u_i} \leq 0.
+\end{cases}
 \end{equation}
 The corresponding method for variables located at the boundaries uses the same formulae but with $dxb$ replaced by $dxc$. As is explained in section~\ref{sec:shock_capturing}, the naive application of this method can lead to numerical issues so, in practice, the gradient $D_i$ is limited using the flux limiter described in section~\ref{sec-flux-limiters}. Thus we can calculate the mass leaving the right hand side, 
 \begin{equation}
@@ -310,7 +315,7 @@ The action of this second part of the limiter, represented by $s$, can be unders
 
 \subsection{Shock Viscosity}
 
-Shock viscosity (or artificial viscosity) is a method of artificially spreading the shock over multiple grid points, thus capturing the shock. An alternative to this, used particularly in supersonic aerodynamics, is the use of shock fitting techniques, where the location of the shock is determined numerically (or analytically if the location is known a priori) and the grid shaped to fit the shock and align the discontinuity with the grid points~\cite{paciorriShockfittingTechnique2D2009}.
+Shock viscosity (or artificial viscosity) is a method of artificially spreading the shock over multiple grid points, thus capturing the shock. An alternative to this, used particularly in supersonic aerodynamics, is the use of shock fitting techniques, where the location of the shock is determined numerically (or analytically if the location is known \emph{a priori}) and the grid shaped to fit the shock and align the discontinuity with the grid points~\cite{paciorriShockfittingTechnique2D2009}.
 
 Mirroring the choice of shock viscosity used in lare3d~\cite{arberStaggeredGridLagrangian2001}, which is that of Wilkins~\cite{wilkinsUseArtificialViscosity1980a}, the artificial viscosity $q$ is taken to be
 \begin{equation}
@@ -428,9 +433,9 @@ To compare the error between resolutions, the total error $E_N$ is calculated as
 \begin{equation}
   \label{eq:total_error}
 E_N = \frac{1}{3N} \left(
-\sum_{i=0}^{N-1} \norm{p_i - p(x_i)}_i
-+ \sum_{i=0}^{N-1} \norm{\rho_i - \rho(x_i)}_i
-+ \sum_{i=0}^{N-1} \norm{u_i - u(x_i)}_i \right).
+\sum_{i=0}^{N-1} \norm{p_i - p(x_i)}_2
++ \sum_{i=0}^{N-1} \norm{\rho_i - \rho(x_i)}_2
++ \sum_{i=0}^{N-1} \norm{u_i - u(x_i)}_2 \right).
 \end{equation}
 This is only one possible way to evaluate a numerical solution. As shall be seen later, certain choices of parameters lead to numerical solutions which are closest to the analytical solution, that is they minimise $E_N$ for a given $N$, however other parameter choices better resolve features like steep gradients at the expense of an increase in global error. Since this is only a toy problem, I will not attempt to quantify such trade-offs here, opting to use the simple error measure given by equation~\ref{eq:total_error}.
 
@@ -483,4 +488,8 @@ While the optimal values minimise the error given in equation~\ref{eq:total_erro
 
 The resolution affects the ability of the numerical scheme to adequately resolve discontinuities in the numerical solution. Figure~\ref{fig:resolution_study} shows three sample simulations at resolutions of $N=50$, $100$ and $500$. Although $N=500$ is a low resolution for 1D simulations, $500$ grid points per dimension in 3D MHD is a typical resolution. This simulation gives an indication of how well a fully 3D scheme might cope with shocks. Even with a low resolution of $N=50$, no features of the solution have been lost, although the discontinuities are artificially spread over a large distance.
 
-Figure~\ref{fig:effect_of_res_on_error} shows the error $E_N$ as a function of resolution. The slope of the dependence suggests the global error is linearly dependent on the inverse of the resolution, instead of a quadratic dependence as expected from a second order scheme. This may be a result of the numerical scheme reverting to first order in the vicinity of discontinuities, or it may indicate an error in the code or the scheme. Since this is a toy problem, I will not investigate further.
+Figure~\ref{fig:effect_of_res_on_error} shows the error $E_N$ as a function of resolution. The slope of the dependence suggests the global error is linearly dependent on the inverse of the resolution, instead of a quadratic dependence as expected from a second order scheme. This may be a result of the numerical scheme reverting to first order in the vicinity of discontinuities, or it may indicate an error in the code or the scheme. 
+
+\section{Conclusion}
+
+\todo{conclusion}
