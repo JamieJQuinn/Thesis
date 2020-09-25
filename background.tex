@@ -29,6 +29,59 @@ Although there are many kinds of impulsive heating events which could constitute
 
 \subsection{Dominance of dissipation mechanisms in the solar corona}
 
+\todo{sort out the following three paragraphs}
+
+The solar corona is heated to millions of degrees, whereas the surface of the Sun beneath it is only heated to the order of thousands of degrees~\cite{mandriniMagneticFieldPlasma2000}. It is generally accepted that this heating is derived mainly from the extraction of energy from the stressed magnetic field in the solar atmosphere, although exactly how this process occurs is still an area of active research~\cite{klimchukSolvingCoronalHeating2006a}. There has been much study of the direct transfer of magnetic energy to heat by Ohmic heating and the transfer through kinetic energy losses by viscous heating~\cite{klimchukSolvingCoronalHeating2006a,browningMechanismsSolarCoronal1991}. The relative importance and efficacy of these processes is found to depend on the models of plasma viscosity employed in the analyses. The aim of this work is to understand the effect of isotropic and anisotropic viscosity on the kink instability, a key phenomenon in coronal plasma dynamics.
+
+In many situations in the solar corona, the strength of viscosity
+can be greater than that of resistivity by many orders of
+magnitude, even when anomalous resistivity is considered. Due to this,
+viscous heating can outperform Ohmic heating in certain coronal
+situations, particularly those involving
+reconnection~\cite{browningMechanismsSolarCoronal1991,
+  craigViscousDissipation3D2013,
+  armstrongViscoResistiveDissipation2013,
+  hollwegViscosityChewGoldbergerLowEquations1986a}. These findings are
+dependent on how viscosity in the solar atmosphere is modelled. For a
+plasma in the presence of a strong magnetic field, viscosity is
+anisotropic and momentum transfer occurs preferentially in the
+direction of the magnetic
+field~\cite{braginskiiTransportProcessesPlasma1965}. A general
+description of anisotropic viscosity in the solar atmosphere is given
+in~\cite{hollwegViscosityMagnetizedPlasma1985,
+  hollwegViscosityChewGoldbergerLowEquations1986a}. More recent
+studies have demonstrated the importance of anisotropic viscosity for
+heating in investigations of three-dimensional (3D) null
+points~\cite{craigViscousDissipation3D2013}, current sheet
+merging~\cite{armstrongViscoResistiveDissipation2013} and flux
+pile-up~\cite{litvinenkoViscousEnergyDissipation2005}. There is
+further evidence of the importance of anisotropic viscosity in other
+astrophysical applications, including the intracluster medium~\cite{zuhoneEffectAnisotropicViscosity2014, parrishEffectsAnisotropicViscosity2012a} and the solar wind~\cite{baleMagneticFluctuationPower2009}. In other solar applications, viscosity has a role to play in the damping of coronal instabilities~\cite{howsonEffectsResistivityViscosity2017} and waves~\cite{vranjesViscosityEffectsWaves2014, erdelyiResonantAbsorptionAlfven1995a, rudermanSlowSurfaceWave2000a}, though not all these cases have been fully explored using an anisotropic model of viscosity.
+
+Implementing the full Braginskii viscosity
+tensor~\cite{braginskiiTransportProcessesPlasma1965} into existing
+magnetohydrodynamic (MHD) codes is not trivial. In the solar
+atmosphere, there are regions where the magnetic field is weak or
+vanishes (called null points) and at these locations the viscosity must
+transition smoothly from strongly anisotropic (in the direction of the
+magnetic field) to isotropic. Although the Braginskii tensor theoretically achieves
+this smooth transition, in practice the implementation
+of the full tensor in finite-difference MHD codes leads to numerical
+errors in the viscosity at locations where the magnetic field strength
+is very weak, due to a lack of sufficient resolution. Further
+exploration of this numerical issue can be found
+in~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}. One
+approach to solving this problem is to design a numerical scheme
+specifically to treat the full Braginskii tensor. Another approach is
+to devise a model that captures the main physics of the Braginskii
+tensor suitable for the solar corona and can be implemented in
+existing MHD codes~\cite{hollwegViscosityMagnetizedPlasma1985}. The
+second option was taken up by MacTaggart, Vergori and
+Quinn~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017},
+who developed a phenomenological model of anisotropic viscosity in the
+solar corona that captures the main physics for viscosity in the
+corona, namely parallel viscosity in regions of strong field strength and isotropic viscosity in regions of very weak or zero field strength. In this paper, we will refer to this model of viscosity as the \textit{switching model}, for short. The model interpolates between isotropic and parallel viscosity based on how the local magnetic field strength affects the distribution of momentum transport. The interpolation itself can be adjusted, effectively changing the size of isotropic (i.e.\ weak field) regions, to compensate for resolution issues in simulations. In numerical tests of stressed null points, comparing the isotropic and anisotropic models showed that the use of isotropic viscosity overestimates the viscous heating by an order of magnitude~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{visc_dep_on_temp.pdf}
@@ -151,6 +204,8 @@ This does not necessarily mean the magnetic field cannot impart energy to the fl
 \end{equation}
 
 \subsection{The non-dimensionalised MHD equations}
+
+\label{sec:mhd_equations}
 
 Combining the fluid equations~\ref{eq:ns_continuity}--~\ref{eq:ns_energy} and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
 \begin{gather}
