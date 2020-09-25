@@ -3,9 +3,13 @@
 
 \graphicspath{{images/development_of_switching_model/}}
 
+\todo{intro}
+
+\todo{Remove work on von Mises model. Instead discuss pros and cons of all models.}
+
 \section{The switching model}
 
-As illustrated in chapter~\ref{chp:background}, the Braginskii model of viscosity fails to capture the transition between isotropic and anisotropic viscosity in the vicinity of magnetic null points. Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution and better resolve the viscosity transition region, however approaches like these can be complex to implement in existing codes. A simpler way to improve the resolution is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\ref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. The scaling factor applied to $|\vec{B}|$ effectively controls the interpolation between isotropic and parallel tensors. Going a step further and considering more general forms of interpolation, we can construct a variety of viscosity models useful in different circumstances and incorporating different physics.
+As illustrated in chapter~\ref{chp:background}, a straight-forward numerical implementation of the Braginskii model of viscosity fails to capture the transition between isotropic and anisotropic viscosity in the vicinity of magnetic null points at resolutions typical of modern 3d simulations. Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution and better resolve the viscosity transition region, however approaches like these can be complex to implement in existing codes. A simpler way to improve the resolution is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\ref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. The scaling factor applied to $|\vec{B}|$ effectively controls the interpolation between isotropic and parallel tensors. Going a step further and considering more general forms of interpolation, we can construct a variety of viscosity models useful in different circumstances and incorporating different physics.
 
 The switching model is a model of viscosity that approximates the full Braginskii tensor throughout most of the solar corona. In strong magnetic fields, the Braginskii tensor can be approximated by the purely parallel term while in weak or null fields, the tensor reduces to that of fully isotropic, Newtonian viscosity. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. However, at the resolutions typically studied in 3D MHD simulations (between $300$ and $1000$ grid points per dimension) null points are likely to be poorly resolved. This is particularly true in simulations where null points are not the main focus of the simulation, but are dynamically created by some process. By stripping out the perpendicular and drift elements of the full Braginskii tensor, the switching model presents a cleaner, better-resolved viscous model by focusing on what are, in many cases, the most physically important parts of anisotropic viscosity in the solar corona: the parallel and isotropic components. The idea at the core of the model is the interpolation between the parallel and isotropic tensors, mirroring the way in which the Braginskii tensor changes in strong and weak fields.
 
@@ -37,13 +41,13 @@ For the purposes of this derivation, we assume the magnetic field is non-zero, a
 We consider a probability density function $f_{\vec{x}} : \mathbb{S}^2 \to \mathbb{R}^+$ defined over the unit sphere $\mathbb{S}^2$, where $f_\vec{x}(\vec{t}) \text{d}\omega$ gives the probability of the momentum transport through the position $\vec{x}$ orienting along $\vec{t}$ within the solid angle d$\omega$. Since this is a probability density function, it must satisfy the normalisation condition,
 \begin{equation}
   \label{eq:normalisation_condition}
-  \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t})\ \text{d}\omega = 1.
+  \frac{1}{4\pi} \int_{\mathbb{S}^2} f_\vec{x}(\vec{t})\ \text{d}\omega = 1.
 \end{equation}
 
-Single-fluid MHD does not typically rely on the specific orientation of the local magnetic field, only the direction, that is, it is invariant under the transformation $\vec{b} \to -\vec{b}$. Since this is a model of viscosity intended for use in single-fluid MHD, we assume the direction of momentum transport is similarly invariant. This gives $f_\vec{x}(\vec{t} = f_\vec{x}(-\vec{t}$ and the first moment of the distribution is zero as a result. The second moment is the variance tensor, written
+Single-fluid MHD does not typically rely on the specific orientation of the local magnetic field, only the direction. Mathematically, it is invariant under the transformation $\vec{b} \to -\vec{b}$. Since this is a model of viscosity intended for use in single-fluid MHD, we assume the direction of momentum transport is similarly invariant. This gives $f_\vec{x}(\vec{t}) = f_\vec{x}(-\vec{t})$ and the first moment of the distribution is zero as a result. The second moment is the variance tensor, written
 \begin{equation}
   \label{eq:variance_tensor}
-\ten{M} = \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t} \otimes \vec{t}) \ \text{d}\omega.
+\ten{M} = \frac{1}{4\pi} \int_{\mathbb{S}^2} f_\vec{x}(\vec{t} \otimes \vec{t}) \ \text{d}\omega.
 \end{equation}
 Using an orthonormal basis ${\vec{e}_1, \vec{e}_2, \vec{e}_3}$, $\ten{M}$ can be rewritten as
 \begin{equation}
@@ -53,7 +57,7 @@ Using an orthonormal basis ${\vec{e}_1, \vec{e}_2, \vec{e}_3}$, $\ten{M}$ can be
 where
 \begin{equation}
   \label{eq:variance_components}
-\alpha_{ij} = \frac{1}{4\pi} \int_{\mathbb{s}^2} f_\vec{x}(\vec{t} t_i t_j \text{d}\omega,
+\alpha_{ij} = \frac{1}{4\pi} \int_{\mathbb{S}^2} f_\vec{x}(\vec{t}) t_i t_j \text{d}\omega,
 \end{equation}
 with $t_i$ being the components of $\vec{t}$ in our chosen basis.
 
@@ -101,7 +105,7 @@ The preceding derivation has been performed using a general orientation density 
   \label{eq:von_mises}
 f_{\vec{x}}(\theta) = 2 \sqrt{\frac{2a}{\pi}} \frac{\exp(2a \cos^2 \theta)}{\text{erfi}(\sqrt{2a})},
 \end{equation}
-where erfi$(x) = -i$erf$(ix)$ is the imaginary error function and $a$ is a positive quantity called the concentration parameter which controls the shape of the distribution, as illustrated in figure~\ref{fig:von_mises_distribution}. As $a \to 0$, $f_{\vec{x}} \to 1$, modelling isotropic momentum transport, while as $a \to + \infty$, $f_{\vec{X}}$ tends to the Dirac delta function, modelling strong-field, parallel momentum transport. Hence, this distribution models the asymptotic behaviour we desire.
+where erfi$(x) = -i$erf$(ix)$ is the imaginary error function and $a$ is a positive quantity called the concentration parameter which controls the shape of the distribution, as illustrated in figure~\ref{fig:von_mises_distribution}. As $a \to 0$, $f_{\vec{x}} \to 1$, modelling isotropic momentum transport, while as $a \to + \infty$, $f_{\vec{x}}$ tends to the Dirac delta function, modelling strong-field, parallel momentum transport. Hence, this distribution models the asymptotic behaviour we desire.
 
 \begin{figure}[t]
   \centering
@@ -125,7 +129,7 @@ Note that asymptotically,
   \label{eq:asymptotic_s}
 s \sim \tfrac{4}{15} a + \mathcal{O}(a^2) \quad \text{as} \ a \to 0,
 \end{equation}
-and $s to 1$ as $a \to +\infty$. The switching function $s$ and the asymptotic limit as $a \to 0$ are shown in figure~\ref{fig:s_against_a}.
+and $s \to 1$ as $a \to +\infty$. The switching function $s$ and the asymptotic limit as $a \to 0$ are shown in figure~\ref{fig:s_against_a}.
 
 We now must link the magnetic field strength to the concentration parameter so that $s$ has the correct properties. We assume $a$ is a function of $|\vec{B}|$,
 \begin{equation}
@@ -141,7 +145,7 @@ we require $\hat{a}$ to satisfy the following properties:
 \begin{enumerate}[label={(\roman*)}]
   \item $\hat{a}$ is a non-negative, increasing function of $|\vec{B}|$,
   \item $\hat{a}(|\vec{B}|) \to + \infty$ as $|\vec{B}| \to + \infty$,
-  \item lim$_{\vec{B} to \vec{0}}(\hat{a}(|\vec{B}|)/ |\vec{B}|^2) \in \mathbb{R}$.
+  \item lim$_{\vec{B} \to \vec{0}}(\hat{a}(|\vec{B}|)/ |\vec{B}|^2) \in \mathbb{R}$.
 \end{enumerate}
 Property (iii) requires $\hat{a} \sim \mathcal{O}(|\vec{B}|^n)$ where $n \geq 2$ in the asymptotic limit $|\vec{B}| \to 0$. The reason for this requirement will be clear in a few lines as we remove the assumption that $|\vec{B}| \neq 0$.
 
@@ -155,28 +159,30 @@ where $s$ is now a function of $|\vec{B}|$. For $\ten{H}$ to remain finite as $|
 It can be shown (see~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}) that the most general form for a viscous stress tensor is
 \begin{equation}
   \label{eq:general_viscous_stress_tensor}
-\sigma_V = \beta_1 \ten{W} + \beta_2 [ \ten{W}^2 - \tfrac{1}{3} (\ten{W}^2)\ten{I}]\\
-+ \beta_3 \ten{H} + \beta_4 [ \ten{W} \ten{H} + \ten{H} \ten{W} - \tfrac{2}{3} ( \ten{W} \ten{H}) \ten{I}]\\
-+ \beta_5 [ \ten{W}^2 \ten{H} + \ten{H} \ten{W}^2 - \tfrac{2}{3} ( \ten{W}^2 \ten{H} ) \ten{I}.
+  \begin{split}
+\sigma_V &= \beta_1 \ten{W} + \beta_2 [ \ten{W}^2 - \tfrac{1}{3} (\ten{W}^2)\ten{I}] + \beta_3 \ten{H}\\
+&+ \beta_4 [ \ten{W} \ten{H} + \ten{H} \ten{W} - \tfrac{2}{3} ( \ten{W} \ten{H}) \ten{I}]\\
+&+ \beta_5 [ \ten{W}^2 \ten{H} + \ten{H} \ten{W}^2 - \tfrac{2}{3} ( \ten{W}^2 \ten{H} ) \ten{I}.
+  \end{split}
 \end{equation}
 Isotropic viscosity can be trivially recovered by setting $\beta_1 = \eta_0$ and all other $\beta$ to zero. The Braginskii tensor~\ref{eq:braginskii_tensor} can be written in this form by taking
-\begin{equation}
+\begin{align}
   \label{eq:brag_betas}
-\beta_1 = \frac{2 \eta_2 + \eta_1}{3},\\
-\beta_3 = \frac{3 \eta_0 + \eta_1 - 4\eta_2}{s^2}  (\ten{D}\ten{H}),\\
-\beta_4 = \frac{\eta_2 - \eta_1}{s},
-\end{equation}
+\beta_1 &= \frac{2 \eta_2 + \eta_1}{3},\\
+\beta_3 &= \frac{3 \eta_0 + \eta_1 - 4\eta_2}{s^2} \ \text{tr}(\ten{W}\ten{H}),\\
+\beta_4 &= \frac{\eta_2 - \eta_1}{s},
+\end{align}
 with the remaining values of $\beta$ being zero. We can construct a variation on the Braginskii tensor by taking
-\begin{equation}
+\begin{align}
   \label{eq:switching_betas}
-\beta_1 = \eta_0 [1 - s^2],\\
-\beta_3 = 3 \eta_0 (\ten{D} \ten{H}),
-\end{equation}
+\beta_1 &= \eta_0 [1 - s^2],\\
+\beta_3 &= 3 \eta_0\ \text{tr}(\ten{W} \ten{H}),
+\end{align}
 which results in the switching tensor, already stated in equation~\ref{eq:switching_model}.
 
 \subsection{Braginskii-inspired switching functions}
 
-The switching model and its associated interpolation function~\ref{eq:switching_function} provides an novel approach to generating viscous stress tensors in MHD. The interpolation function itself, however, is derived by considering only one possible orientation distribution function, the von Mises distribution. The Braginskii tensor as written in the form~\ref{eq:brag_new2} suggests two alternative interpolation functions, one based on the coefficient for the isotropic part $\eta_1$, and another based on the coefficient of the parallel part $(3\eta_0+\eta_1-4\eta_2)/3$. Figure~\ref{fig:brag_coeffs2} shows that the coefficient of the perpendicular term, $\eta_2 - \eta_1$ is not suitable as an interpolation function. The switching model coupled with one of these more physically-based interpolation functions can provide a more realistic model of anisotropic viscosity while retaining the benefits of the switching model. A more general form of the switching model is written
+The switching model and its associated interpolation function~\ref{eq:switching_function} provides an novel approach to generating viscous stress tensors in MHD. The interpolation function itself, however, is derived by considering only one possible orientation distribution function, the von Mises distribution. The Braginskii tensor as written in the form~\ref{eq:brag_new2} suggests two alternative interpolation functions, one based on the coefficient for the isotropic part $\eta_1$, and another based on the coefficient of the parallel part $(3\eta_0+\eta_1-4\eta_2)/3$. Figure~\ref{fig:brag_coeffs2} shows that the coefficient of the perpendicular term, $\eta_2 - \eta_1$ is not suitable as an interpolation function. The switching model coupled with one of these Braginskii-inspired interpolation functions provides an alternative to the von Mises function. A general form of the switching model is written
 \begin{equation}
   \label{eq:general_switching_model}
 \eta_0 \left( 1 - \tilde{s} \right) \ten{W} + \eta_0 \tilde{s}\ten{W}^{(0)},
@@ -266,7 +272,8 @@ Since the contribution of a generic viscous stress tensor to the momentum and en
 
 The four coefficients of the terms in equation~\ref{eq:brag_new} are calculated as
 \begin{verbatim}
-a = (3._num*visc3 + brag_visc1 - 4._num*brag_visc2)/MAX(2._num*mB2**2, none_zero)
+a = (3._num*visc3 + brag_visc1 - 4._num*brag_visc2)&
+    / MAX(2._num*mB2**2, none_zero)
 b = (brag_visc1 - visc3)/(2._num*mB2)
 c = (brag_visc2 - brag_visc1)/(mB2)
 d = brag_visc1
@@ -274,11 +281,12 @@ d = brag_visc1
 where \verb|visc3| is the variable holding the value of $\eta_0$, \verb|brag_visc1| and \verb|brag_visc2| hold the values of $\eta_1$ and $\eta_2$, calculated via equation~\ref{eq:perp_visc_coeff}, and \verb|mB2| holds the value of $|\vec{B}|^2$. This calculation is performed in the following way
 \begin{verbatim}
 xi2 = (brag_alpha**2) * mB2
-brag_visc_coeff = visc3*(6._num/5._num*xi2 + 2.23_num)/(2.23_num + 4.03_num*xi2 + xi2**2)
+brag_visc_coeff = visc3*(6._num/5._num*xi2 + 2.23_num)&
+                  / (2.23_num + 4.03_num*xi2 + xi2**2)
 \end{verbatim}
 where \verb|brag_alpha| is the physics-dependent $\alpha = e \tau / m$ TODO explain this earlier.
 
-The quantity $(\ten{W} \vec{B}) \cdot \vec{B})$ and the tensor components of $\vec{B} \otimes \vec{B}$ are calculated using the following snippet.
+The quantity $(\ten{W} \vec{B}) \cdot \vec{B}$ and the tensor components of $\vec{B} \otimes \vec{B}$ are calculated using the following snippet.
 \begin{verbatim}
 calc_wbdotb = 2._num*(&
   (bx*sxx + by*sxy + bz*sxz)*bx &
@@ -326,41 +334,23 @@ The numerical implementation of the interpolation function itself is discussed i
 
 \subsection{Spline representation of interpolation function}
 
-Using a piecewise polynomial spline, $s$ was approximated using the following maple code.
-\begin{verbatim}
-with(Student[NumericalAnalysis]);
-xy := [[0, 0], [0.5051, 0.02114], [1.54, 0.2023], [3.011, 0.508], [6.071, 0.7564], [12.97, 0.8854], [22.59, 0.9339], [29.41, 0.9492], [49, 0.97]];
-p1 := CubicSpline(xy, independentvar = x);
-expand(Interpolant(p1));
-\end{verbatim}
-The nodal value pairs contained within the variable \verb|xy| were calculated via the following maple code. The $x$ values were chosen to encourage a good fit.
-\begin{verbatim}
-kappa_erfi := a -> 1/2.0*(1 + 1/4*1/a) - 1/2*exp(2*a)/(sqrt(2*Pi*a)*erfi(sqrt(2*a)));
-s2_erfi := a -> (1.0 + (-1)*3.0*kappa_erfi(a))^2;
-\end{verbatim}
+For more efficient evaluation of $s$, it is approximated using a piecewise polynomial spline. For $a < 0.5051$, the function is clamped to $s=0$ and for $a > 29.41$, $s=1$. Between these cut-offs, $s$ is approximated using eight splines. The upper cut-off corresponds to the halo effect in the results presented later in section~\ref{sec:slow_null_point}.
 
-%0.0203207286957195 x+0.0843989591678155 x^3,x<0.5051
-%0.0159559056317913-0.0744480634040214 x+0.187623821223007 x^2-0.0394206285197758 x^3,x<1.54
-%-0.0887980204109068+0.129618026285783 x+0.0551133733724845 x^2-0.0107387134006150 x^3,x<3.011
-%-0.498332905576744+0.537656769397807 x-0.0804026489164638 x^2+0.00426361387592081 x^3,x<6.071
-%0.432999470914707+0.0774365207593949 x-0.00459631575250207 x^2+0.000101403742282107 x^3,x<12.97
-%0.609014168122852+0.0367237920294194 x-0.00145732356052247 x^2+0.0000207305941973063 x^3,x<22.59
-%0.852464153339503+0.00439311670189453 x-0.0000261294335846660 x^2-3.87808147946726 10^(-7) x^3,x<29.41
-%0.816478868872687+0.00806383596073046 x-0.000150941377101699 x^2+0.00000102681208912720 x^3,otherwise
+\todo{add to this?}
 
 \todo{plot the spline}
-
-
 
 \section{Application to stressed null point}
 
 \label{sec:slow_null_point}
 
-As a test of the switching model in a non-trivial topology, a series of simulations of magnetic null points subjected to twisting motions were carried out. Newtonian, full Braginskii and switching viscosities were used and the results compared.
+As a test of the switching model in a non-trivial topology, a series of simulations of magnetic null points subjected to twisting motions were carried out. Newtonian (isotropic), full Braginskii and switching viscosities were used and the results compared.
 
 \todo{describe ICs, BCs etc}
 
 \subsection{Results}
+
+\todo{respline switching function in python and rerun simulations}
 
 \label{sec:slow_null_results}
 
@@ -416,7 +406,7 @@ Table~\ref{tab:total_heating_slow_null} shows the total heat generated by $t=10$
 \label{fig:isotropic_heating}%
 \end{figure}
 
-Figure~\ref{fig:isotropic_heating} shows the isotropic heating rate at time $t=10$ for each viscosity model. Isotropic viscosity heats at a generally greater rate than the anisotropic models, and the heating is distributed more extensively throughout the null. The erroneously sharp boundary where isotropic viscosity turns off in the von Mises switching model can be seen in figure~\ref{fig:iso_heating_switching_10}. The heating generated by the two Braginskii-inspired models show most similarity to that of the Braginskii model, with the isotropic-based switching model showing a nearly identical heating profile. This is to be expected since the coefficients of the isotropic contributions to the Braginskii and isotropic-based switching tensors are identical. The relative magnitude of the isotropic heating contributions for each anisotropic model reflects the total heat generated in table~\ref{tab:total_heating_slow_null}.
+Figure~\ref{fig:isotropic_heating} shows the isotropic heating rate at time $t=10$ for each viscosity model. Isotropic viscosity heats at a generally greater rate than the anisotropic models, and the heating is distributed more extensively throughout the null. The boundary of the numerical cut-off, where isotropic viscosity turns off in the von Mises switching model, can be seen in figure~\ref{fig:iso_heating_switching_10}. The heating generated by the two Braginskii-inspired models show most similarity to that of the Braginskii model, with the isotropic-based switching model showing a nearly identical heating profile. This is to be expected since the coefficients of the isotropic contributions to the Braginskii and isotropic-based switching tensors are identical. The relative magnitude of the isotropic heating contributions for each anisotropic model reflects the total heat generated in table~\ref{tab:total_heating_slow_null}.
 
 \begin{figure}[t]
     \hfill
@@ -493,7 +483,11 @@ $N=500$   & $5.25 \times 10^{-5}$ & $6.81 \times 10^{-5}$ & $7.80 \times 10^{-5}
 \label{fig:anisotropy_bleeding}%
 \end{figure}
 
-Identical simulations were run to those described in~\ref{sec:slow_null_results} but with the resolution reduced to $N=100$ per dimension. This allows a clear demonstration of the effect of poor resolution on the accurate estimate of isotropic heating, even when $\alpha$ is artificially increased in the Braginskii model. While table~\ref{tab:slow_null_results_resolution} shows the global estimate of total viscous heat is relatively accurate at a low resolution, figure~\ref{fig:anisotropic_heating} shows that the spatial distribution of the heating rate is less so.
+\todo{Lower resolution further for low res runs}
+
+\todo{what does it mean to say the models are accurate at low res??}
+
+Identical simulations were run to those described in~\ref{sec:slow_null_results} but with the resolution reduced to $N=100$ per dimension. This allows a clear demonstration of the effect of poor resolution on the accurate estimate of anisotropic heating, even when $\alpha$ is artificially increased in the Braginskii model. While table~\ref{tab:slow_null_results_resolution} shows the global estimate of total viscous heat is relatively accurate at a low resolution, figure~\ref{fig:anisotropic_heating} shows that the spatial distribution of the heating rate is less so.
 
 Figure~\ref{fig:anisotropy_bleeding} shows the heating rate produced by the anisotropic parts of the Braginskii and switching models and reveals the primary issue with the Braginskii model. When the resolution is too low to properly resolve the region around the null point, the Braginskii model erroneously heats anisotropically. This is primarily due to the artificially increased $\alpha$ enhancing the perpendicular components near the null point. This issue is mitigated by the switching models, all of which remove the perpendicular components of the Braginskii tensor. At the higher resolution of $N=500$ the von Mises switching model does remove a small portion of realistic anisotropic heating near the null. Both Braginskii-based switching models appear to approximate the Braginskii tensor more accurately. Away from the null the switching models give adequately similar results to the Braginskii model.
 
@@ -507,4 +501,4 @@ In order to evaluate the real efficiency of each model of viscosity, a set of be
 
 \section{Conclusion}
 
-This chapter details the development of the switching model, a new model of anisotropic viscosity specifically designed for use in numerical simulations of the solar corona. The model improves on the Braginskii model by artificially enlarging the easily under-resolved isotropic region surrounding magnetic null points. The switching model does this by exposing a tunable interpolation function which measures the degree of anisotropy (dependent on the local magnetic field strength) and interpolates between isotropic and fully field-aligned viscosity. Three candidate interpolation functions are presented and their accuracy, efficacy and computational efficiency compared. The switching model is found to be computationally more efficient than the Braginskii model and offers an acceptable approximation to it. 
+This chapter details the development of the switching model, a new model of anisotropic viscosity specifically designed for use in numerical simulations of the solar corona. The model offers an alternative to the Braginskii model which captures the main physics while avoiding the problem of anisotropic heating at the null point itself. It does this by artificially enlarging the isotropic region surrounding magnetic null points. The switching model does this by exposing a tunable interpolation function which measures the degree of anisotropy (dependent on the local magnetic field strength) and interpolates between isotropic and fully field-aligned viscosity. Three candidate interpolation functions are presented and their accuracy, efficacy and computational efficiency compared. The switching model is found to be computationally more efficient than the Braginskii model and offers an acceptable approximation to it. 
