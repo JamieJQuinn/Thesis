@@ -280,6 +280,8 @@ where $\nu$ is the viscous transport parameter, generally referred to as the vis
 
 \subsection{Viscosity in a magnetised plasma}
 
+\label{sec:visc_in_magnetised_plasma}
+
 In a Newtonian fluid, the motion of a single particle travelling with a typical thermal velocity $v$ and colliding with other particles once in a typical collision time $\tau$ will appear as a number of broken, straight lines, each of approximate length $l = v\tau$, also known as the mean free path. These motions have no preferred direction, resulting in an isotropic transfer of momentum. In contrast, in a plasma made up of charged particles with charge $e$ and mass $m$, threaded by a magnetic field of strength $B$, the particles follow helical paths of approximate radius $r = v/\omega$, where $\omega = eB/m$ is the cyclotron frequency. After a time $\tau$, a typical particle will undergo a collision and its path will describe a new helix. The total resultant motion depends on the strength of the magnetic field. In the presence of a weak field, the radius of the helix may be much larger than the mean free path or, in terms of the cyclotron frequency, $\omega \tau \ll 1$. As a result, the path between collisions will be close to straight and the total path will resemble that of the motion without a magnetic field. In the presence of a strong field, $\omega \tau \gg 1$ and a typical particle will be able to wind around the field a number of times, travelling a distance $l$ along the field, before colliding. As a result the transport of momentum (i.e. viscosity) is strongly anisotropic: unaffected in the direction of the field, but strongly reduced in the transverse direction.
 
 A characteristic coronal value of $\omega \tau$ can be calculated using expressions found in Braginskii~\cite{braginskiiTransportProcessesPlasma1965}. The collision time can be written in SI units as,
@@ -470,26 +472,7 @@ While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents th
 \end{eqnarray}
 the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to explicitly check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\ref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
 
-\subsection{The transition from isotropic to anisotropic}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.5\linewidth]{brag_coeffs_2.pdf}
-  \caption{Coefficients of the terms in equation~\ref{eq:brag_new2}, normalised against $\eta_0$.}%
-  \label{fig:brag_coeffs2}
-\end{figure}
-
-The form of the Braginskii tensor as written in equation~\ref{eq:brag_new} is nearly in a form useful in understanding how quickly the tensor transitions from isotropic to anisotropic with changing magnetic field strength, since the isotropic component is completely isolated. Similarly, the parallel component can be isolated by further rewriting the tensor as,
-\begin{eqnarray}\label{eq:brag_new2}
-\ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{3}\ten{W}^{(0)}\\% \label{new1} \\
-\nonumber
-& &+~ (\eta_2-\eta_1)[\ten{W}(\vec{b}\otimes\vec{b})+(\vec{b}\otimes\vec{b})\ten{W} - \frac{2}{3}(\ten{W}\vec{b}\cdot\vec{b})\ten{I}] \\%\label{new3}\\
-\nonumber
-& &+~ \eta_1\ten{W},%\label{new4}
-\end{eqnarray}
-Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2}. Over the extremely small range between $|\vec{B}| = 0$ T and $10^{-7}$ T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively significant before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}.
-
-In the simulations of magnetic null points found in chapter~\ref{chp:null_point_khi}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ to even begin to resolve the region of transition. Whether this region is physically significant is unknown, however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. Chapter~\ref{chp:switching_model} details how a novel model of viscosity, the switching model, helps to better resolve the viscous transition region.
+Similar to the strong-field limit, it can be shown that the magnetic field has no effect on the field-aligned component of momentum transport in~\ref{eq:brag_new}. That is~\ref{eq:z_aligned_iso} still holds.
 
 \section{Conclusion}
 
