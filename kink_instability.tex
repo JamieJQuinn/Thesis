@@ -85,6 +85,8 @@ At the boundaries, the line-tied condition on the magnetic field is satisfied by
 \end{equation}
 and similarly, the $y$ and $z$ derivatives are zero on the $y=\pm2$ and $z=\pm10$ boundaries, respectively.
 
+Since there are no nulls created during the evolution of the kink instability, the field remains strong everywhere and the viscosity reverts to fully parallel. To ensure this, the switching model~\ref{eq:switching_model} is used with the von Mises switching function~\ref{eq:switching_function} where $a_0 = 150$. 
+
 \section{Methods}
 \label{sec:general-numerical-setup}
 
@@ -152,7 +154,7 @@ tensor~\eqref{eq:isotropic_viscous_tensor} and in the form
   \label{eq:aniso_viscous_heating}
   Q_{\nu}^{aniso} = \nu \int_0^T \int_V \left[ (1-s^2(|\vec{B}|)\frac{1}{2}\text{tr}(\ten{W}^2) + s^2(|\vec{B}|)\frac{3 }{4} ((\ten{W} \vec{b}) \cdot \vec{b})^2\ \right] \text{d}V \text{d}t,
 \end{equation}
-for the switching viscous stress tensor~\eqref{eq:switching_model}, respectively.
+for the switching viscous stress tensor~\eqref{eq:switching_model} using the von Mises switching function, respectively.
 
 \section{Nonlinear evolution of a typical case}
 \label{sec:results}
@@ -613,6 +615,12 @@ Ohmic heating is observed to increase with increasing $\eta$ (Figure~\ref{fig:pa
 As is done in Section~\ref{sec:linear_growth_rate_varying_visc}, the linear growth rates are measured for each value of $\eta$. These and the maximum early time ($t<125$) kinetic energy are shown in Figure~\ref{fig:growth_rate_varying_resistivity}. The plots show that the use of the switching model seems to consistently amplify the growth of the kink instability, shown both in the growth rate and in the kinetic energy. Beyond this, the two models of viscosity show similar trends with $\eta$.
 
 Both plots in Figure \ref{fig:growth_rate_varying_resistivity} show that the kink instability is strongly inhibited for values of $\eta$ greater than approximately $10^{-2.5}$. This can be explained by the initial diffusion of the magnetic field being so fast-acting for large values of $\eta$ that the instability is totally suppressed. The increased suppression of the instability with strength of Ohmic diffusion can be seen in both plots as $\eta$ increases past $10^{-3}$.
+
+\section{Discussion}
+
+\todo{split text from summary into discussion and conclusion}
+
+\section{Conclusion}
 
 \section{Summary and discussion}
 \label{sec:conclusions}
