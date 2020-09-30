@@ -13,9 +13,16 @@ The stratified layers of the Sun can be considered either as part of the solar i
 
 Beneath the photosphere lie three inner regions: the core, the radiative region and the convection zone. From the centre of the Sun to a radius of approximately $0.2 R_{\odot}$ lies the engine of the Sun, the core, undergoing fusion and producing the energy that fuels the overlying layers. Between the core and convection zone, up to a radius of approximately  $0.71R_{\odot}$, is the radiative region, the layer at which the density gradient is stable to convective motions and energy flows radially outwards via radiative transfer. At a radius of $0.71R_{\odot}$ the density gradient can no longer stably support the temperature gradient and convection becomes the dominant mechanism of energy transport. The convection zone performs two major functions: driving the solar dynamo which generates the solar magnetic field; and generating photospheric motions which provide a Poynting flux of energy into the solar corona.
 
-Above (and including) the photosphere is the atmosphere of the Sun, consisting of the photosphere, chromosphere, transition region and corona. The photosphere has a temperature of approximately $6000$K and radiates most of the visible light emitted from the Sun. As a result the photosphere is the only part of the Sun usually visible by the human eye (the exception being during eclipses when both the chromosphere and corona can be seen). Just above the photosphere is the chromosphere, extending beyond the surface by $3000$--$5000$km. The temperature ranges between $6000$K at the photospheric boundary, a minimum of $3500$K internally, and $25,000$K approaching the transition region. The transition region, a shallow layer only $100$km deep, lies between the chromosphere and the solar corona and across the layer the nature of the physics in the solar atmosphere changes rapidly. The primary change is in the extreme temperature difference across the layer, typically ranging from $25,000$K on the chromospheric side, to over $1,000,000$K on the coronal side. This coincides with a drop in density, from \todo{find values of chromospheric and coronal densities}.
+Above (and including) the photosphere is the atmosphere of the Sun, consisting of the photosphere, chromosphere, transition region and corona. The photosphere has a temperature of approximately $6000$K and radiates most of the visible light emitted from the Sun. As a result the photosphere is the only part of the Sun usually visible by the human eye (the exception being during eclipses when both the chromosphere and corona can be seen). Just above the photosphere is the chromosphere, extending beyond the surface by $3000$--$5000$km. The temperature ranges between $6000$K at the photospheric boundary, a minimum of $3500$K internally, and $25,000$K approaching the transition region. The transition region, a shallow layer only a few $100$km deep, lies between the chromosphere and the solar corona and across the layer the nature of the physics in the solar atmosphere changes rapidly. The primary change is in the extreme temperature difference across the layer, typically ranging from around $25,000$K on the chromospheric side, to over $1,000,000$K on the coronal side~\cite{priestMagnetohydrodynamicsSuna,mandriniMagneticFieldPlasma2000}.
 
-The solar corona, the layer of focus for the remainder of this thesis, is the outermost region of the Sun, characterised by extremely high temperatures, low densities and a topologically complex magnetic field. With coronal plasmas reaching temperatures of $1$--$10$MK, the corona emits predominantly in extreme ultraviolet and X-ray wavelengths, observable only by space-based instrumentation. The part of the corona visible to the human eye can only be seen during solar eclipses, where the corona appears to surround the Sun like a crown, hence the name. Due to the near-complete ionisation of plasma in the (low) corona, it is strongly coupled to the coronal magnetic field and, due to the low density, the plasma beta $\beta$ (a measure of the dominance of plasma versus magnetic pressures) is extremely small and the dynamics heavily dominated by magnetic forces as a result. Higher in the corona, $\beta$ can become larger~\cite{gomezPlasmaUpbetaEvolution2019}. Observationally, the corona appears inhomogeneous mainly due to the coronal plasma being mostly confined to hydromagnetic structures known as coronal loops. These are tubes of plasma contained within magnetic flux ropes, arch-like in shape with footpoints anchored in the high-$\beta$ photosphere and with lengths of $1$-$100$Mm. Since heat flux within the corona is mostly directed along magnetic field lines, the loops are typically well insulated and are unable to homogenise differences in temperatures between neighbouring loops. The differences in temperatures, and thus densities, between loops manifests as differences in emission intensity. This allows clear observation of loops which are hotter and brighter than their neighbours \todo{find nice image of coronal loops}.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.5\linewidth]{Traceimage.jpg}
+  \caption{Solar coronal loops observed by the Transition Region And Coronal Explorer (TRACE), 171 Å filter.}%
+  \label{fig:coronal_loops}
+\end{figure}
+
+The solar corona, the layer of focus for the remainder of this thesis, is the outermost region of the Sun, characterised by extremely high temperatures, low densities and a topologically complex magnetic field. With coronal plasmas reaching temperatures of $1$--$10$MK, the corona emits predominantly in extreme ultraviolet and X-ray wavelengths, observable only by space-based instrumentation. The part of the corona visible to the human eye can only be seen during solar eclipses, where the corona appears to surround the Sun like a crown, hence the name. Due to the near-complete ionisation of plasma in the (low) corona, it is strongly coupled to the coronal magnetic field and, due to the low density, the plasma beta $\beta$ (a measure of the dominance of plasma versus magnetic pressures) is extremely small and the dynamics heavily dominated by magnetic forces as a result. Higher in the corona, $\beta$ can become larger~\cite{gomezPlasmaUpbetaEvolution2019}. Observationally, the corona appears inhomogeneous mainly due to the coronal plasma being mostly confined to hydromagnetic structures known as coronal loops. These are tubes of plasma contained within magnetic flux ropes, arch-like in shape with footpoints anchored in the high-$\beta$ photosphere and with lengths of $1$-$100$Mm. Since heat flux within the corona is mostly directed along magnetic field lines, the loops are typically well insulated and are unable to homogenise differences in temperatures between neighbouring loops. The differences in temperatures, and thus densities, between loops manifests as differences in emission intensity. This allows clear observation of loops which are hotter and brighter than their neighbours (for example, in Figure~\ref{fig:coronal_loops}).
 
 The most dynamically exciting loops are those which create flares, releasing their stored magnetic energy as heat, radiation and through particle acceleration. Some flaring loops are capable of ejecting a large proportion of their mass into space as coronal mass ejections. The nanoflare theory of coronal heating posits that many small flares can collectively heat the corona to its observed temperature. This is just one theory which attempts to solve the coronal heating problem.
 
@@ -25,65 +32,12 @@ It is not well understood why the solar corona is several magnitudes hotter than
 
 Although there are many kinds of impulsive heating events which could constitute a nanoflare, one which has received a large amount of attention is reconnection as part of the nonlinear development of the kink instability in a coronal loop~\cite{hoodKinkInstabilitySolar1979,browningSolarCoronalHeating2003c,hoodCoronalHeatingMagnetic2009,browningHeatingCoronaNanoflares2008a}. This instability arises in a twisted magnetic flux rope when the twist exceeds a critical value, dependent on the precise magnetic configuration~\cite{hoodCoronalHeatingMagnetic2009}. The instability results in the growth of a helical kink in the rope which presses into the surrounding magnetic field, creating current sheets and potentially culminating in the release of energy in one or many reconnection events. It has been suggested that one loop becoming unstable may trigger neighbouring loops, causing a chain-reaction of reconnection events~\cite{hoodMHDAvalancheModel2015}. Studies have shown the potential for large amounts of heat to be generated by Ohmic, viscous and shock heating during the development of the instability~\cite{barefordShockHeatingNumerical2015,hoodCoronalHeatingMagnetic2009}. This is the focus of chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight}.
 
-\subsection{Dominance of dissipation mechanisms in the solar corona}
-
-\todo{sort out the following three paragraphs}
-
-The solar corona is heated to millions of degrees, whereas the surface of the Sun beneath it is only heated to the order of thousands of degrees~\cite{mandriniMagneticFieldPlasma2000}. It is generally accepted that this heating is derived mainly from the extraction of energy from the stressed magnetic field in the solar atmosphere, although exactly how this process occurs is still an area of active research~\cite{klimchukSolvingCoronalHeating2006a}. There has been much study of the direct transfer of magnetic energy to heat by Ohmic heating and the transfer through kinetic energy losses by viscous heating~\cite{klimchukSolvingCoronalHeating2006a,browningMechanismsSolarCoronal1991}. The relative importance and efficacy of these processes is found to depend on the models of plasma viscosity employed in the analyses. The aim of this work is to understand the effect of isotropic and anisotropic viscosity on the kink instability, a key phenomenon in coronal plasma dynamics.
-
-In many situations in the solar corona, the strength of viscosity
-can be greater than that of resistivity by many orders of
-magnitude, even when anomalous resistivity is considered. Due to this,
-viscous heating can outperform Ohmic heating in certain coronal
-situations, particularly those involving
-reconnection~\cite{browningMechanismsSolarCoronal1991,
-  craigViscousDissipation3D2013,
-  armstrongViscoResistiveDissipation2013,
-  hollwegViscosityChewGoldbergerLowEquations1986a}. These findings are
-dependent on how viscosity in the solar atmosphere is modelled. For a
-plasma in the presence of a strong magnetic field, viscosity is
-anisotropic and momentum transfer occurs preferentially in the
-direction of the magnetic
-field~\cite{braginskiiTransportProcessesPlasma1965}. A general
-description of anisotropic viscosity in the solar atmosphere is given
-in~\cite{hollwegViscosityMagnetizedPlasma1985,
-  hollwegViscosityChewGoldbergerLowEquations1986a}. More recent
-studies have demonstrated the importance of anisotropic viscosity for
-heating in investigations of three-dimensional (3D) null
-points~\cite{craigViscousDissipation3D2013}, current sheet
-merging~\cite{armstrongViscoResistiveDissipation2013} and flux
-pile-up~\cite{litvinenkoViscousEnergyDissipation2005}. There is
-further evidence of the importance of anisotropic viscosity in other
-astrophysical applications, including the intracluster medium~\cite{zuhoneEffectAnisotropicViscosity2014, parrishEffectsAnisotropicViscosity2012a} and the solar wind~\cite{baleMagneticFluctuationPower2009}. In other solar applications, viscosity has a role to play in the damping of coronal instabilities~\cite{howsonEffectsResistivityViscosity2017} and waves~\cite{vranjesViscosityEffectsWaves2014, erdelyiResonantAbsorptionAlfven1995a, rudermanSlowSurfaceWave2000a}, though not all these cases have been fully explored using an anisotropic model of viscosity.
-
-Implementing the full Braginskii viscosity
-tensor~\cite{braginskiiTransportProcessesPlasma1965} into existing
-magnetohydrodynamic (MHD) codes is not trivial. In the solar
-atmosphere, there are regions where the magnetic field is weak or
-vanishes (called null points) and at these locations the viscosity must
-transition smoothly from strongly anisotropic (in the direction of the
-magnetic field) to isotropic. Although the Braginskii tensor theoretically achieves
-this smooth transition, in practice the implementation
-of the full tensor in finite-difference MHD codes leads to numerical
-errors in the viscosity at locations where the magnetic field strength
-is very weak, due to a lack of sufficient resolution. Further
-exploration of this numerical issue can be found
-in~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}. One
-approach to solving this problem is to design a numerical scheme
-specifically to treat the full Braginskii tensor. Another approach is
-to devise a model that captures the main physics of the Braginskii
-tensor suitable for the solar corona and can be implemented in
-existing MHD codes~\cite{hollwegViscosityMagnetizedPlasma1985}. The
-second option was taken up by MacTaggart, Vergori and
-Quinn~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017},
-who developed a phenomenological model of anisotropic viscosity in the
-solar corona that captures the main physics for viscosity in the
-corona, namely parallel viscosity in regions of strong field strength and isotropic viscosity in regions of very weak or zero field strength. In this paper, we will refer to this model of viscosity as the \textit{switching model}, for short. The model interpolates between isotropic and parallel viscosity based on how the local magnetic field strength affects the distribution of momentum transport. The interpolation itself can be adjusted, effectively changing the size of isotropic (i.e.\ weak field) regions, to compensate for resolution issues in simulations. In numerical tests of stressed null points, comparing the isotropic and anisotropic models showed that the use of isotropic viscosity overestimates the viscous heating by an order of magnitude~\cite{mactaggartBraginskiiMagnetohydrodynamicsArbitrary2017}.
+\subsection{Dissipation mechanisms in the solar corona}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{visc_dep_on_temp.pdf}
-  \caption{Dependence of non-dimensionalised viscosity $\nu$ and resistivity $\eta$i on temperature. These are non-dimensionalised using a typical magnetic field strength of $B = 5$mT, a length of $L = 1$Mm and a density of $\rho = 1.67 \times 10^{-12}$kg m$^3$.}
+  \caption{Dependence of non-dimensionalised viscosity $\nu$ and Spitzer resistivity $\eta$ on temperature. These are non-dimensionalised using typical coronal values of a magnetic field strength of $B = 5$mT, a length of $L = 1$Mm and a density of $\rho = 1.67 \times 10^{-12}$kg m$^3$. In this non-dimensionalisation, the Reynolds and Lundquist numbers are the inverses of $\nu$ and $\eta$, respectively.}
   \label{fig:visc_dep_on_temp}
 \end{figure}
 
@@ -99,7 +53,7 @@ where $T$ is the plasma temperature in Kelvin. Non-dimensionalising these using 
 \end{equation}
 Using this non-dimensionalisation scheme the Reynolds number is given $Re = 1/\nu$ and the Lundquist number $S = 1/\eta$. Figure~\ref{fig:visc_dep_on_temp} shows the dependences of the non-dimensionalised $\nu$ and $\eta$ on temperature $T$. For a typical active region temperature of $T = 10^6$K, $\nu \approx 10^{-3}$ and $\eta \approx 10^{-13}$.
 
-Comparing the transport parameters for each dissipation mechanism suggests viscous heating should outperform Ohmic heating by several orders of magnitude. Indeed, some studies find scaling laws which provide preliminary evidence for this~\cite{craigAnisotropicViscousDissipation2009a,craigViscousDissipation3D2013}. However, these parameters are unlikely to reflect the true degree of dissipation in the solar corona. 
+Comparing the transport parameters for each dissipation mechanism suggests viscous heating should outperform Ohmic heating by several orders of magnitude. Indeed, many studies provide evidence to this effect~\cite{browningMechanismsSolarCoronal1991,craigViscousDissipation3D2013,craigAnisotropicViscousDissipation2009a,armstrongViscoResistiveDissipation2013,hollwegViscosityChewGoldbergerLowEquations1986a}. However, these parameters are unlikely to reflect the true degree of dissipation in the solar corona. 
 
 Turbulence can enhance viscosity~\cite{canutoTurbulentViscosity1988} and many mechanisms for the anomalous enhancement of resistivity have been suggested, including turbulence~\cite{cheHowAnomalousResistivity2017} and the impact of electron scattering~\cite{maEffectiveResistivityCollisionless2018}. The degree to which either dissipation mechanism is enhanced in the solar corona is difficult to estimate, however some studies have attempted to infer the effective transport parameters from observations of wave motions in coronal loops~\cite{nakariakovTRACEObservationDamped1999}, although results are disputed~\cite{klimchukCoronalSeismologyPropagation2004}. A further complication in attempting to model dissipation in the solar corona is that it is still unknown how far the collisional approximation holds and how that may affect coronal heating~\cite{klimchukSolvingCoronalHeating2006a}.
 
@@ -241,6 +195,8 @@ typical for the solar corona) where $m_p$ is the proton mass. Dimensional quanti
 
 \section{Anisotropic Viscosity}
 
+Viscosity plays an important part generally in astrophysical fluid dynamics. Recent studies have demonstrated the importance of anisotropic viscosity in coronal heating in investigations of three-dimensional (3D) null points~\cite{craigViscousDissipation3D2013}, current sheet merging~\cite{armstrongViscoResistiveDissipation2013} and flux pile-up~\cite{litvinenkoViscousEnergyDissipation2005}. There is further evidence of the importance of anisotropic viscosity in other astrophysical applications, including the intracluster medium~\cite{zuhoneEffectAnisotropicViscosity2014, parrishEffectsAnisotropicViscosity2012a} and the solar wind~\cite{baleMagneticFluctuationPower2009}. In other solar applications, viscosity has a role to play in the damping of coronal instabilities~\cite{howsonEffectsResistivityViscosity2017} and waves~\cite{vranjesViscosityEffectsWaves2014, erdelyiResonantAbsorptionAlfven1995a, rudermanSlowSurfaceWave2000a}, though not all these cases have been fully explored using an anisotropic model of viscosity.
+
 \subsection{Viscosity}
 
 Physically, viscosity is the internal friction of a fluid arising due to interactions (typically collisions) between the particles making up the fluid. Within the context of MHD, viscosity provides two functions. The first is momentum transport, included in the momentum equation as the divergence of the viscous stress tensor $\ten{\sigma}$, written using Einstein notation for clarity,
@@ -294,8 +250,7 @@ and the cyclotron frequency as,
   \label{eq:cyclotron_frequency}
   \omega = 0.96\times10^8 B,
 \end{equation}
-where the Coloumb logarithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical solar value of $1.2$. The expression for $\tau$ differs from that given by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} due to the more accurate inclusion of the mass fraction here. A solar active region has typical temperatures of around $2\times 10^6$K and number densities of $n = 3 \times 10^3\text{m}^{-3}$, giving $\tau = 0.773$s. The magnetic field can be as strong as $5\times 10^{-3}$T, giving $\omega = 4.79 \times 10^5 \text{s}^{-1}$, resulting in $\omega \tau = 3.70 \times 10^5$. This indicates viscosity in most of the solar corona is highly anisotropic.
-
+where the Coloumb logarithm has been taken to be 22, and the mass fraction, the ratio of ion to proton mass, $m_f = m_i/m_p$ has been taken to be a typical solar value of $1.2$. The expression for $\tau$ differs from that given by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985} due to the more accurate inclusion of the mass fraction here. A solar active region has typical temperatures of around $2\times 10^6$K and number densities of $n = 3 \times 10^3\text{ m}^{-3}$, giving $\tau = 0.773$ s. The magnetic field can be as strong as $5\times 10^{-3}$ T, giving $\omega = 4.79 \times 10^5 \text{ s}^{-1}$, resulting in $\omega \tau = 3.70 \times 10^5$. This indicates viscosity in most of the solar corona is highly anisotropic.
 
 \subsection{Anisotropic viscous tensors}
 
@@ -314,52 +269,48 @@ Consider a plasma where, on average, each particle moves a distance $\Delta x$ i
 Now consider a non-uniform velocity component $u$ which changes slowly enough over the distance $\Delta x$ that we may write
 \begin{equation}
   \label{eq:viscous_derivation_vy}
-u (x) \approx u_y(x_0) + \frac{\partial u}{\partial x} \bigg| _{x_0} (x - x_0).
+u (x) \approx u(x_0) + \frac{\partial u}{\partial x} \bigg| _{x_0} (x - x_0).
 \end{equation}
 
-\todo{change momentum flux based on David's advice}
-
-``I would either define the total flux as F- - F+ or change the domain from [x0-Dx,x0] to [x0,x0+Dx]. In this way, you will have positive values for the viscosity tensor, which is how the tensors are defined later in the thesis. In the plasma physics literature, they tend to write the viscosity tensors with a negative sign. Then, when including them in the equations, there is the negative of the divergence of the viscosity tensor, so both negatives cancel. In the fluid literature, this is not the case and this is the way we have presented the tensors in the papers.''
-
-Within a time $\tau$ half the particles in the layer between $x_0 - \Delta x$ and $x_0$ will pass through the plane $x_0$, the other half moving in the opposite direction. The flux of $y$-momentum from the left is
+Within a time $\tau$ half the particles in the layer between $x_0 - \Delta x$ and $x_0$ will pass through the plane $x_0$, the other half moving in the opposite direction. The flux of momentum from the left is
 \begin{equation}
   \label{eq:momentum_flux_left}
 F_{+} = \frac{1}{2} \int^{x_0}_{x_0 - \Delta x} \frac{1}{\tau} m n u(x) \text{d}x = \frac{mn}{2} \left[ u(x_0) - \frac{\partial u}{\partial x} \frac{\Delta x}{2} \right] \frac{\Delta x}{\tau},
 \end{equation}
-and the flux from the right $F_{-}$ can be calculated in a similar manner by considering the flux from the layer between $x_0$ and $x_0 + \Delta x$. The total flux $F = F_+ - F_-$ is
+and the flux from the right $F_{-}$ can be calculated in a similar manner by considering the flux from the layer between $x_0$ and $x_0 + \Delta x$. The total flux of momentum moving through the point $x_0$ is
 \begin{equation}
   \label{eq:total_momentum_flux}
-  F = - \nu \frac{\partial u}{\partial x}, \quad \nu \sim \frac{nm(\Delta x)^2}{\tau}.
+  F = F_+ - F_- = - \nu \frac{\partial u}{\partial x}, \quad \nu \sim \frac{nm(\Delta x)^2}{\tau}.
 \end{equation}
-The quantity $F$ is an estimate of the viscous stress response to the rate of strain $\partial u / \partial x$, with the magnitude of the response governed by the viscous transport parameter $\nu$. Substituting appropriate lengths into $\Delta x$ in the expression for $\nu$ reveals the relative strengths of the viscous response to various motions. 
+The change in momentum at the point $x_0$ is then given by the negative slope of the momentum flux $- \partial F/\partial x$. Thus, the quantity $-F$ is a measure of one component of the viscous stress tensor $\ten{\sigma}$, with the overall strength of viscous dissipation governed by the parameter $\nu$. For example, if $u$ is the velocity in the $y$-direction, $-F$ estimates the value of $\sigma_{yx}$. Substituting appropriate lengths into $\Delta x$ in the expression for $\nu$ reveals the relative strengths of the viscous response to various motions. 
 
 In the absence of a magnetic field the viscosity is isotropic and particles are able to travel the full mean free path, hence $\Delta x = u \tau$, where $u$ is the thermal velocity. This gives an estimate for the isotropic viscous response,
 \begin{equation}
   \label{eq:isotropic_eta_estimate}
-  \ten{\sigma}_{iso} \sim - \eta_0 \ten{W}, \quad \eta_0 \sim nm\tau v^2 \sim nT \tau.
+  \ten{\sigma}_{iso} \sim \eta_0 \ten{W}, \quad \eta_0 \sim nm\tau v^2 \sim nT \tau.
 \end{equation}
 The same expression is found when considering the viscous response to a field-aligned gradient in a field-aligned velocity $\partial u_z / \partial z$, where $\Delta x$ is still the mean free path,
 \begin{equation}
   \label{eq:parallel_eta_estimate}
-\sigma_{zz} \sim - \eta_0 \frac{\partial u_z}{\partial z}.
+\sigma_{zz} \sim \eta_0 \frac{\partial u_z}{\partial z}.
 \end{equation}
 That is, in a magnetised plasma, compression or dilation along the field produces the same viscous response as if the field were not there.
 
 Now consider the same velocity $u_z$ changing in a direction perpendicular to the field, say in the $x$-direction. Then $\Delta x$ is approximately the gyroradius $r = u/\omega$. The viscous response is then
 \begin{equation}
   \label{eq:perp_eta_estimate}
-\sigma_{zx} \sim - \eta_{\perp} \frac{\partial u_z}{\partial x}, \quad \eta_{\perp} \sim \frac{\eta_0}{(\omega \tau)^2}.
+\sigma_{zx} \sim \eta_{\perp} \frac{\partial u_z}{\partial x}, \quad \eta_{\perp} \sim \frac{\eta_0}{(\omega \tau)^2}.
 \end{equation}
 A similar expression holds when a velocity perpendicular to the field, say $u_y$, varies in the $x$-direction, that is
 \begin{equation}
   \label{eq:perp_eta_estimate2}
-\sigma_{xy} \sim - \eta_{\perp} \frac{\partial u_y}{\partial x}.
+\sigma_{xy} \sim \eta_{\perp} \frac{\partial u_y}{\partial x}.
 \end{equation}
 
 The viscous response to compression or dilation perpendicular to the field arises due to a different mechanism than the simple diffusion of momentum shown previously. When the plasma is compressed or dilated perpendicular to the field, the transverse energy of the particles changes and is subsequently equipartitioned by collisions. This equipartitioning takes place over a finite period of time, during which the transverse and longitudinal pressures differ. This difference in pressures gives rise to a stress of the same order as the parallel contribution
 \begin{equation}
   \label{eq:compression_eta_estimate}
-\sigma_{xx} = \sigma_{yy} \sim - \eta_0 \nabla \cdot \vec{u}, \quad \sigma_{zz} \sim \eta_0 \nabla \cdot \vec{u}.
+\sigma_{xx} = \sigma_{yy} \sim \eta_0 \nabla \cdot \vec{u}, \quad \sigma_{zz} \sim - \eta_0 \nabla \cdot \vec{u}.
 \end{equation}
 
 There are further contributions to the viscous stress tensor from motions which give rise to gyroviscous stresses, the transport parameters of which vary as $\eta_0 / (\omega \tau)$. As discussed later, these contributions produce no viscous heating and shall be neglected. For a detailed discussion of these terms, see~\cite{kaufmanPlasmaViscosityMagnetic1960}.
@@ -409,7 +360,7 @@ or,
   \label{eq:parallel_visc_coeff2}
   \eta_0 = 0.68 \times 10^{-16} T^{5/2} \text{kg m}^{-1}\text{s}^{-1}.
 \end{equation}
-Figure~\ref{fig:visc_dep_on_temp} shows the dependence of $\eta_0$ on temperature over a range of typical coronal temperatures, along with the dependence of a typical Reynolds number on temperature. \todo{fill this out}
+Figure~\ref{fig:visc_dep_on_temp} shows the dependence of $\eta_0$ on temperature over a range of typical coronal temperatures.
 
 For simplicity, the dimensionless quantity $x = \omega \tau$ is used in the expressions for the remaining transport parameters, as is done in~\cite{braginskiiTransportProcessesPlasma1965} and all coefficients have identical units to $\eta_0$. The two perpendicular coefficients are written,
 \begin{equation}
@@ -430,8 +381,7 @@ The relative strength of the five coefficients is important in considering which
 
 The origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. As illustrated by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, the parallel viscous stress can be modelled as the result of pressure anisotropies being repartitioned by particle collisions. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. The inclusion of collisions again acts to repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}.
 
-While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^(0)$, $\ten{W}^(1)$ and $\ten{W}^(2)$, they are also orthogonal to $\ten{W}$. By equation~\ref{eq:viscous_heat_generation2}, the drift terms produce no viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While the drift terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis is broadly focused on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
-
+While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^{(0)}$, $\ten{W}^{(1)}$ and $\ten{W}^{(2)}$, they are also orthogonal to $\ten{W}$. By equation~\ref{eq:viscous_heat_generation2}, the drift terms produce no viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While the drift terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis is broadly focused on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
 
 \subsection{Limit of strong magnetic field}
 
@@ -440,21 +390,21 @@ While it is illustrative to understand in a kinetic way why the drift terms prod
 As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, the strong-field approximation to the Braginskii tensor is written,
 \begin{equation}
   \label{eq:strong_field_approx}
-\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b} ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
+\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b}) ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
 \end{equation}
 In a local coordinate system where the magnetic field is aligned with $\vec{b}$, the tensor is
 \begin{equation}
   \label{eq:z_aligned_strong_field_approx}
-\ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 \ten{W}_{zz} ( \vec{e}_z \otimes \vec{e}_z - \tfrac{1}{3} \ten{I}),
+\ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 W_{zz} ( \vec{e}_z \otimes \vec{e}_z - \tfrac{1}{3} \ten{I}),
 \end{equation}
 where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\ref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
 \begin{equation}
   \label{eq:z_aligned_iso}
-  (\ten{\sigma}_{\text{iso}})_{zz} = (\ten{\sigma}_{\text{brag}})_{zz} = \eta_0 \ten{W}_{zz}.
+  (\sigma_{\text{iso}})_{zz} = (\sigma_{\text{brag}})_{zz} = \eta_0 W_{zz}.
 \end{equation}
 In the strong-field regime, the only motion damped by viscosity is non-uniform compression or dilation of the plasma. 
 
-This approximation is valid even for more moderate, quiet Sun conditions, where values of the magnetic field, $B\approx 10^6$, and temperature, $T\approx 10^6$, give $\omega\tau \approx 10^4$~\cite{morganGlobalConditionsSolar2017}. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an abundant feature in the coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}. Any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate viscosity in the limit of weak magnetic field.
+This approximation is valid even for quiet Sun conditions, where values of the magnetic field, $B\approx 10^{-3}$ T, and temperature, $T\approx 10^6$ K, give $\omega\tau \approx 10^4$~\cite{morganGlobalConditionsSolar2017}. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an important, abundant feature in the coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}. Any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate viscosity in the limit of weak magnetic field.
 
 \subsection{Limit of weak magnetic field}
 
@@ -476,4 +426,4 @@ Similar to the strong-field limit, it can be shown that the magnetic field has n
 
 \section{Conclusion}
 
-\todo{conclusion}
+This chapter presents the background physics required to understand the remainder of the thesis. I have introduced the layers of the Sun and summarised some recent developments in coronal heating. The magnetohydrodynamic equations have been shown and discussed. Finally, I give a detailed introduction to the anisotropic nature of viscosity in a magnetised plasma and a review of prior modelling efforts.
