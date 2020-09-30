@@ -10,7 +10,7 @@ In this chapter I investigate the effects of anisotropic viscosity on the kink i
 
 The layout of the chapter is as follows. The coronal loop model is described in Section~\ref{sec:model-setup}. Details of the numerical setup and methods used in the analysis of the simulation results are presented in Section~\ref{sec:general-numerical-setup}. Detailed numerical results of a typical case of a kink instability are given in Section~\ref{sec:results} with a particular focus on how the different viscosity models affect its nonlinear evolution. The results of the typical case are confirmed and generalised by a parameter study in Section~\ref{sec:results2} where the dependences of the Ohmic and the viscous heating on the resistivity and the dynamic viscosity are explored. Conclusions are summarised in Section~\ref{sec:conclusions}.
 
-This chapter is an adaptation of a previously published paper~\cite{quinnEffectAnisotropicViscosity2020a}, co-authored by my two supervisors. 
+This chapter is an adaptation of a previously published paper~\cite{quinnEffectAnisotropicViscosity2020a}. 
 
 \section{Coronal loop model}
 \label{sec:model-setup}
@@ -29,7 +29,7 @@ $5 \times 10^{-3} \ \text{T}$ & $1\ \text{Mm}$ & $1.67 \times 10^{-12} \ \text{k
 \label{tab:reference-values}
 \end{table}
 
-The magnetic field is considered force-free, that is the field is constructed such that the Lorentz force is zero, or $(\nabla \times \vec{B})\times \vec{B} = 0$. In cylindrical coordinates $(r,\theta,z)$, the chosen force-free magnetic field takes the form $\vec{B} = \alpha(r) \nabla \times \vec{B}$, where $\alpha(r)$ is a function of a particular form that ensures the total axial current is zero. Aligning with previous work by Hood et al.~\cite{hoodCoronalHeatingMagnetic2009}, the smooth $\alpha(r)$ profile given as Case 3 in~\cite{hoodCoronalHeatingMagnetic2009} is used. Using this profile, the equilibrium magnetic field $\vec{B}$ is written as 
+The magnetic field is considered force-free, that is the field is constructed such that the Lorentz force is zero, or $(\nabla \times \vec{B})\times \vec{B} = 0$. In cylindrical coordinates $(r,\theta,z)$, the chosen force-free magnetic field takes the form $\nabla \times \vec{B} = \alpha(r)\vec{B}$, where $\alpha(r)$ is a function of a particular form that ensures the total axial current is zero. Aligning with previous work by Hood et al.~\cite{hoodCoronalHeatingMagnetic2009}, the smooth $\alpha(r)$ profile given as Case 3 in~\cite{hoodCoronalHeatingMagnetic2009} is used. Using this profile, the equilibrium magnetic field $\vec{B}$ is written as 
 \begin{equation}
 \begin{aligned}
   \label{eq:field-profile-r-lt-1}
