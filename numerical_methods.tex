@@ -4,15 +4,15 @@
 
 \graphicspath{{images/numerical_methods/}}
 
-\todo{introduction}
+This chapter details the main numerical method used in the rest of the thesis, the Lagrangian-remap scheme of the 3D MHD code Lare3d, through the development of a 1D, hydrodynamic implementation. The discretisation and time-stepping algorithms are described, along with the shock capturing techniques used, and the transition to 3D MHD summarised. Finally, the Sod shock problem is used to compare the results of the code against an analytical solution. A parameter search for optimal shock viscosity values is given and the results of a convergence study presented.
 
 \section{Lare1D}
 
-Lare3d, an abbreviation of LAgragian-REmap 3d, is a numerical scheme used to solve partial differential equations like those found in fluid dynamics and magnetohydrodynamics. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original, Eulerian grid. This two-step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
+Lare3d, an abbreviation of LAgragian-REmap 3D, is a 3D MHD code which employs the Lagrangian-remap scheme, a form of numerical scheme used to solve partial differential equations like those found in hydrodynamics (HD) and MHD. The core idea of the scheme is to solve the equations on a grid in Lagrangian form, which involves a deformation of the grid, and then to remap the variables back to the original grid. This two-step process, combined with additional shock-capturing techniques such as flux limiters and shock viscosity, is extremely effective at capturing the kind of shocks that are generated in highly compressible, dynamic coronal simulations. It compares extremely well to Roe solvers when solving identical problems~\cite{arberStaggeredGridLagrangian2001}.
 
-As a consequence of the Lagrangian step, the equations are solved in a much simpler form than if they were to be solved in equivalent Eulerian form. The disadvantage of this is that a complex remap step must be introduced. However, once the remap problem is solved, and it is only a complicated but tractable problem of geometry, it is not necessary to change the step when the physics are changed. Like other finite-volume methods, the method requires only local communication, that is a computation on a single cell requires only information from nearby cells. This locality reduces the overhead associated with communication between nodes when implementing the method on large clusters and makes the method viable for large-scale simulations. 
+As a consequence of the Lagrangian step, the equations are solved in a much simpler form than if they were to be solved in equivalent Eulerian form. The disadvantage of this is that a complex remap step must be introduced. However, once the remap problem is solved, and it is only a complicated but tractable problem of geometry, it is not necessary to change the step when the physics are changed. Like other finite-volume methods, the method requires only local communication, that is a computation on a single cell requires only information from neighbouring cells. This locality reduces the overhead associated with communication between nodes when implementing the method on large clusters and makes the method viable for large-scale, parallel simulations. 
 
-Here, we present the implementation and tests of a 1D LARE scheme applied to the inviscid, compressible Euler equations. We then provide an summary of the MHD code Lare3D~\cite{arberStaggeredGridLagrangian2001} which is used to perform the numerical experiments detailed in the rest of the thesis. 
+Here, we present the implementation and tests of a 1D Lagrangian-remap scheme applied to the inviscid, compressible Euler equations. We then provide an summary of the MHD code Lare3D~\cite{arberStaggeredGridLagrangian2001} which is used to perform the numerical experiments detailed in the rest of the thesis. 
 
 \subsection{The physical model}
 For an ideal, inviscid fluid we use the 1D Euler equations, describing the change in density $\rho$ due to expansion or compression of the fluid through spatial change in the flow velocity $u$,
@@ -254,11 +254,6 @@ Lagrangian-remap schemes are often considered to be unconditionally stable and d
 \end{equation}
 Without this condition a large enough velocity could deform the grid so much that the remap step is not able to correctly remap the variables. With a more complex remap step, the assumptions about the grid deformation and corresponding timestep constraints could be relaxed.
 
-\subsection{Expansion to 3D}
-The 3D version of this remap step is of course much more involved geometrically but it follows an analogous path. Cell boundaries would be represented as cell planes and the boundary valued variables defined either on cell face centres or cell corners. In~\cite{arberStaggeredGridLagrangian2001} the cell face centres are chosen due to the cell corners introducing unnecessarily complex geometrical problems.
-
-\todo{this needs extending}
-
 \section{Shock capturing techniques}
 \label{sec:shock_capturing}
 
@@ -324,14 +319,23 @@ q = c_1 \rho c_s | \Delta u | + c_2 \rho (\Delta u)^2,
 \end{equation}
 where $c_s^2 = \gamma p / \rho$ is the sound speed, $\Delta u$ is the difference in velocity across the shock, and $c_1$ and $c_2$ are constants to be optimised by experiment. This is an extension of the widely-used von Neumann-Richtmyer shock viscosity~\cite{vonneumannMethodNumericalCalculation1950}. The scalar $q$ is added to the thermal pressure during the predictor stage of the Lagrangian step. Since the artificial viscosity is modifying the pressure, the energy equation must gain an additional term incorporating the heat generated by the shock viscosity, which takes the form $-q\Delta u/\rho$. To ensure this term only heats, it should only be included where $\Delta u < 0$. 
 
-In the full 3D code, the shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, now modelled as a tensor similar to that of Newtonian viscosity, takes the form
+
+\subsection{Extension to 3D}
+
+The previous section details an application of the Lagrangian-remap scheme to the 1D, compressible Euler equations. This chapter discusses the way in which the same concepts and techniques are extended to solve the 3D, MHD equations in the code, Lare3d.
+
+The major difference between the 1D and 3D schemes is in the choice of staggered grid. While the concept of a cell centre remains the same, in 3D a variable located at a cell boundary can be located at a cell vertex or face centre. Lare3d chooses to locate the density and internal energy at cell centres, the velocity components at cell vertices, and the magnetic field components at cell faces\footnote{The location of the magnetic field components is not completely trivial. Each component is located at the centre of the cell face normal to the direction associated with that component. For example, the $B_x$ component is located at the centre of the face normal to the $x$-direction, i.e. for coordinate indices which align with the cell vertices, it has coordinates $(i, j+1/2, k+1/2)$.}. The specific choice of staggered grid in Lare3d allows few averaging steps to be taken in any spatial derivatives.
+
+The Lagrangian step in 3D remains relatively similar to that in 1D, with the exception that the MHD equations are solved in place of the Euler equations. The remap step in 3D is analogous to the 1D remap process, merely requiring a more complex geometrical argument. 
+
+In the full 3D code, the shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
 \begin{equation}
   \label{eq:3d_shock_viscosity}
 \ten{\sigma}_{shock} = (c_1 \rho c_f L |s| + c_2 L^2 \rho s^2) \ten{W},
 \end{equation}
 where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\ref{eq:3d_shock_viscosity} reduces to equation~\ref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
 
-\section{Implementation}
+\section{Implementation of Lare1d}
 \subsection{Full recipe}
 \paragraph{Predictor Step}
 The corrector step requires only the pressure at the half-timestep $n+1/2$, thus for each grid point we temporarily calculate the energy, density and boundary distance at the half-timestep using equations \eqref{eqn-predictor-energy}, \eqref{eqn-predictor-density} and \eqref{eqn-predictor-boundary-distance} respectively, and feed these into the equation for pressure, \eqref{eqn-predictor-pressure} storing the result for use in the corrector step.
@@ -345,7 +349,7 @@ Completing one cycle of the simulation, the density and energy are remapped back
 \subsection{Language and library choice}
 This example of a LARE scheme was implemented in C++, a language which effectively balances computational speed and usability. The \emph{getopt} and \emph{json} libraries were used to take input from a JSON file allowing for better runtime flexibility. The unit testing library \emph{Catch} was used as the testing framework. Since this is a one-dimensional problem with limited complexity, there was no need to include parallelism in the code, although due to the computations being well-localised, it would be reasonably simple to parallelise the code using similar approaches to those commonly applied to finite-difference and finite-volume codes. Some helper tools were also written in Python and running scripts in bash. Due to the mature numerical and plotting libraries available for Python, it is a natural choice of language for developing tools.
 
-\section{Numerical test}
+\section{Results of numerical tests}
 
 The code was tested using the Sod shock tube problem. The problem was used to run parameter studies over the two shock viscosity parameters to identify optimal values, values which minimise an error function. The optimal values found indicate that the linear shock viscosity term, the first term in equation~\ref{eq:artificial_viscosity}, is mostly sufficient for this problem. Other parameter choices give benefits that are unquantified by the chosen error function.
 
@@ -492,4 +496,4 @@ Figure~\ref{fig:effect_of_res_on_error} shows the error $E_N$ as a function of r
 
 \section{Conclusion}
 
-\todo{conclusion}
+This chapter presents a 1D, hydrodynamic code using the same numerical scheme as the 3D, MHD code Lare3d. The implementation of the scheme to the 1D, compressible Euler equations is described, along with flux limiters and shock viscosity, two techniques used to more effectively capture shocks. The way in which Lare3d extends the same scheme and shock capturing techniques is discussed. Finally, results of a numerical test of an implementation of the scheme are presented.
