@@ -1,3 +1,23 @@
 \chapter{Summary}
 
-\todo{write summary}
+This thesis details a new model of anisotropic viscosity, the switching model, and its use in a number of important coronal applications. The switching model captures the main physics of the classical Braginskii model while retaining control over the effective size of isotropic regions around magnetic null points. Four applications have been investigated, two in the context of a magnetic null point and two in the context of a twisted flux rope. Chapter~\ref{chp:background} introduces the physics of the solar corona, the governing magnetohydrodynamic equations and Braginskii's model of anisotropic viscosity. In chapter~\ref{chp:numerical_methods} the numerical methods underpinning the 3D magnetohydrodynamics code Lare3d (which is used to perform the numerical experiments in the remainder of this thesis) are introduced through the construction of a similar 1D hydrodynamics code.
+
+In chapter~\ref{chp:switching_model} four models of anisotropic viscosity and a single isotropic model are applied to a dynamically twisted magnetic null point and the results compared. The anisotropic models are all based on the full Braginskii model which, for coronal purposes, includes parallel and perpendicular terms but neglects the drift terms. The family of switching models all interpolate between purely isotropic and purely parallel viscosity based on a measure of anisotropy which depends on the local magnetic field strength. The three interpolation functions (or measures of anisotropy) are the von Mises switching function, a phenomenological model which describes the local degree of anisotropy using a probabilistic approach, and the parallel and isotropic switching functions, each of which co-opts the coefficients of the parallel and isotropic terms of the Braginskii tensor to describe local anisotropy. When the models are applied to the slowly twisted null point, the isotropic model is shown to overestimate the heating output by two orders of magnitude, compared to the physically more realistic anisotropic models, while the anisotropic models produce relatively similar levels of heating.
+
+In chapter~\ref{chp:kink_instability} the kink instability is excited in an initially static, twisted magnetic flux rope and the differences between the isotropic model and the von Mises switching model investigated. Since there are no null points, the switching model effectively reverts to fully parallel viscosity. The kink instability is studied over a wide range of diffusion parameters, \todo{diffusion params}.
+
+Chapter~\ref{chp:kink_instability_straight} extends this investigation by twisting an initially straight flux tube until it becomes unstable to both the fluting and kink instabilities.
+
+- new fluting instability
+
+In chapter~\ref{chp:null_point_khi} the switching and isotropic models are compared when applied to a magnetic null point which is twisted so rapidly that the Kelvin-Helmholtz instability is able to develop. Additionally, the chapter details the collapse of the null due to a pressure-driven asymmetry.
+
+- new mechanism of null collapse
+
+General findings
+- Isotropic viscosity overestimates viscous heating (except where switching viscosity enhances its own heating through, say, KHI)
+- Switching viscosity enhances Ohmic heating
+- Switching visc leads to smaller length scales, stronger currents, greater vorticity, faster flows
+- Isotropic viscosity can notably damp instabilities
+- Or construct new ones (e.g. kink ins)
+
