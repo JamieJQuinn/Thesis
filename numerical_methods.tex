@@ -322,11 +322,11 @@ where $c_s^2 = \gamma p / \rho$ is the sound speed, $\Delta u$ is the difference
 
 \subsection{Extension to 3D}
 
-The previous section details an application of the Lagrangian-remap scheme to the 1D, compressible Euler equations. This chapter discusses the way in which the same concepts and techniques are extended to solve the 3D, MHD equations in the code, Lare3d.
+The previous section details an application of the Lagrangian-remap scheme to the 1D, compressible Euler equations. This section discusses the way in which the same concepts and techniques are extended to solve the 3D, MHD equations in the code, Lare3d.
 
 The major difference between the 1D and 3D schemes is in the choice of staggered grid. While the concept of a cell centre remains the same, in 3D a variable located at a cell boundary can be located at a cell vertex or face centre. Lare3d chooses to locate the density and internal energy at cell centres, the velocity components at cell vertices, and the magnetic field components at cell faces\footnote{The location of the magnetic field components is not completely trivial. Each component is located at the centre of the cell face normal to the direction associated with that component. For example, the $B_x$ component is located at the centre of the face normal to the $x$-direction, i.e. for coordinate indices which align with the cell vertices, it has coordinates $(i, j+1/2, k+1/2)$.}. The specific choice of staggered grid in Lare3d allows few averaging steps to be taken in any spatial derivatives.
 
-The Lagrangian step in 3D remains relatively similar to that in 1D, with the exception that the MHD equations are solved in place of the Euler equations. The remap step in 3D is analogous to the 1D remap process, merely requiring a more complex geometrical argument. 
+The Lagrangian step in 3D remains relatively similar to that in 1D, with the exception that the MHD equations are solved in place of the Euler equations. The solenoidal condition on the magnetic field $\nabla \cdot \vec{B} =0$ is maintained to machine precision by solving for the induction equation using constrained transport~\cite{evansSimulationMagnetohydrodynamicFlows1988a}. The remap step in 3D is analogous to the 1D remap process, merely requiring a more complex geometrical argument. 
 
 In the full 3D code, the shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
 \begin{equation}

@@ -87,9 +87,9 @@ The energy equation is given as
 \rho\frac{D\varepsilon}{Dt} = -p \vec{\nabla} \cdot \vec{u} + \ten{\sigma} : \vec{\nabla}\vec{u},
 \label{eq:ns_energy}
 \end{equation}
-and describes the change in internal thermal energy due to work done by pressure and viscous heating. This system of equations must be closed by an additional equation of state which. As given later, the ideal equation of state is sufficient, for the purposes of describing coronal plasma.
+and describes the change in internal thermal energy due to work done by pressure and viscous heating. Here, the double dot product (or tensor double contraction) is defined as $\ten{A}:\ten{B} = A_{ji} B_{ij}$. This system of equations must be closed by an additional equation of state which. As given later, the ideal equation of state is sufficient, for the purposes of describing coronal plasma.
 
-While the Navier-Stokes equations adequately describes many fluids, conducting fluids like ionised plasmas and liquid metals couple with local magnetic fields and require an extension to the governing equations, termed magnetohydrodynamics.
+While the Navier-Stokes equations adequately describe many fluids, conducting fluids like ionised plasmas and liquid metals couple with local magnetic fields and require an extension to the governing equations, termed magnetohydrodynamics.
 
 \subsection{Magnetohydrodynamics and the induction equation}
 
@@ -117,7 +117,7 @@ and the generation of magnetic fields due to currents $\vec{\jmath}$ and changin
 \end{equation}
 Written in SI units, these equations use the permittivity $\varepsilon_{0}$ and permeability $\mu_0$ of free space.
 
-Many conducting fluids can be considered electrically neutral, that is on the timescale of fluid motion the charges within the fluid are able to quickly redistribute to nullify any electric forces. This is true for coronal plasmas where the electrons, being much lighter than the ions, are able to very quickly redistribute. This allows Gauss's law to be entirely neglected. The displacement current, the last term in Ampère's law, can also be neglected due to the assumption that fluid motions are non-relativistic, that is the typical fluid velocity is much less than the speed of light, $c$. In order to couple the fluid motion to the electromagnetic fields, a constitutive Ohm's law is also included which describes the generation of currents in response to electric fields. This eventually allows the complete elimination of $\vec{E}$ from the governing equations. In a fluid's rest frame, the current response to an electric field $\vec{E}'$ is
+Many conducting fluids can be considered electrically neutral, that is on the timescale of fluid motion the charges within the fluid are able to quickly redistribute to nullify any electric forces. This is true for coronal plasmas where the electrons, being much lighter than the ions, are able to very quickly redistribute. This allows Gauss's law to be entirely neglected. The displacement current, the last term in Ampère's law, can also be neglected due to the assumption that fluid motions are non-relativistic, that is the typical fluid velocity is much less than the speed of light, $c$~\cite{priestMagnetohydrodynamicsSuna}. In order to couple the fluid motion to the electromagnetic fields, a constitutive Ohm's law is also included which describes the generation of currents in response to electric fields. This eventually allows the complete elimination of $\vec{E}$ from the governing equations. In a fluid's rest frame, the current response to an electric field $\vec{E}'$ is
 \begin{equation}
   \label{eq:rest_frame_ohms_law}
   \vec{\jmath} = \sigma \vec{E}',
@@ -141,7 +141,7 @@ Combining the remaining parts of Ampère's law, the Maxwell-Faraday equation, an
 which, in the case of uniform resistivity, may be written
 \begin{equation}
   \label{eq:induction_equation}
-{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \frac{\eta}{\mu_0}\nabla^2 \vec{B}.
+{\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) + \frac{\eta}{\mu_0}\nabla^2 \vec{B}.
 \end{equation}
 This equation essentially describes the advection and generation of a magnetic field due to fluid motions and the diffusion of the field due to resistivity. The magnetic field must still satisfy the solenoidal constraint $\nabla \cdot \vec{B}$.
 
@@ -150,11 +150,11 @@ Additional non-ideal physics like ambipolar diffusion and the Hall effect can be
 In order to describe the effect of the magnetic field on the fluid, additional terms must be added to the momentum~\ref{eq:ns_momentum} and energy~\ref{eq:ns_energy} equations. The Lorentz force describes the force exerted by the magnetic field on the fluid and is given by
 \begin{equation}
   \label{eq:lorentz_force}
-\frac{1}{\mu_0}\vec{\jmath} \times \vec{B}.
+\vec{\jmath} \times \vec{B}.
 \end{equation}
 When the fluid is resistive, the dissipation of currents can heat the fluid through a process called Joule or Ohmic heating. This is modelled in the energy equation by the term
 \begin{equation}
-\frac{\eta}{\mu_0} | \vec{\jmath} |^2.
+\mu_0 \eta | \vec{\jmath} |^2.
 \end{equation}
 
 \subsection{The non-dimensionalised MHD equations}
@@ -324,7 +324,7 @@ There are further contributions to the viscous stress tensor from motions which 
 The full Braginskii viscous stress tensor can be written in a number of ways. Braginskii's original formulation is written with the magnetic field aligned with the $z$-axis so we present here the more general formulation of Hogan~\cite{hoganCollisionalTransportMomentum1984}, described as the sum of five tensor components $\ten{W}^{(i)}$ with associated transport parameters $\eta_i$,
 \begin{equation}
 \label{eq:braginskii_tensor}
-\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} + \eta_1 \ten{W}^{(1)} + \eta_2 \ten{W}^{(2)} + \eta_3 \ten{W}^{(3)} + \eta_4 \ten{W}^{(4)}.
+\ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} + \eta_1 \ten{W}^{(1)} + \eta_2 \ten{W}^{(2)} - \eta_3 \ten{W}^{(3)} - \eta_4 \ten{W}^{(4)}.
 \end{equation}
 
 As discussed in~\cite{kaufmanPlasmaViscosityMagnetic1960}, there are three types of motion that give rise to the five tensor components: compression or dilation along the field, deformations in the plane transverse to the field, and deformations in the plane including the field. The first type of motion gives rise to the parallel term,
@@ -345,7 +345,7 @@ and two terms often called the drift or gyroviscous terms,
 \end{align}
 where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$, where we use the standard double contraction $\ten{A}:\ten{B} = A_iB_i$.
 
-Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, I do not know of more accurate expressions for the viscous transport parameters specifically. Braginskii's expressions are used where applicable.
+Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, Braginskii's expressions combine relative simplicity and good accuracy are are still widely used. These are the expressions used throughout this thesis.
 
 The parallel viscosity coefficient $\eta_0$ is identical to the dynamic viscosity coefficient of an unmagnetised plasma and depends on the ion number density $n$, temperature $T$ and collision time $\tau$ via the expression,
 \begin{equation}
@@ -394,7 +394,7 @@ As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1
   \label{eq:strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b}) ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
 \end{equation}
-In a local coordinate system where the magnetic field is aligned with $\vec{b}$, the tensor is
+In a local coordinate system where the magnetic field is aligned with $\vec{e}_z$, the tensor is
 \begin{equation}
   \label{eq:z_aligned_strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 W_{zz} ( \vec{e}_z \otimes \vec{e}_z - \tfrac{1}{3} \ten{I}),
@@ -424,7 +424,7 @@ While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents th
 \end{eqnarray}
 the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to explicitly check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\ref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
 
-Similar to the strong-field limit, it can be shown that the magnetic field has no effect on the field-aligned component of momentum transport in~\ref{eq:brag_new}. That is~\ref{eq:z_aligned_iso} still holds.
+Similar to the strong-field limit, it can be shown that the magnetic field in the weak-field limit has no effect on the field-aligned component of momentum transport in~\ref{eq:brag_new}. That is~\ref{eq:z_aligned_iso} still holds.
 
 \section{Conclusion}
 
