@@ -45,8 +45,18 @@
 
 \usepackage[
 backend=biber,
-citestyle=numeric
+style=numeric,
+firstinits,
+url=false,
+isbn=false,
+eprint=false
 ]{biblatex}
+\renewbibmacro{in:}{}
+%\AtEveryBibitem{\clearfield{pages}} 
+\DeclareFieldFormat{date}{%
+  \thefield{year}}
+\DeclareFieldFormat{issue}{\bfseries{#1}} 
+
 \addbibresource{thesis.bib}
 
 \usepackage{lineno,hyperref}
@@ -113,13 +123,12 @@ July 2020
 %Column width is \the\columnwidth
 
 \include{abstract}
-\tableofcontents
-\listoftables
-\listoffigures
 \include{acknowledgements}
 \include{declaration}
 
-%\linenumbers
+\tableofcontents
+\listoftables
+\listoffigures
 
 \mainmatter % Turn on chapter numbering, reset page numbers, use arabic
 \include{background}
