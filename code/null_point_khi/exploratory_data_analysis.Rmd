@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.3.4
+      jupytext_version: 1.6.0
   kernelspec:
     display_name: Python 3
     language: python
@@ -26,6 +26,10 @@ sys.path.insert(0,'../shared')
 import sdf_helper
 importlib.reload(sdf_helper)
 from sdf_helper import *
+
+import plotting
+importlib.reload(plotting)
+from plotting import *
 
 data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/null-point-stressing/"
 parameter_study_folder = "/twisting-driver/parameter-study/"
@@ -260,19 +264,47 @@ def plot_vectors(sdfFile, axis, vector_name, slice_dim, slice_loc, color='k', sc
     axis.quiver(X, Y, vecx, vecy, color=color, scale=scale, pivot=pivot)
 ```
 
+## High resolution switching explore
+
 ```{python}
-xlim = 0.5
-ylim = 0.25
+var = {}
+nu = -4
+eta = -4
+slice_dim = "x"
+folder = data_folder + high_resolution_folder
+for i in range(25, 34):
+    sdffile = fetch_sdffile(i, nu, eta, folder, "switching")
+    var[i] = get_variable_slice(sdffile, "magnitude_current_density", slice_dim, 0.0)
+    extents = get_slice_extents(sdffile, slice_dim)
+    del sdffile
+```
+
+```{python}
+# print(np.max(var), np.min(var), np.mean(var))
+outdir = "../../images/null_point_khi/"
+limit = 100
+for i in range(28, 31):
+    fig, axis = create_axes(2)
+
+    axis.imshow(var[i].T, vmax=limit, vmin=0, extent=extents, cmap='plasma', origin='lower')
+    axis.set_xlim(-0.25, 0.25)
+#     plt.show()
+    save_plot(outdir + "v-4r-4-switching-spine-fan-reconn-"+str(i)+".pdf")
+```
+
+# What does the velocity look like throughout the sim?
+
+```{python}
+xlim = 0.1
+ylim = 0.1
 vlim = None
 
-slice_loc = 0.23
-slice_dim = "z"
+slice_loc = 0.0
+slice_dim = "y"
 
-# for run_folder in ["v-3r-4-isotropic", "v-4r-4-isotropic", "v-5r-4-isotropic"]:
-for run_folder in ["v-4r-5-isotropic"]:
-# run_folder = "v-5r-4-isotropic"
+for run_folder in ["v-4r-4-isotropic"]:
     folder = data_folder + parameter_study_folder + run_folder + "/Data/"
-    for i in range(1, 11):
+    for i in range(8, 15):
     #     for slice_loc in np.linspace(0, 0.2, 21):
             timedump = '{0:04d}'.format(i)
             print(timedump)
@@ -285,7 +317,7 @@ for run_folder in ["v-4r-5-isotropic"]:
 
 #             plot_vectors(iso_sdf, axis, "velocity",
 #                         slice_dim, slice_loc, color='w',
-#                          scale=1, pivot='tip')
+#                          scale=1, pivot='tail')
 
     #         plot_vectors(iso_sdf, axis, "pressure_force",
     #                     slice_dim, slice_loc, color='w',
@@ -294,14 +326,15 @@ for run_folder in ["v-4r-5-isotropic"]:
 #             plot_vectors(iso_sdf, axis, "pressure_force",
 #                         slice_dim, slice_loc, scale=20, pivot='tip')
 
-#             image1 = get_variable_slice(iso_sdf, "magnetic_tension_x", slice_dim, slice_loc).T
-#             image2 = get_variable_slice(iso_sdf, "lorentz_force_x", slice_dim, slice_loc-0.01).T
-#             image = (image1 + image2)/2.0
+#             image1 = get_variable_slice(iso_sdf, "pressure_force_z", slice_dim, slice_loc).T
+#             image2 = get_variable_slice(iso_sdf, "lorentz_force_z", slice_dim, slice_loc-0.01).T
+#             image = image1 + image2
             #     print(image.shape)
-            image = get_variable_slice(iso_sdf, "magnetic_tension_x", slice_dim, slice_loc).T
+            image = get_variable_slice(iso_sdf, "magnitude_current_density", slice_dim, slice_loc).T
             im = axis.imshow(image, cmap="coolwarm",
-                             extent=extents, origin='lower', interpolation='bilinear')
-        #                     vmin = -.01, vmax=.01)
+                             extent=extents, origin='lower',
+                             interpolation='bilinear',
+                            vmin = 0, vmax=10)
             attach_colorbar(axis, im)
             axis.set_xlim((-xlim, xlim))
             axis.set_ylim((-ylim, ylim))
@@ -508,6 +541,26 @@ axis.imshow(vx, cmap="coolwarm", extent=extents, origin='lower')
 axis.set_xlim((-xlim, xlim))
 axis.set_ylim((-ylim, ylim))
 plt.show()
+```
+
+```{python}
+run_folder = "v-4r-4-isotropic"
+folder = data_folder + high_resolution_folder + run_folder + "/Data/"
+slice_dim = "z"
+slice_loc = 0.1
+for i in range(34, 37):
+    timedump = '{0:04d}'.format(i)
+    print(timedump)
+    sdfFilename = folder + timedump + ".sdf"
+    sdfFile = sdf.read(sdfFilename)
+    extents = get_slice_extents(sdfFile, slice_dim)
+
+    
+    energy = get_variable_slice(sdfFile, "Fluid_Energy", slice_dim, slice_loc).T
+    plt.imshow(energy, extent=extents)
+    plt.ylim((-0.25, 0.25))
+    plt.xlim((-0.25, 0.25))
+    plt.show()
 ```
 
 ```{python}
@@ -900,40 +953,6 @@ slice_dim='z'
 slice_loc=0.0
 
 for i in [1, 2, 3]:
-    timedump = '{0:04d}'.format(i)
-    print(timedump)
-    sdfFilename = folder + timedump + ".sdf"
-    sdfFile = sdf.read(sdfFilename)
-
-    extents = get_slice_extents(sdfFile, slice_dim)
-
-    fig, axis = plt.subplots(figsize=(10,10))
-
-#     image1 = get_variable_slice(sdfFile, "isotropic_viscous_force_z", slice_dim, slice_loc).T
-#     image2 = get_variable_slice(sdfFile, "isotropic_viscous_force_z", slice_dim, slice_loc-0.01).T
-#     image = (image1 + image2)/2.0
-    #     print(image.shape)
-    image = get_variable_slice(sdfFile, "Velocity_Vz", slice_dim, slice_loc).T
-    im = axis.imshow(image, cmap="coolwarm", extent=extents, origin='lower')
-#                     vmin = -.001, vmax=.001)
-#     attach_colorbar(axis, im)
-    axis.set_xlim((-xlim, xlim))
-    axis.set_ylim((-ylim, ylim))
-    plt.show()
-```
-
-# Extremely high resistivity runs (eta=1e-2)
-
-```{python}
-run_folder = "v-4r-2-switching"
-folder = data_folder + parameter_study_folder + run_folder + "/Data/"
-
-xlim=1.0
-ylim=1.0
-slice_dim='z'
-slice_loc=0.0
-
-for i in range(1, 16):
     timedump = '{0:04d}'.format(i)
     print(timedump)
     sdfFilename = folder + timedump + ".sdf"

@@ -23,15 +23,17 @@ import numpy as np
 import sdf
 import importlib
 
-data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/null-point-stressing/twisting-driver/high-resolution/"
+data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/from-straight-tube/single_run/"
 ```
 
 ```{python}
 # These are the indices that set the output limits of +- x and y
-X_MIN = 275
-X_MAX = 365
+X_MIN = 128 + 50
+X_MAX = 512-128 - 50
 Z_MIN = 0
-Z_MAX = 640
+Z_MAX = 512
+
+GAMMA = 5/3
 ```
 
 ```{python}
@@ -46,10 +48,11 @@ def differentiate(var, dim, dx):
 ```
 
 ```{python}
-def preprocess_magnetic_field(sdfFilename, outfname, x_min=X_MIN, x_max=X_MAX):
+def preprocess_magnetic_field(sdfFilename, outfname,
+                              x_min=X_MIN, x_max=X_MAX):
     sdffile = sdf.read(sdfFilename)
 
-    nx, ny, nz = sdffile.Magnetic_Field_bx_centred.dims
+    nx, ny, nz = sdffile.Fluid_Energy.dims
     extents = sdffile.Grid_Grid.extents
     dx = (extents[3] - extents[0])/(nx+1)
     dy = (extents[4] - extents[1])/(ny+1)
@@ -61,15 +64,21 @@ def preprocess_magnetic_field(sdfFilename, outfname, x_min=X_MIN, x_max=X_MAX):
               extents[1] + 0.5*dy + x_min * dy,
               extents[2])
     
-    bx = np.array(sdffile.Magnetic_Field_bx_centred.data[x_min:x_max,x_min:x_max,:], order='F')
-    by = np.array(sdffile.Magnetic_Field_by_centred.data[x_min:x_max,x_min:x_max,:], order='F')
-    bz = np.array(sdffile.Magnetic_Field_bz_centred.data[x_min:x_max,x_min:x_max,:], order='F')
+    bx = np.array(sdffile.Magnetic_Field_Bx.data[x_min:x_max,x_min:x_max,:], order='F')
+    by = np.array(sdffile.Magnetic_Field_By.data[x_min:x_max,x_min:x_max,:], order='F')
+    bz = np.array(sdffile.Magnetic_Field_Bz.data[x_min:x_max,x_min:x_max,:], order='F')
     
-    jx = differentiate(bz, 'y', dy) - differentiate(by, 'z', dz)
-    jy = differentiate(bx, 'z', dz) - differentiate(bz, 'x', dx)
-    jz = differentiate(by, 'x', dx) - differentiate(bx, 'y', dy)
-    j_mag = np.zeros((nx_new, nx_new, nz))
-    j_mag[1:-1, 1:-1, 1:-1] = np.sqrt(np.power(jx,2) + np.power(jy,2) + np.power(jz,2))
+#     jx = differentiate(bz, 'y', dy) - differentiate(by, 'z', dz)
+#     jy = differentiate(bx, 'z', dz) - differentiate(bz, 'x', dx)
+#     jz = differentiate(by, 'x', dx) - differentiate(bx, 'y', dy)
+#     j_mag = np.zeros((nx_new, nx_new, nz))
+#     j_mag[1:-1, 1:-1, 1:-1] = np.sqrt(np.power(jx,2) + np.power(jy,2) + np.power(jz,2))
+    
+    energy = np.array(
+        sdffile.Fluid_Energy.data[x_min:x_max,x_min:x_max,:], order='F')
+    density = np.array(
+        sdffile.Fluid_Rho.data[x_min:x_max,x_min:x_max,:], order='F')
+    pressure = energy*density*(GAMMA-1)
     
     vx = np.array(sdffile.Velocity_Vx.data[x_min:x_max+1,x_min:x_max+1,:], order='F')
     vy = np.array(sdffile.Velocity_Vy.data[x_min:x_max+1,x_min:x_max+1,:], order='F')
@@ -80,7 +89,7 @@ def preprocess_magnetic_field(sdfFilename, outfname, x_min=X_MIN, x_max=X_MAX):
         "Magnetic_Field/bx-centred" : bx,
         "Magnetic_Field/by-centred" : by,
         "Magnetic_Field/bz-centred" : bz,
-        "Magnetic_Field/j_mag": j_mag},
+        "pressure": pressure},
                pointData = {
                    "v_mag": v_mag
                },
@@ -88,10 +97,10 @@ def preprocess_magnetic_field(sdfFilename, outfname, x_min=X_MIN, x_max=X_MAX):
 ```
 
 ```{python}
-run_folder = data_folder + "v-4r-4-isotropic/Data/"
+run_folder = data_folder + "v-4r-4-switching/Data/"
 
 # timedumps = [0, 8, 30, 37]
-timedumps = [30]
+timedumps = [14]
 
 
 sdf_files = [

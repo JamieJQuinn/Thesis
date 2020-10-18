@@ -48,14 +48,14 @@ def latexify(fig_width=None, fig_height=None, columns=1, square=False):
         fig_height = MAX_HEIGHT_INCHES
 
     params = {'backend': 'ps',
-              'text.latex.preamble': ['\\usepackage{gensymb}',
-                                      '\\usepackage{amsmath}'],
+              'text.latex.preamble': '\\usepackage{gensymb}\n\\usepackage{amsmath}',
               'axes.labelsize': FONTSIZE, # fontsize for x and y labels (was 10)
               'axes.titlesize': FONTSIZE,
               'font.size': FONTSIZE, # was 10
               'legend.fontsize': FONTSIZE, # was 10
               'xtick.labelsize': FONTSIZE,
               'ytick.labelsize': FONTSIZE,
+              'lines.linewidth': 1.0,
               'text.usetex': True,
               'figure.figsize': [fig_width,fig_height],
               'font.family': 'serif'
@@ -99,4 +99,4 @@ def attach_colorbar(axis, im, side='right'):
         orientation = 'vertical'
     else:
         orientation = 'horizontal'
-    plt.colorbar(im, cax=cax, orientation=orientation)
+    return plt.colorbar(im, cax=cax, orientation=orientation)

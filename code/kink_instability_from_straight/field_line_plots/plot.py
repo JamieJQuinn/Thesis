@@ -18,7 +18,7 @@ def save_fig(data_fname, fig_fname, timedump):
     IntegralCurveAtts.pointSource = (0, 0, 0)
     IntegralCurveAtts.lineStart = (0, 0, 0)
     IntegralCurveAtts.lineEnd = (1, 0, 0)
-    IntegralCurveAtts.planeOrigin = (0, 0, -0.25)
+    IntegralCurveAtts.planeOrigin = (0, 0, -2.0)
     IntegralCurveAtts.planeNormal = (0, 0, 1)
     IntegralCurveAtts.planeUpAxis = (0, 1, 0)
     IntegralCurveAtts.radius = 0.05
@@ -28,8 +28,8 @@ def save_fig(data_fname, fig_fname, timedump):
     IntegralCurveAtts.pointList = (0, 0, 0, 1, 0, 0, 0, 1, 0)
     IntegralCurveAtts.fieldData = ()
     IntegralCurveAtts.sampleDensity0 = 10
-    IntegralCurveAtts.sampleDensity1 = 2
-    IntegralCurveAtts.sampleDensity2 = 2
+    IntegralCurveAtts.sampleDensity1 = 1
+    IntegralCurveAtts.sampleDensity2 = 1
     IntegralCurveAtts.dataValue = IntegralCurveAtts.Solid  # Solid, SeedPointID, Speed, Vorticity, ArcLength, TimeAbsolute, TimeRelative, AverageDistanceFromSeed, CorrelationDistance, Difference, Variable
     IntegralCurveAtts.dataVariable = ""
     IntegralCurveAtts.integrationDirection = IntegralCurveAtts.Both  # Forward, Backward, Both, ForwardDirectionless, BackwardDirectionless, BothDirectionless
@@ -352,7 +352,7 @@ def save_fig(data_fname, fig_fname, timedump):
     IntegralCurveAtts.pointSource = (0, 0, 0)
     IntegralCurveAtts.lineStart = (0, 0, 0)
     IntegralCurveAtts.lineEnd = (1, 0, 0)
-    IntegralCurveAtts.planeOrigin = (0, 0, 0.24)
+    IntegralCurveAtts.planeOrigin = (0, 0, 2.0)
     IntegralCurveAtts.planeNormal = (0, 0, 1)
     IntegralCurveAtts.planeUpAxis = (0, 1, 0)
     IntegralCurveAtts.radius = 0.05
@@ -362,8 +362,8 @@ def save_fig(data_fname, fig_fname, timedump):
     IntegralCurveAtts.pointList = (0, 0, 0, 1, 0, 0, 0, 1, 0)
     IntegralCurveAtts.fieldData = ()
     IntegralCurveAtts.sampleDensity0 = 10
-    IntegralCurveAtts.sampleDensity1 = 2
-    IntegralCurveAtts.sampleDensity2 = 2
+    IntegralCurveAtts.sampleDensity1 = 1
+    IntegralCurveAtts.sampleDensity2 = 1
     IntegralCurveAtts.dataValue = IntegralCurveAtts.Solid  # Solid, SeedPointID, Speed, Vorticity, ArcLength, TimeAbsolute, TimeRelative, AverageDistanceFromSeed, CorrelationDistance, Difference, Variable
     IntegralCurveAtts.dataVariable = ""
     IntegralCurveAtts.integrationDirection = IntegralCurveAtts.Both  # Forward, Backward, Both, ForwardDirectionless, BackwardDirectionless, BothDirectionless
@@ -476,14 +476,14 @@ def save_fig(data_fname, fig_fname, timedump):
     
     ## ISOSURFACE
     
-    AddPlot("Pseudocolor", "Magnetic_Field/j_mag", 1, 0)
+    AddPlot("Pseudocolor", "pressure", 1, 0)
     AddOperator("Isosurface", 0)
     SetActivePlots(2)
     IsosurfaceAtts = IsosurfaceAttributes()
     IsosurfaceAtts.contourNLevels = 10
-    IsosurfaceAtts.contourValue = (60)
+    IsosurfaceAtts.contourValue = (0.3)
     print("timedump:", timedump)
-    print("current contour:", IsosurfaceAtts.contourValue)
+    print("pressure contour:", IsosurfaceAtts.contourValue)
     IsosurfaceAtts.contourPercent = ()
     IsosurfaceAtts.contourMethod = IsosurfaceAtts.Value  # Level, Value, Percent
     IsosurfaceAtts.minFlag = 0
@@ -598,7 +598,7 @@ def save_fig(data_fname, fig_fname, timedump):
     SliceAtts = SliceAttributes()
     SliceAtts.originType = SliceAtts.Intercept  # Point, Intercept, Percent, Zone, Node
     SliceAtts.originPoint = (0, 0, 0)
-    SliceAtts.originIntercept = -0.25
+    SliceAtts.originIntercept = -2.0
     SliceAtts.originPercent = 0
     SliceAtts.originZone = 0
     SliceAtts.originNode = 0
@@ -627,7 +627,7 @@ def save_fig(data_fname, fig_fname, timedump):
     # SetOperatorOptions(BoxAtts, 0)
 
     PseudocolorAtts = PseudocolorAttributes()
-    PseudocolorAtts.colorTableName = "Reds"
+    PseudocolorAtts.colorTableName = "RdBu"
     PseudocolorAtts.minFlag = 0
     PseudocolorAtts.min = -2
     PseudocolorAtts.maxFlag = 0
@@ -636,25 +636,25 @@ def save_fig(data_fname, fig_fname, timedump):
     
     # Begin spontaneous state
     View3DAtts = View3DAttributes()
-    View3DAtts.viewNormal = (0.565541, -0.760227, 0.319716)
-    View3DAtts.focus = (0, 0, -0.000390016)
-    View3DAtts.viewUp = (-0.195684, 0.252902, 0.947496)
+    View3DAtts.viewNormal = (0.499063, 0.0899918, 0.86188)
+    View3DAtts.focus = (0, 0, 0)
+    View3DAtts.viewUp = (-0.0363853, 0.995892, -0.0829159)
     View3DAtts.viewAngle = 30
-    View3DAtts.parallelScale = 1.42738
-    View3DAtts.nearPlane = -2.85477
-    View3DAtts.farPlane = 2.85477
-    View3DAtts.imagePan = (0, 0)
-    View3DAtts.imageZoom = 1.0
+    View3DAtts.parallelScale = 10.3923
+    View3DAtts.nearPlane = -20.7846
+    View3DAtts.farPlane = 20.7846
+    View3DAtts.imagePan = (0.0596368, 0.041593)
+    View3DAtts.imageZoom = 1.5
     View3DAtts.perspective = 1
     View3DAtts.eyeAngle = 2
     View3DAtts.centerOfRotationSet = 0
-    View3DAtts.centerOfRotation = (0, 0, -0.000390016)
+    View3DAtts.centerOfRotation = (0, 0, 0)
     View3DAtts.axis3DScaleFlag = 0
     View3DAtts.axis3DScales = (1, 1, 1)
     View3DAtts.shear = (0, 0, 1)
     View3DAtts.windowValid = 1
     SetView3D(View3DAtts)
-# End spontaneous state
+    # End spontaneous state
 
 
     # End spontaneous state

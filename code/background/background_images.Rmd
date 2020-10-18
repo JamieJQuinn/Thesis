@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.3.4
+      jupytext_version: 1.6.0
   kernelspec:
     display_name: Python 3
     language: python
@@ -39,26 +39,30 @@ def calc_kappa(a):
 
 def calc_s(a):
     s = 1.0 - 3.0*calc_kappa(a)
-    s[a>70] = 1.0
+#     s[a>30] = 1.0
     s[a<0.1] = 0.0
     return s
 ```
 
 ```{python}
 # Concentration param
-aMax = 100
+aMax = 30
 a = np.linspace(0, aMax, num=1000)
 a[0] = 1.0
 
 s = calc_s(a)
 fig, axis = create_axes(2)
-plt.plot(a, s)
+plt.plot(a, s, label=r"$s$")
+plt.plot(a, np.power(s, 2), label=r"$s^2$")
 # plt.plot(a, kappa_erfi)
 plt.xlabel(r"$a$")
 plt.ylabel(r"$s$")
-plt.ylim(0, 1)
+plt.ylim(0, 1.1)
 plt.xlim(0, aMax)
 
+plt.plot((0, aMax), (1,1), '--', color='grey', linewidth=1)
+
+plt.legend()
 plt.show()
 ```
 
@@ -79,7 +83,7 @@ PROTON_MASS = 1.6726219e-27
 def calc_omega(B):
     return ELECTRON_CHARGE * B / PROTON_MASS
 
-print(ELECTRON_CHARGE/PROTON_MASS)
+# print(ELECTRON_CHARGE/PROTON_MASS)
 print("For field strength of B=5e-3T, omega = ", calc_omega(5e-3))
 ```
 
@@ -126,7 +130,7 @@ def a_hat(a0, B):
 ```{python}
 B0 = 5e-3
 B_max = 1e-7
-B = np.linspace(0, B_max, 100)
+B = np.linspace(0, B_max, 100) # In Tesla
 
 a0 = 1e16
 
@@ -144,7 +148,7 @@ axis.plot(B, eta_1, label=r"$\eta_1$")
 # axis.plot(B, eta_2, label=r"$\eta_2$")
 axis.plot(B, eta_3, label=r"$\eta_3$")
 # axis.plot(B, eta_4, label=r"$\eta_4$")
-axis.set_xlabel(r"$|B|$")
+axis.set_xlabel(r"$|B|$ (T)")
 # axis.set_ylabel(r"$\eta_1, \eta_3$")
 axis.set_ylim(0, 1.1)
 axis.set_xlim(0, B[-1])
@@ -165,27 +169,29 @@ axis.set_xlabel(r"$|B|$")
 # axis.set_ylabel(r"$s$")
 axis.set_ylim(0.0, 1.1)
 axis.set_xlim(0, B[-1])
+axis.plot((0, B[-1]), (1,1), ':', color='grey')
 axis.set_xticks([0, 5e-8, 1e-7])
 plt.legend(frameon=False)
-save_plot(outdir+"brag_coeffs_2.pdf")
+save_plot("../../images/development_of_switching_model/"\
+          +"brag_coeffs_2.pdf")
 
-brag_zz = (3+4*eta_1 - 4*eta_2)/3
-brag_xz = eta_2
-brag_xx = (1-eta_1)/2
-brag_xy = eta_1
+# brag_zz = (3+4*eta_1 - 4*eta_2)/3
+# brag_xz = eta_2
+# brag_xx = (1-eta_1)/2
+# brag_xy = eta_1
 
-fig, axis = create_axes(2)
-axis.plot(B, brag_zz, label=r"$1.0$")
-axis.plot(B, brag_xz, label=r"$\eta_{2}$")
-axis.plot(B, brag_xx, label=r"$(\eta_{0} - \eta_1)/2$")
-axis.plot(B, brag_xy, label=r"$\eta_{1}$")
-axis.set_xlabel(r"$|B|$")
-# axis.set_ylabel(r"$s$")
-axis.set_ylim(0, 1.1)
-axis.set_xlim(0, B[-1])
-axis.set_xticks([0, 5e-8, 1e-7])
-plt.legend(frameon=False)
-plt.show()
+# fig, axis = create_axes(2)
+# axis.plot(B, brag_zz, label=r"$1.0$")
+# axis.plot(B, brag_xz, label=r"$\eta_{2}$")
+# axis.plot(B, brag_xx, label=r"$(\eta_{0} - \eta_1)/2$")
+# axis.plot(B, brag_xy, label=r"$\eta_{1}$")
+# axis.set_xlabel(r"$|B|$")
+# # axis.set_ylabel(r"$s$")
+# axis.set_ylim(0, 1.1)
+# axis.set_xlim(0, B[-1])
+# axis.set_xticks([0, 5e-8, 1e-7])
+# plt.legend(frameon=False)
+# plt.show()
 
 # plt.plot(B, 1-np.power(s, 2))
 
@@ -196,10 +202,12 @@ plt.show()
 
 ```{python}
 def calc_eta0(T):
+    # From Hollweg
     return 0.68e-16*np.power(T, 5/2)
 
 def calc_resistivity(T):
-    return 2e9*np.power(T, -3/2)
+    # From (Braginskii 1965)
+    return 2e9 *np.power(T, -3/2)
 
 V0 = 3.45e6
 L0 = 1e6
@@ -213,9 +221,14 @@ Re = V0*L0*RHO0/viscosity
 S = V0*L0/resistivity
 
 fig, axis = create_axes(2)
-axis.loglog(temp, viscosity, label=r'$\eta_0$')
-axis.loglog(temp, Re, label=r'Re')
-# axis.loglog(temp, resistivity, label='S')
+axis.loglog(temp, 1.0/Re, label=r'$\nu$')
+# axis.loglog(temp, Re, label=r'Re')
+axis.loglog(temp, 1.0/S, label=r'$\eta$')
+axis.set_xlabel(r"$T$ (K)")
 plt.legend(frameon=False)
 save_plot(outdir+"visc_dep_on_temp.pdf")
+```
+
+```{python}
+
 ```

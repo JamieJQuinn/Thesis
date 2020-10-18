@@ -1,0 +1,2215 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.6.0
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import sdf
+import sys
+import importlib
+import math
+from scipy.signal import find_peaks
+import matplotlib
+import matplotlib.pyplot as plt
+# %matplotlib inline
+
+sys.path.insert(0,'../shared')
+from energy import Energy
+
+import plotting
+importlib.reload(plotting)
+from plotting import *
+
+import sdf_helper
+importlib.reload(sdf_helper)
+from sdf_helper import *
+
+import fan_plane_integrator
+importlib.reload(fan_plane_integrator)
+from fan_plane_integrator import *
+
+import field_line_integrator
+importlib.reload(field_line_integrator)
+from field_line_integrator import *
+```
+
+```{python}
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]
+
+def find_nearest_idx(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
+def fetch_sdffile(time_index, visc, resist, containing_folder, visc_model):
+    timedump = '{0:04d}'.format(time_index)
+    run_string = "v" + str(visc) + "r" + str(resist)
+    run_folder = run_string + "-" + visc_model
+    folder = containing_folder + run_folder + "/Data/"
+    sdfFilename = folder + timedump + ".sdf"
+    return sdf.read(sdfFilename)
+
+def fetch_viscosity_pair_sdffile(time_index, visc, resist, containing_folder):
+    iso_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "isotropic")
+    swi_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "switching")
+
+    return iso_sdfFile, swi_sdfFile
+
+def format_filename(folder, dump_number):
+    return folder + '{0:04d}'.format(dump_number) + ".sdf"
+```
+
+# Settings
+
+```{python}
+outdir = "../../images/kink_instability_straight/"
+data_folder = "/nas/1101974q/kink-instability-str8/high-res/wyper-bcs/"
+data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/from-straight-tube/single_run/"
+```
+
+## Plotting energy
+
+```{python}
+def fetch_energy(nu_power, eta_power):
+    iso_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-isotropic"
+    swi_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-switching"
+    iso_energy_filename = iso_folder + "/Data/en.dat"
+    swi_energy_filename = swi_folder + "/Data/en.dat"
+    energy_iso = Energy(iso_energy_filename)
+    energy_swi = Energy(swi_energy_filename)
+    return energy_iso, energy_swi
+```
+
+```{python}
+def plot_energy(axis, nu_power, eta_power, index, is_log_plot=False):
+    iso_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-isotropic"
+    swi_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-switching"
+    iso_energy_filename = iso_folder + "/Data/en.dat"
+    swi_energy_filename = swi_folder + "/Data/en.dat"
+    energy_iso = Energy(iso_energy_filename)
+    energy_swi = Energy(swi_energy_filename)
+
+    if is_log_plot:
+        axis.semilogy(energy_iso.data[:,0], energy_iso.data[:,index], label='iso')
+        axis.semilogy(energy_swi.data[:,0], energy_swi.data[:,index], '--', label='swi')
+    else:
+        axis.plot(energy_iso.data[:,0], energy_iso.data[:,index], label='iso')
+        axis.plot(energy_swi.data[:,0], energy_swi.data[:,index], '--', label='swi')
+```
+
+```{python}
+nu_power = -4
+
+for i, eta_power in enumerate([-3, -4]):
+    fig, axis = create_axes(2)
+    plot_energy(axis, nu_power, eta_power, 2)
+    axis.set_ylim(0.0, 0.4)
+    axis.set_xlim(0, 50)
+    axis.set_xlabel(r"$t$")
+    axis.set_ylabel(r"KE")
+    if eta_power == -4:
+        axis.legend(frameon=False)
+    save_plot(outdir + "kinetic_energy"+str(eta_power)+".pdf")
+```
+
+```{python}
+###### nu_power = -4
+
+eta_power = -3
+fig, axis = create_axes(2)
+plot_energy(axis, nu_power, eta_power, 2, True)
+# rate = 0.13
+# growth = np.power(np.e, (t-57)*rate)
+# axis.semilogy(t, growth, 'k:')
+# axis.text(27, 1e-2, r"$\gamma = "+str(rate)+"$")
+linewidth = 1
+rate = 1.06
+t = np.linspace(22, 25.5)
+growth = np.power(np.e, (t-27.4)*rate)
+axis.text(24, 2e-1, r"$\gamma = "+str(rate)+"$")
+axis.semilogy(t, growth, 'k:', linewidth = linewidth)
+rate = 0.15
+t = np.linspace(25.5, 36)
+growth = np.power(np.e, (t-47.5)*rate)
+axis.semilogy(t, growth, 'k:', linewidth = linewidth)
+axis.text(35, 9e-2, r"$\sigma = "+str(rate)+"$")
+axis.set_ylim(5e-3, 1)
+axis.set_xlim(15, 40)
+axis.set_xlabel(r"$t$")
+axis.set_ylabel(r"KE")
+# plt.show()
+save_plot(outdir + "kinetic_energy_log"+str(eta_power)+".pdf")
+```
+
+```{python}
+eta_power = -4
+fig, axis = create_axes(2)
+plot_energy(axis, nu_power, eta_power, 2, True)
+linewidth = 1
+t = np.linspace(0, 35)
+growth = np.power(np.e, (t-29.79)*2.97)
+axis.text(26.7, 5e-1, r"$\sigma = 2.97$")
+axis.semilogy(t, growth, 'k:', linewidth = linewidth)
+t = np.linspace(27, 30)
+growth = np.power(np.e, (t-34)*0.69)
+axis.text(30.3, 7e-2, r"$\gamma = 0.69$")
+axis.semilogy(t, growth, 'k:', linewidth = linewidth)
+t = np.linspace(0, 35)
+growth = np.power(np.e, (t-30.5)*2.54)
+axis.text(30.5, 5e-1, r"$\sigma = 2.55$")
+axis.semilogy(t, growth, 'k:', linewidth = linewidth)
+# growth = np.power(np.e, (t-176)*0.03)
+# axis.text(32, 1.8e-2, r"$\gamma = 0.03$")
+# axis.semilogy(t, growth, 'k:')
+axis.set_ylim(5e-3, 1)
+axis.set_xlim(25, 35)
+axis.set_xlabel(r"$t$")
+axis.set_ylabel(r"KE")
+# axis.legend(frameon=False)
+save_plot(outdir + "kinetic_energy_log"+str(eta_power)+".pdf")
+```
+
+```{python}
+nu_power = -4
+
+eta_power = -3
+# fig, axis = create_axes(2)
+# plot_energy(axis, nu_power, eta_power, 2, True)
+# t = np.linspace(0, 35)
+# growth = np.power(np.e, (t-20)*0.5 - 4.7)
+# axis.semilogy(t, growth, 'k:')
+# axis.text(16, 5e-3, r"$\gamma = 0.5$")
+# growth = np.power(np.e, (t-20)*0.9 - 5.5)
+# axis.text(21, 5e-3, r"$\gamma = 0.9$")
+# axis.semilogy(t, growth, 'k:')
+# axis.set_ylim(1e-3, 1)
+# axis.set_xlim(15, 30)
+# axis.set_xlabel(r"$t$")
+# axis.set_ylabel(r"KE")
+# save_plot(outdir + "kinetic_energy_log"+str(eta_power)+".pdf")
+
+eta_power = -4
+fig, axis = create_axes(2)
+plot_energy(axis, nu_power, eta_power, 2, True)
+t = np.linspace(0, 35)
+# growth = np.power(np.e, (t-29.79)*2.97)
+# axis.text(27.7, 5e-1, r"$\gamma = 2.97$")
+# axis.semilogy(t, growth, 'k:')
+# growth = np.power(np.e, (t-34)*0.69)
+# axis.text(33.7, 5e-1, r"$\gamma = 0.69$")
+# axis.semilogy(t, growth, 'k:')
+growth = np.power(np.e, (t-180)*0.03)
+# axis.text(30.5, 5e-1, r"$\gamma = 2.55$")
+axis.semilogy(t, growth, 'k:')
+axis.set_ylim(5e-3, 2e-2)
+axis.set_xlim(24, 28)
+axis.set_xlabel(r"$t$")
+axis.set_ylabel(r"KE")
+axis.legend(frameon=False)
+plt.show()
+# save_plot(outdir + "kinetic_energy_log"+str(eta_power)+".pdf")
+```
+
+```{python}
+def calc_dkdt(energy):
+    t = energy.data[:,0]
+    dt = t[1:] - t[:-1]
+    
+    ke = energy.data[:,2]
+    dkdt = (ke[1:] - ke[:-1])/dt
+    
+    ke = (ke[1:] + ke[:-1])*0.5
+    dkdt /= ke
+    
+    t = (t[1:] + t[:-1])*0.5
+    return t, dkdt
+```
+
+```{python}
+nu_power = -4
+eta_power = -4
+
+e_iso, e_swi = fetch_energy(nu_power, eta_power,)
+
+t, dkdt = calc_dkdt(e_iso)
+plt.plot(t, dkdt)
+
+print(np.max(dkdt[t > 26]))
+print(dkdt[find_nearest_idx(t, 26)])
+
+
+t, dkdt = calc_dkdt(e_swi)
+plt.plot(t, dkdt)
+
+print(np.max(dkdt[t > 26]))
+print(np.max(dkdt[np.logical_and(t > 26, t < 28.5)]))
+
+print(dkdt[find_nearest_idx(t, 26)])
+
+plt.xlim(25.5, 27)
+plt.ylim(-0.1, 0.1)
+
+plt.show()
+```
+
+```{python}
+nu_power = -4
+eta_power = -3
+
+e_iso, e_swi = fetch_energy(nu_power, eta_power,)
+
+t, dkdt = calc_dkdt(e_iso)
+plt.plot(t, dkdt)
+
+print(np.max(dkdt[t > 22]))
+print(dkdt[find_nearest_idx(t, 22)])
+
+print(dkdt[find_nearest_idx(t, 30)])
+print(dkdt[find_nearest_idx(t, 32.5)])
+
+t, dkdt = calc_dkdt(e_swi)
+plt.plot(t, dkdt)
+
+# print(np.max(dkdt[t > 26]))
+# print(np.max(dkdt[np.logical_and(t > 26, t < 28.5)]))
+
+# print(dkdt[find_nearest_idx(t, 26)])
+
+plt.xlim(10, 40)
+plt.ylim(-0.5, 2)
+
+plt.show()
+```
+
+## Plotting heating
+
+```{python}
+def fix_ohmic(heating):
+    shift = 10
+    restart_point = np.argmin(heating[shift:]) + shift
+    heating[restart_point:] += heating[restart_point-1]
+```
+
+```{python}
+nu_power = -4
+
+etas = [-4, -3]
+
+runs = {"switching":etas}
+# runs = {"isotropic":etas, "switching":etas}
+
+fig, axis = create_axes(2)
+for key in runs:
+    for i, eta_power in enumerate(runs[key]):
+        fname = data_folder + "v" + str(nu_power) + "r" + str(eta_power) \
+        + "-" + key + "/Data/en.dat"
+        energy = Energy(fname)
+        time = energy.data[:,0]
+        var = energy.data[:,4]
+        ohmic_heating = energy.data[:,5]
+        fix_ohmic(ohmic_heating)
+        final_ohmic_heating = ohmic_heating[-1]
+        if eta_power == -3:
+            linestyle = ':'
+        else:
+            linestyle = '-'
+        if key == "switching":
+            label = r"$\eta = 10^{"+str(eta_power)+"}$"
+            colour = 'k'
+        else:
+            label = ""
+            colour = 'C0'
+
+        axis.semilogy(time, var, linestyle,
+                      label = label, color = colour)
+        axis.semilogy(time, ohmic_heating, linestyle, color = colour)
+#         axis.plot(time[-1], final_ohmic_heating, '.')
+
+axis.text(12, 3e-3, r"$Q_{\eta}$", color="k")
+axis.text(20, 5e-5, r"$Q_{\nu}$", color="k")
+axis.set_ylim(1e-7, 10)
+axis.set_xlim(0, 50)
+axis.set_xlabel(r"$t$")
+# axis.set_ylabel(r"$Q_{\nu}$")
+axis.legend(frameon=False)
+leg = axis.get_legend()
+leg.legendHandles[0].set_color('k')
+leg.legendHandles[1].set_color('k')
+# plt.show()
+save_plot(outdir + "heating.pdf")
+```
+
+```{python}
+nu_power = -4
+
+etas = [-4, -3]
+
+runs = {"isotropic":etas, "switching":etas}
+
+fig, axis = create_axes(2)
+for key in runs:
+    for i, eta_power in enumerate(runs[key]):
+        fname = data_folder + "v" + str(nu_power) + "r" + str(eta_power) \
+        + "-" + key + "/Data/en.dat"
+        energy = Energy(fname)
+        time = energy.data[:,0]
+        var = energy.data[:,5]
+        fix_ohmic(var)
+        if eta_power == -3:
+            linestyle = ':'
+        else:
+            linestyle = '-'
+        if key == "switching":
+            label = r"$\eta = 10^{"+str(eta_power)+"}$"
+            colour = 'C1'
+        else:
+            label = ""
+            colour = 'C0'
+
+        axis.plot(time, var, linestyle,
+                      label = label, color = colour)
+
+# axis.text(10, 3e-3, "isotropic", color="C0")
+# axis.text(15, 2e-6, "switching", color="C1")
+axis.set_ylim(0, 8)
+axis.set_xlim(0, 50)
+axis.set_xlabel(r"$t$")
+axis.set_ylabel(r"$Q_{\nu}$")
+axis.legend(frameon=False)
+leg = axis.get_legend()
+leg.legendHandles[0].set_color('k')
+leg.legendHandles[1].set_color('k')
+plt.show()
+# save_plot(outdir + "viscous_heating.pdf")
+```
+
+## Plotting driver profiles
+
+```{python}
+fig, axis = create_axes(2)
+
+r = np.linspace(0, 2, 100)
+
+# u1 = 0.15 * 6 * r**2 * (1+np.tanh(1 - 5*(r**2)))
+u2 = 0.15 * 2.08 * r * (1+np.tanh(1 - 5*(r**2)))
+# u2 = 0.09 * 5.56  * r * (1+np.tanh(1 - 36*(r**2)))
+
+# print(np.max(u2))
+# print(r[np.argmax(u2)])
+
+# axis.plot(r, u1)
+axis.plot(r, u2, 'k')
+axis.set_ylim(0, 0.2)
+axis.set_xlim(0, 2)
+axis.set_ylabel(r"$u(r)$")
+axis.set_xlabel(r"$r$")
+save_plot(outdir + "u_r.pdf")
+```
+
+```{python}
+fig, axis = create_axes(2)
+
+t = np.linspace(0, 10)
+
+t_d = 2
+
+u = np.tanh(t/t_d)**2
+
+axis.plot(t, u, 'k')
+axis.plot((0, 10), (1,1), 'k:', linewidth=1)
+axis.set_ylim(0, 1.2)
+axis.set_xlim(0, 10)
+axis.set_ylabel(r"$u(r)$")
+axis.set_xlabel(r"$t$")
+save_plot(outdir + "u_t.pdf")
+```
+
+```{python}
+
+```
+
+## Pressure distribution during both instabilities
+
+```{python}
+xlim=1.0
+ylim=1.0
+slice_dim='z'
+slice_loc=0.0
+
+visc_powers = [-4]
+resist_powers = [-4]
+
+for i in range(13, 16):
+    print(i)
+    for nu in visc_powers:
+        for eta in resist_powers:   
+            print(nu, eta)
+            # Load SDF files
+            folder = data_folder
+            iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, eta, folder)
+
+            extents = get_slice_extents(iso_sdf, slice_dim)
+
+            swi_image = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+
+            vmin = np.min(swi_image)
+            vmax = 0.8
+            if i ==15:
+                vmax = 0.3
+
+#             fig, axis = create_axes(2)
+#             im = axis.imshow(iso_image, cmap="coolwarm", extent=extents, origin='lower',
+#                                vmax=vmax, vmin=vmin)
+#             attach_colorbar(axis, im)
+#             axis.set_xlim((-xlim, xlim))
+#             axis.set_ylim((-ylim, ylim))
+#             save_plot(outdir+"iso-4_pressure_"+str(i)+".pdf")
+            
+            fig, axis = create_axes(2)
+            im = axis.imshow(swi_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+            attach_colorbar(axis, im)
+#             if i == 13:
+#                 theta = np.linspace(0, 2*np.pi)
+#                 radius = 0.07
+#                 x = radius*np.cos(theta)
+#                 y = radius*np.sin(theta)
+#                 axis.plot(x, y, 'white')
+            
+#             if i == 13:
+#                 xlim = ylim = 0.25
+#             else:
+#                 xlim = ylim = 1.0
+            xlim = ylim = 1.0
+                
+
+            axis.set_xlim((-xlim, xlim))
+            axis.set_ylim((-ylim, ylim))
+            save_plot(outdir+"swi-4_pressure_"+str(i)+".pdf")
+```
+
+```{python}
+xlim=1.0
+ylim=1.0
+slice_dim='z'
+slice_loc=0.0
+
+visc_powers = [-4]
+resist_powers = [-3]
+
+for i in [12, 14, 15, 16, 17, 18]:
+    print(i)
+    for nu in visc_powers:
+        for eta in resist_powers:   
+            print(nu, eta)
+            # Load SDF files
+            folder = data_folder
+            iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, eta, folder)
+
+            extents = get_slice_extents(iso_sdf, slice_dim)
+
+#             iso_image = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+            swi_image = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+
+            vmax = max(iso_image.max(), swi_image.max())
+            vmin = min(iso_image.min(), swi_image.min())
+            vmax = 1.0
+    #         vmin = -1e-4
+    
+#             if i in [13, 14]:
+#                 xlim = ylim = 0.25
+#             else:
+#                 xlim = ylim = 0.7
+
+            fig, axis = create_axes(2)
+            im = axis.imshow(swi_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+            attach_colorbar(axis, im)
+            axis.set_xlim((-xlim, xlim))
+            axis.set_ylim((-ylim, ylim))
+#             plt.show()
+            save_plot(outdir+"swi-3_pressure_"+str(i)+".pdf")
+```
+
+## Calculating stability
+
+```{python}
+def calculate_gamma2(sdffile):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+    pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+    density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+    
+    nz = sdffile.Magnetic_Field_By.dims[2]
+    ny = sdffile.Magnetic_Field_By.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    end = int(ny*5/8)
+    r_max = dr*(end - midpoint_y)
+
+    by = by_2d[midpoint_z, midpoint_y:end]
+    bz = bz_2d[midpoint_z, midpoint_y:end]
+    pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+    density = density_2d[midpoint_z, midpoint_y:end]
+
+    dpdr = (pressure[1:] - pressure[:-1])/dr
+#     dpdr = pressure[:-1] * 13.37
+
+    r = np.linspace(r_min, r_max, by.shape[0])
+    r_c = r * (by**2 + bz**2)/(by**2)
+
+    gamma2 = 2.0 * -dpdr / (density * r_c)
+
+    return r, gamma2
+```
+
+```{python}
+def calculate_gamma_resistive_correa(sdffile, eta):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+    pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+    density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+#     j_2d = get_variable_slice(sdffile, "magnitude_current_density", slice_dim, slice_loc).T
+    
+    nz = sdffile.Magnetic_Field_By.dims[2]
+    ny = sdffile.Magnetic_Field_By.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    if eta < 5e-4:
+        end = 256 + int(0.3/dr)
+        k = 22.79
+    else:
+        end = 256 + int(0.4/dr)
+        k = 16.05
+    r_max = dr*(end - midpoint_y)
+    
+    L = 4.0
+
+    by = np.abs(by_2d[midpoint_z, midpoint_y:end+1])
+    bz = np.abs(bz_2d[midpoint_z, midpoint_y:end+1])
+    r = np.linspace(r_min, r_max, by.shape[0])
+    
+    q = 2*np.pi * bz * r / (L*by)
+    dqdr = (q[1:] - q[:-1])/dr
+    
+    by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+    bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+    pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+    density = density_2d[midpoint_z, midpoint_y:end]
+
+    dpdr = (pressure[1:] - pressure[:-1])/dr
+    
+    b2 = by**2 + bz**2
+    
+    r = np.linspace(r_min, r_max, by.shape[0])
+    r_c = r * b2/(by**2)
+    
+    plt.plot(r, 1/density)
+    plt.show()
+    plt.plot(r, -dpdr)
+    plt.show()
+    plt.plot(r, 1/dqdr)
+    plt.show()
+    plt.plot(r, 1/r_c)
+    plt.show()
+    plt.plot(r, b2/by**3)
+    plt.show()
+    plt.plot(r, bz)
+    plt.show()
+
+#     eta = pow(10, eta_power)
+
+#     gamma_resistive = \
+#     np.power(eta/density, 1/3) * \
+#     np.power(np.power(
+#         2*k*-dpdr*b2 /\
+#         (r_c*dqdr*by**3)
+#         , 2), 1/3)
+    
+    gamma_resistive = \
+    np.power(eta/density, 1/3) * \
+    np.power(np.power(
+        2*k*-dpdr* q[:-1] /\
+        (r_c*dqdr*np.sqrt(b2))
+        , 2), 1/3)
+
+    return r, gamma_resistive
+```
+
+```{python}
+def calculate_gamma_resistive(sdffile, eta):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+    pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+    density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+    j_2d = get_variable_slice(sdffile, "magnitude_current_density", slice_dim, slice_loc).T
+    
+    nz = sdffile.Magnetic_Field_By.dims[2]
+    ny = sdffile.Magnetic_Field_By.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    if eta < 5e-4:
+        end = 256 + int(0.3/dr)
+        k = 22.79
+    else:
+        end = 256 + int(0.4/dr)
+        k = 16.05
+    r_max = dr*(end - midpoint_y)
+
+    by = by_2d[midpoint_z, midpoint_y:end]
+    bz = bz_2d[midpoint_z, midpoint_y:end]
+    j = j_2d[midpoint_z, midpoint_y:end]
+    pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+    density = density_2d[midpoint_z, midpoint_y:end]
+
+    dpdr = (pressure[1:] - pressure[:-1])/dr
+    r = np.linspace(r_min, r_max, by.shape[0])
+    r_c = r * (by**2 + bz**2)/(by**2)
+    
+    plt.plot(r, dpdr)
+    plt.show()
+    plt.plot(r, density)
+    plt.show()
+    plt.plot(r, j)
+    plt.show()
+    plt.plot(r, r_c)
+    plt.show()
+
+#     eta = pow(10, eta_power)
+
+    gamma_resistive = np.power(eta/density * np.power(2*k* -dpdr / (r_c*j), 2), 1/3)
+
+    return r, gamma_resistive
+```
+
+```{python}
+def calculate_suydan_condition(sdffile):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    L = 4.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+    pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+
+    nz = sdffile.Magnetic_Field_By.dims[2]
+    ny = sdffile.Magnetic_Field_By.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    end = int(ny*5/8)
+    r_max = dr*(end - midpoint_y)
+
+    by = by_2d[midpoint_z, midpoint_y:end]
+    bz = bz_2d[midpoint_z, midpoint_y:end]
+    pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+
+    dpdr = (pressure[1:] - pressure[:-1])/dr
+    r = np.linspace(r_min, r_max, by.shape[0])
+
+    q = 2*np.pi*r*bz / (L*by)
+    dqdr = (q[2:] - q[:-2])/(2.0*dr)
+    
+    return r[1:-1], (dqdr/q[1:-1])**2 + (8.0*dpdr/(r*bz**2))[1:-1]
+```
+
+```{python}
+i = 10
+nu = -4
+folder = data_folder
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -4, folder)
+r, gamma2_iso_4 = calculate_gamma2(iso_sdf)
+r, gamma2_swi_4 = calculate_gamma2(swi_sdf)
+# r_resistive, gamma_resistive_iso_4 = calculate_gamma_resistive(iso_sdf, 1e-4)
+# r_resistive, gamma_resistive_swi_4 = calculate_gamma_resistive(swi_sdf, 1e-4)
+# r_resistive, gamma_resistive_swi_4 = calculate_gamma_resistive_correa(swi_sdf, 1e-4)
+# r_suydan, suydan_iso_4 = calculate_suydan_condition(iso_sdf)
+# r_suydan, suydan_swi_4 = calculate_suydan_condition(swi_sdf)
+del iso_sdf, swi_sdf
+```
+
+```{python}
+fig, axis = create_axes(2)
+linewidth = 1.0
+# axis.plot(r, np.sqrt(np.abs(gamma2_iso_4)), '', label=r'iso', linewidth=linewidth)
+axis.plot(r, np.sqrt(np.abs(gamma2_swi_4)), 'k', label=r'swi', linewidth=linewidth)
+# axis.plot(r_resistive[:gamma_resistive_swi_4.shape[0]], gamma_resistive_swi_4, 'k--', label=r'resistive', linewidth=linewidth)
+# axis.plot(r_resistive, gamma_resistive_swi_4,'--', label=r'swi')
+# axis.plot(r_suydan, -suydan_iso_4, 'k--', label=r'$s_c$')
+# axis.plot((0.0, 0.5), (0,0), 'k:')
+axis.legend(frameon=False)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel(r"$r$")
+axis.set_ylabel(r"$\gamma$")
+axis.set_ylim(0, 3.0)
+# plt.show()
+save_plot(outdir+"flute_eta-4_stability.pdf")
+
+print("max growth rate eta-4:", np.sqrt(np.max(gamma2_swi_4)))
+print("max growth rate loc eta-4:", r[np.argmax(gamma2_swi_4)])
+# print("max growth rate eta-4:", np.max(gamma_resistive_swi_4))
+# print("max growth rate loc eta-4:", r[np.argmax(gamma_resistive_swi_4)])
+```
+
+```{python}
+i = 11
+nu = -4
+folder = data_folder
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -3, folder)
+# r, gamma2_iso_3 = calculate_gamma2(iso_sdf)
+r, gamma2_swi_3 = calculate_gamma2(swi_sdf)
+# r_resistive, gamma_resistive_iso_3 = calculate_gamma_resistive(iso_sdf, 1e-3)
+r_resistive, gamma_resistive_swi_3 = calculate_gamma_resistive_correa(swi_sdf, 1e-3)
+# r, gamma2_swi_3 = calculate_gamma2(swi_sdf)
+# r_suydan, suydan_3 = calculate_suydan_condition(iso_sdf)
+del iso_sdf, swi_sdf
+```
+
+```{python}
+fig, axis = create_axes(3)
+linewidth = 1.0
+axis.plot(r, np.sqrt(np.abs(gamma2_swi_3)), 'k', label=r'ideal', linewidth=linewidth)
+axis.plot(r_resistive, gamma_resistive_swi_3, 'k--', label=r'resistive', linewidth=linewidth)
+# axis.plot(r_resistive, gamma_resistive_swi_3,'--', label=r'swi')
+# axis.plot(r_suydan, -suydan_iso_4, 'k--', label=r'$s_c$')
+# axis.plot((0.0, 0.5), (0,0), 'k:')
+axis.legend(frameon=False)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel(r"$r$")
+axis.set_ylabel(r"$\gamma$")
+# axis.set_ylim(0, 4)
+# plt.show()
+save_plot(outdir+"flute_eta-3_stability.pdf")
+
+print("max growth rate eta-3:", np.sqrt(np.max(gamma2_swi_3)))
+print("max growth rate loc eta-3:", r[np.argmax(gamma2_swi_3)])
+print("max growth rate eta-3:", np.max(gamma_resistive_swi_3[:-20]))
+print("max growth rate loc eta-3:", r[np.argmax(gamma_resistive_swi_3[:-20])])
+```
+
+```{python active="", eval=FALSE}
+def sqrt_gamma(gamma2):
+    gamma = np.zeros_like(gamma2)
+    gamma[gamma2 > 0] = gamma2[gamma2 > 0]
+    gamma = np.sqrt(gamma)
+    return gamma
+```
+
+```{python active="", eval=FALSE}
+fig, axes = create_axes(1, subplots_columns=2)
+axes[0].plot(r, sqrt_gamma(gamma2_iso_4))
+axes[0].plot(r, sqrt_gamma(gamma2_swi_4), '--')
+axes[1].plot(r, sqrt_gamma(gamma2_iso_3))
+axes[1].plot(r, sqrt_gamma(gamma2_swi_3), '--')
+plt.show()
+
+print(r[np.argmax(gamma2_iso_4)])
+print(np.argmax(gamma2_iso_4))
+```
+
+## Predicting unstable k
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+n = -4
+i = 13
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -4, folder)
+sdffile = swi_sdf
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - midpoint_y)
+
+by = by_2d[midpoint_z, midpoint_y:end]
+bz = bz_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+idx = find_nearest_idx(r, 0.0934)
+
+m = 4
+k = -m*np.abs(by[idx])/(r[idx]*np.abs(bz[idx]))
+
+print("predicted k -4:", k)
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+n = -4
+i = 13
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -3, folder)
+sdffile = swi_sdf
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - midpoint_y)
+
+by = by_2d[midpoint_z, midpoint_y:end]
+bz = bz_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+idx = find_nearest_idx(r, 0.142)
+
+m = 4
+k = -m*np.abs(by[idx])/(r[idx]*np.abs(bz[idx]))
+
+print("predicted k -3:", k)
+```
+
+## Plotting pressure with z
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -4, folder)
+pressure_2d_iso_4 = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+pressure_2d_swi_4 = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+
+velocity_2d_iso = get_variable_slice(iso_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+velocity_2d_swi = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+
+# iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(11, -4, -3, folder)
+# pressure_2d_iso_3 = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+# pressure_2d_swi_3 = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+fig, axes = create_axes(2, subplots_rows=2, sharex=True)
+
+z = np.linspace(-2, 2, 512)
+
+linewidth = 1.0
+
+axis = axes[0]
+resonant_n = 13 + 256
+pressure = pressure_2d_iso_4[:, resonant_n]
+axis.plot(z, pressure, '', label='iso', linewidth=linewidth)
+
+pressure = pressure_2d_swi_4[:, resonant_n]
+axis.plot(z, pressure, '--', label='swi', linewidth=linewidth)
+
+z = np.linspace(-2, 2, 513)
+
+axis = axes[1]
+resonant_n = 256
+vel = velocity_2d_iso[:, resonant_n]
+axis.plot(z, vel, '', label='iso', linewidth=linewidth)
+
+vel = velocity_2d_swi[:, resonant_n]
+axis.plot(z, vel, '--', label='iso', linewidth=linewidth)
+
+# resonant_n = 14 + 256
+# pressure = pressure_2d_iso_3[:, resonant_n]
+# axes[1].plot(z, pressure, '', label='iso', linewidth=linewidth)
+
+# resonant_n = 14 + 256
+# pressure = pressure_2d_swi_3[:, resonant_n]
+# axes[1].plot(z, pressure, '--', label='swi', linewidth=linewidth)
+
+axes[0].set_ylim(0.23, 0.30)
+# axis.set_ylim(0.55, 0.65)
+axis.set_xlim(-2, 2)
+
+axis.set_xlabel(r'$z$')
+axes[0].set_ylabel(r'$p$')
+axes[1].set_ylabel(r'$u_r$')
+# axes[1].set_ylabel(r'$p$')
+
+axes[0].legend(frameon=False)
+
+# plt.show()
+save_plot(outdir+"perturbations_4.pdf")
+```
+
+```{python active="", eval=FALSE}
+fig, axes = create_axes(3, subplots_rows=2, sharex=True)
+
+z = np.linspace(-2, 2, 512)
+
+linewidth = 1.0
+
+resonant_n = 14 + 256
+pressure = pressure_2d_iso_4[:, resonant_n]
+axes[0].plot(z, pressure, '', label='iso', linewidth=linewidth)
+
+resonant_n = 14 + 256
+pressure = pressure_2d_swi_4[:, resonant_n]
+axes[0].plot(z, pressure, '--', label='swi', linewidth=linewidth)
+
+resonant_n = 14 + 256
+pressure = pressure_2d_iso_3[:, resonant_n]
+axes[1].plot(z, pressure, '', label='iso', linewidth=linewidth)
+
+resonant_n = 14 + 256
+pressure = pressure_2d_swi_3[:, resonant_n]
+axes[1].plot(z, pressure, '--', label='swi', linewidth=linewidth)
+
+axes[0].set_ylim(0.20, 0.24)
+axes[1].set_ylim(0.55, 0.65)
+axes[0].set_xlim(-2, 2)
+
+axes[1].set_xlabel(r'$z$')
+# axes[0].set_ylabel(r'$p$')
+# axes[1].set_ylabel(r'$p$')
+
+# axes[0].legend(frameon=False)
+
+save_plot(outdir+"pressure_k.pdf")
+```
+
+```{python active="", eval=FALSE}
+fig, axis = create_axes(2)
+
+z = np.linspace(-2, 2, 512)
+
+linewidth = 1
+
+resonant_n = 13 + 256
+pressure = pressure_2d_iso_4[:, resonant_n]
+axis.plot(z, 2*pressure, 'k', label='iso', linewidth=linewidth)
+
+resonant_n = 13 + 256
+pressure = pressure_2d_swi_4[:, resonant_n]
+axis.plot(z, 2*pressure, 'k--', label='swi', linewidth=linewidth)
+
+resonant_n = 13 + 256
+pressure = pressure_2d_iso_3[:, resonant_n]
+axis.plot(z, pressure, 'k', label='iso -3', linewidth=linewidth)
+
+resonant_n = 13 + 256
+pressure = pressure_2d_swi_3[:, resonant_n]
+axis.plot(z, pressure, 'k--', label='swi -3', linewidth=linewidth)
+
+# axis.set_ylim(0.2, 0.3)
+axis.set_xlim(-2, 2)
+
+axis.set_xlabel(r'$z$')
+axis.set_ylabel(r'$p$')
+
+axis.legend(frameon=False)
+
+save_plot(outdir+"pressure_k.pdf")
+```
+
+```{python}
+z = np.linspace(-2, 2, 512)
+
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(11, -4, -3, folder)
+# iso_sdf = fetch_sdffile(11, -4, -3, folder, 'isotropic')
+pressure_2d_iso = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+pressure_2d_swi = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+plt.imshow(pressure_2d_iso)
+plt.show()
+
+fig, axis = create_axes(2)
+
+resonant_n = 13 + 256
+pressure = pressure_2d_iso[:, resonant_n]
+axis.plot(z, pressure, label='iso')
+
+resonant_n = 13 + 256
+pressure = pressure_2d_swi[:, resonant_n]
+axis.plot(z, pressure, '--', label='swi')
+
+# axis.set_ylim(0.2, 0.3)
+axis.set_xlim(-2, 2)
+
+axis.set_xlabel(r'$z$')
+axis.set_ylabel(r'$p$')
+
+axis.legend(frameon=False)
+
+plt.show()
+# save_plot(outdir+"pressure_k.pdf")
+```
+
+## Calculating m and k
+
+```{python}
+def calculate_k(pressure_2d, resonant_n):
+    z = np.linspace(-2, 2, 512)
+
+    lim = 80
+    z = z[lim:512-lim]
+
+    pressure = pressure_2d[lim:512-lim, resonant_n]
+    
+    plt.plot(z, pressure, 'k')
+    
+    peaks = find_peaks(pressure)[0]
+    for peak in peaks:
+        plt.plot(z[peak], pressure[peak], 'k.')
+#     print(peaks)
+#     print(z[peaks])
+    z_peaks = z[peaks]
+    wavelengths = z_peaks[1:] - z_peaks[:-1]
+    print(wavelengths)
+    
+#     wavelength = np.mean(wavelengths)
+    wavelength = np.min(wavelengths)
+    print(wavelength)
+
+#     left_peak = z[np.argmax(pressure[:128])]
+#     right_peak = z[np.argmax(pressure[128:])+128]
+
+#     print("left peak:", left_peak)
+#     print("right peak:", right_peak)
+
+#     plt.plot((left_peak, left_peak), (0.3, 0.34))
+#     plt.plot((right_peak, right_peak), (0.3, 0.34))
+#     plt.show()
+
+#     wavelength = right_peak - left_peak
+    k = 2*np.pi/wavelength
+
+    print("k_pert:", k)
+    
+    return k
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -4, folder)
+
+# by_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d_iso = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+
+# by_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d_swi = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+k_iso = calculate_k(pressure_2d_iso, 13+256)
+k_swi = calculate_k(pressure_2d_swi, 13+256)
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(11, -4, -3, folder)
+
+# by_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d_iso = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+
+# by_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d_swi = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+k_iso = calculate_k(pressure_2d_iso, 20+256)
+k_swi = calculate_k(pressure_2d_swi, 20+256)
+```
+
+# Resonant surface
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -4, folder)
+
+# by_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+# pressure_2d_iso = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+
+by_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+# pressure_2d_swi = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_Bz.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+# print("dr:", dr)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+# print(r_min)
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - int(ny/2))
+
+m = 4
+r = np.linspace(r_min, r_max, by.shape[0])
+
+by = by_2d_swi[midpoint_z, midpoint_y:end]
+bz = bz_2d_swi[midpoint_z, midpoint_y:end]
+
+fig, axis = create_axes(3)
+
+m=4
+k = -22.79
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+idx_0 = find_nearest_idx(surface, 0)
+# print("index:", idx_0+n_points_from_centre)
+r_s = r[idx_0]
+print("r_s:", r_s)
+
+linewidth = 1
+axis.plot(r, surface, 'k', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+m = 1
+k = -4.77
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+axis.plot(r, surface, 'k--', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+# by = by_2d_swi[midpoint_z, midpoint_y:end]
+# bz = bz_2d_swi[midpoint_z, midpoint_y:end]
+
+# surface = m * np.abs(by) / r + k_flute_iso_4*np.abs(bz)
+
+# idx_0 = find_nearest_idx(surface, 0)
+# # print("index:", idx_0+n_points_from_centre)
+# r_s = r[idx_0]
+# print("r_s:", r_s)
+
+# axis.plot(r, surface, '--')
+
+axis.plot((0, 0.5), (0,0), 'k:')
+# axis.plot(r_s, 0, 'k.')
+# axis.plot(0.14, 0, 'k.')
+axis.set_xlim(0, 0.5)
+axis.set_ylim(-5, 10)
+
+axis.set_ylabel(r'$m B_{\theta}/r + kB_{z}$')
+axis.set_xlabel(r'$r$')
+
+axis.legend(frameon=False)
+
+save_plot(outdir+"resonant_surface_4.pdf")
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(11, -4, -3, folder)
+
+# by_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+# bz_2d_iso = get_variable_slice(iso_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+# pressure_2d_iso = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
+
+by_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d_swi = get_variable_slice(swi_sdf, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+# pressure_2d_swi = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_Bz.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+# print("dr:", dr)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+# print(r_min)
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - int(ny/2))
+
+m = 4
+r = np.linspace(r_min, r_max, by.shape[0])
+
+by = by_2d_swi[midpoint_z, midpoint_y:end]
+bz = bz_2d_swi[midpoint_z, midpoint_y:end]
+
+fig, axis = create_axes(3)
+
+m=4
+k = -16.05
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+idx_0 = find_nearest_idx(surface, 0)
+# print("index:", idx_0+n_points_from_centre)
+r_s = r[idx_0]
+print("r_s:", r_s)
+
+linewidth = 1
+
+axis.plot(r, surface, 'k', label=r"$m="+str(m)+"$, $k="+str(k)+"$", linewidth = linewidth)
+
+m = 1
+k = -3.41
+surface = m * np.abs(by) / r + k*np.abs(bz)
+axis.plot(r, surface, 'k--', label=r"$m="+str(m)+"$, $k="+str(k)+"$", linewidth = linewidth)
+
+m = 1
+k = -4.53
+surface = m * np.abs(by) / r + k*np.abs(bz)
+axis.plot(r, surface, 'k:', label=r"$m="+str(m)+"$, $k="+str(k)+"$", linewidth = linewidth)
+
+# by = by_2d_swi[midpoint_z, midpoint_y:end]
+# bz = bz_2d_swi[midpoint_z, midpoint_y:end]
+
+# surface = m * np.abs(by) / r + k_flute_iso_4*np.abs(bz)
+
+# idx_0 = find_nearest_idx(surface, 0)
+# # print("index:", idx_0+n_points_from_centre)
+# r_s = r[idx_0]
+# print("r_s:", r_s)
+
+# axis.plot(r, surface, '--')
+
+axis.plot((0, 0.5), (0,0), 'grey', linewidth = 0.5)
+# axis.plot(r_s, 0, 'k.')
+# axis.plot(0.14, 0, 'k.')
+axis.set_xlim(0, 0.5)
+axis.set_ylim(-3, 10)
+
+axis.set_ylabel(r'$m B_{\theta}/r + kB_{z}$')
+axis.set_xlabel(r'$r$')
+
+axis.legend(frameon=False)
+
+save_plot(outdir+"resonant_surface_3.pdf")
+```
+
+## Calculate k of kink
+
+```{python}
+def calculate_k_kink(vel_2d):
+    vel = vel_2d[:, int(vel_2d.shape[1]/2)]
+    z = np.linspace(-2, 2, vel.shape[0])
+#     peaks = find_peaks(vel)[0]
+    peaks = [np.argmax(vel[:128]), np.argmax(vel[256:])+256]
+    
+    plt.plot(z, vel)
+
+    for peak in peaks:
+        plt.plot(z[peak], vel[peak], 'k.')
+
+    z_peaks = z[peaks]
+    wavelengths = z_peaks[1:] - z_peaks[:-1]
+    
+    peaks = [np.argmin(vel), np.argmin(vel[256:])+256]
+    
+#     peaks = find_peaks(-vel)[0]
+    z_peaks = z[peaks]
+    wavelengths = np.append(wavelengths, z_peaks[1:] - z_peaks[:-1])
+    
+    for peak in peaks:
+        plt.plot(z[peak], vel[peak], 'k.')
+    
+#     wavelengths = np.delete(wavelengths, 1)
+
+    print(wavelengths)
+
+    wavelength = np.mean(wavelengths)
+
+    k = 2*np.pi/wavelength
+    
+    return k
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -3, folder)
+
+velocity_2d_iso = get_variable_slice(iso_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+velocity_2d_swi = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+```
+
+```{python}
+iso_kink_k_3 = calculate_k_kink(velocity_2d_iso)
+swi_kink_k_3 = calculate_k_kink(velocity_2d_swi)
+print("iso kink k:", iso_kink_k_3)
+print("swi kink k:", swi_kink_k_3)
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -4, folder)
+
+velocity_2d_iso = get_variable_slice(iso_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+velocity_2d_swi = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+```
+
+```{python}
+iso_kink_k_4 = calculate_k_kink(velocity_2d_iso)
+print("iso kink k:", iso_kink_k_4)
+
+# Custom calculation for problematic switching case
+vel = velocity_2d_swi[:, int(velocity_2d_swi.shape[1]/2)]
+z = np.linspace(-2, 2, vel.shape[0])
+# peaks = find_peaks(vel)[0]
+peaks = [np.argmax(vel[:128]), np.argmax(vel[128:])+128, np.argmax(vel[512-128:])+512-128]
+
+plt.plot(z, vel)
+# plt.plot(z[:128], vel[:128])
+
+for peak in peaks:
+    plt.plot(z[peak], vel[peak], 'k.')
+
+z_peaks = z[peaks]
+wavelengths = z_peaks[1:] - z_peaks[:-1]
+
+peaks = [np.argmax(-vel[:256]), np.argmax(-vel[256:])+256]
+
+# peaks = find_peaks(-vel)[0]
+z_peaks = z[peaks]
+wavelengths = np.append(wavelengths, z_peaks[1:] - z_peaks[:-1])
+
+wavelengths = np.delete(wavelengths, 1)
+
+print(wavelengths)
+
+wavelength = np.mean(wavelengths)
+
+swi_kink_k_4 = 2*np.pi/wavelength
+
+print("swi kink k:", swi_kink_k_4)
+```
+
+## Presenting disruption of kink perturbation
+
+```{python}
+def plot_kink_pert(axis, vel_2d):
+    vel = vel_2d[:, int(vel_2d.shape[1]/2)]
+    vel /= np.max(vel)
+    z = np.linspace(-2, 2, vel.shape[0])
+    axis.plot(z, vel)
+```
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -3, folder)
+velocity_2d_swi_13 = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(14, -4, -3, folder)
+velocity_2d_swi_14 = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(15, -4, -3, folder)
+velocity_2d_swi_15 = get_variable_slice(swi_sdf, "Velocity_Vx", slice_dim, slice_loc).T
+```
+
+```{python}
+fig, axis = create_axes(2)
+for vel_2d in [
+    velocity_2d_swi_13,
+    velocity_2d_swi_14,
+    velocity_2d_swi_15
+]:
+    plot_kink_pert(axis, vel_2d)
+    
+plt.show()
+```
+
+## Testing Mikhailovskii stability
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(10, -4, -4, data_folder)
+sdffile = swi_sdf
+
+slice_dim = "y"
+slice_loc = 0.0
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+m = 4
+L=4.0
+
+end = 256 + int(0.4/dr)
+
+r_max = dr*(end - midpoint_y)
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end+1])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end+1])
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+density = density_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+dqdr = (q[1:] - q[:-1])/dr
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+
+b2 = by**2 + bz**2
+
+dpdr = (pressure[1:] - pressure[:-1])/dr
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+# print(r.shape, dqdr.shape, q.shape)
+S = r * dqdr/q
+
+# u_0 = 2*r*dpdr/(bz*S)**2
+r_c = r * (by**2 + bz**2)/(by**2)
+
+# suydam = (bz*S)**2 / 4 + 2*r*dpdr - 4/(m**2-1) * (by**2/bz)
+suydam = (bz*S)**2 / 4 + 2*r*dpdr
+
+fluting_gamma = np.sqrt(-2*dpdr/(density*r_c))
+
+fig, axis = create_axes(2)
+axis.plot(r, suydam, 'k', label='$S^2 B_z^2/4 + 2rp\'$')
+axis.plot(r, S**2 * bz**2 / 4, 'k--', label='$S^2 B_z^2/4$')
+axis.plot(r, 2*r*dpdr, 'k:', label='$2rp\'$')
+axis.plot((0, 0.4), (0,0), 'grey', linewidth=0.5)
+axis.set_ylim(-0.25, 0.25)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel('$r$')
+axis.legend(frameon=False)
+save_plot(outdir+"suydam_condition_4.pdf")
+
+bound_left = find_nearest_idx(suydam[:10], 0)
+bound_right = find_nearest_idx(suydam[5:], 0)+5
+
+# print(r[find_nearest_idx(suydam[:10], 0)])
+# print(r[find_nearest_idx(suydam[5:], 0)+5])
+
+fig, axis = create_axes(2)
+axis.plot(r, fluting_gamma, 'k')
+axis.set_xlim(0.0, 0.4)
+axis.set_ylim(0.0, 2)
+axis.set_xlabel('$r$')
+axis.set_ylabel('$\gamma$')
+
+idx = np.argmax(fluting_gamma)
+r_s = r[idx]
+print("peak gamma at:", r_s)
+print("peak gamma:", fluting_gamma[idx])
+
+print("average gamma:", np.mean(fluting_gamma[bound_left:bound_right]))
+
+axis.plot((r_s, r_s), (-5, fluting_gamma[idx]), 'k:', linewidth=0.5)
+# axis.text(1.05*r_s, -3, r"$r="+str(round(r_s, 3))+"$")
+axis.set_xticks([0, round(r_s, 3), 0.2, 0.3, 0.4])
+axis.set_xticklabels([0, round(r_s, 3), 0.2, 0.3, 0.4])
+save_plot(outdir+"growth_rate_4.pdf")
+
+twist = L*by/(2*np.pi*r*bz)
+
+plt.plot(r, twist)
+plt.show()
+```
+
+## t=26
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(13, -4, -4, folder)
+sdffile = swi_sdf
+
+slice_dim = "y"
+slice_loc = 0.0
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+L=4.0
+
+end = 256 + int(0.4/dr)
+
+r_max = dr*(end - midpoint_y)
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+density = density_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+fig, axis = create_axes(2)
+m=4
+k = -23.61
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+idx = find_nearest_idx(surface, 0)
+# idx = np.argmax(fluting_gamma)
+r_s = r[idx]
+print("r_s:", r_s)
+
+linewidth = 1
+axis.plot(r, surface, 'k', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+# m=4
+# k = -22.77
+# surface = m * np.abs(by) / r + k*np.abs(bz)
+
+# idx = find_nearest_idx(surface, 0)
+# # idx = np.argmax(fluting_gamma)
+# r_s = r[idx]
+# print("r_s:", r_s)
+
+# linewidth = 1
+# axis.plot(r, surface, 'k', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+
+# m = 1
+# k = -4.57
+# surface = m * np.abs(by) / r + k*np.abs(bz)
+
+# idx = find_nearest_idx(surface, 0)
+# idx = np.argmax(fluting_gamma)
+# r_sk = r[idx]
+# print("r_s kink:", r_sk)
+
+# axis.plot(r, surface, 'k--', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+axis.plot((0, 0.4), (0,0), 'grey', linewidth=0.5)
+axis.set_ylim(-5, 10)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel(r"$r$")
+axis.set_ylabel(r'$m B_{\theta}/r + kB_{z}$')
+
+axis.plot((r_s, r_s), (-5, 0), 'k:', linewidth=0.5)
+# axis.plot((r_sk, r_sk), (-5, 0), 'k:', linewidth=0.5)
+# axis.text(1.05*r_s, -3, r"$r="+str(round(r_s, 3))+"$")
+axis.set_xticks([0, round(r_s, 3), 0.2, 0.3, 0.4])
+axis.set_xticklabels([0, round(r_s, 3), 0.2, 0.3, 0.4])
+
+axis.legend(frameon=False)
+
+save_plot(outdir+"resonant_surface_4.pdf")
+```
+
+## Analysing eta=1e-3
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(10, -4, -3, data_folder)
+sdffile = swi_sdf
+
+slice_dim = "y"
+slice_loc = 0.0
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+m = 4
+L=4.0
+
+end = 256 + int(0.4/dr)
+
+r_max = dr*(end - midpoint_y)
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end+1])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end+1])
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+density = density_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+dqdr = (q[1:] - q[:-1])/dr
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+
+b2 = by**2 + bz**2
+
+dpdr = (pressure[1:] - pressure[:-1])/dr
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+# print(r.shape, dqdr.shape, q.shape)
+S = r * dqdr/q
+
+# u_0 = 2*r*dpdr/(bz*S)**2
+r_c = r * (by**2 + bz**2)/(by**2)
+
+suydam = (bz*S)**2 / 4 + 2*r*dpdr
+suydam2 = (bz*S)**2 / 4 + 2*r*dpdr - 4/(m**2-1) * (by**2/bz)
+
+fluting_gamma = np.sqrt(-2*dpdr/(density*r_c))
+
+fig, axis = create_axes(2)
+axis.plot(r, suydam, 'k', label='$s_c$')
+axis.plot(r, S**2 * bz**2 / 4, 'k--', label='$S^2 B_z^2/4$')
+axis.plot(r, 2*r*dpdr, 'k:', label='$2rp\'$')
+axis.plot((0, 0.4), (0,0), 'grey', linewidth=0.5)
+axis.set_ylim(-1.2, 0.3)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel('$r$')
+axis.legend(frameon=False)
+save_plot(outdir+"suydam_condition_3.pdf")
+
+fig, axis = create_axes(2)
+axis.plot(r, fluting_gamma, 'k')
+axis.set_xlim(0.0, 0.4)
+axis.set_ylim(0.0, 3)
+axis.set_xlabel('$r$')
+axis.set_ylabel('$\gamma$')
+
+idx = np.argmax(fluting_gamma)
+r_s = r[idx]
+print("peak gamma at:", r_s)
+print("peak gamma:", fluting_gamma[idx])
+
+bound_left = find_nearest_idx(suydam[:10], 0)
+bound_right = find_nearest_idx(suydam[5:], 0)+5
+print("average gamma:", np.mean(fluting_gamma[bound_left:bound_right]))
+
+axis.plot((r_s, r_s), (-5, fluting_gamma[idx]), 'k:', linewidth=0.5)
+# axis.text(1.05*r_s, -3, r"$r="+str(round(r_s, 3))+"$")
+axis.set_xticks([0, round(r_s, 3), 0.2, 0.3, 0.4])
+axis.set_xticklabels([0, round(r_s, 3), 0.2, 0.3, 0.4])
+save_plot(outdir+"growth_rate_3.pdf")
+
+```
+
+## t=22
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(11, -4, -3, folder)
+sdffile = swi_sdf
+
+slice_dim = "y"
+slice_loc = 0.0
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+L=4.0
+
+end = 256 + int(0.4/dr)
+
+r_max = dr*(end - midpoint_y)
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+density = density_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+fig, axis = create_axes(2)
+m=4
+k = -16.05
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+idx = find_nearest_idx(surface, 0)
+# idx = np.argmax(fluting_gamma)
+r_s = r[idx]
+print("r_s:", r_s)
+
+linewidth = 1
+axis.plot(r, surface, 'k', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+m = 1
+k = -4.53
+surface = m * np.abs(by) / r + k*np.abs(bz)
+
+idx = find_nearest_idx(surface, 0)
+# idx = np.argmax(fluting_gamma)
+r_sk = r[idx]
+print("r_s kink:", r_sk)
+
+axis.plot(r, surface, 'k--', label=r"$m="+str(m)+"$, $k="+str(k)+"$",linewidth = linewidth)
+
+axis.plot((0, 0.4), (0,0), 'grey', linewidth=0.5)
+axis.set_ylim(-5, 10)
+axis.set_xlim(0, 0.4)
+axis.set_xlabel(r"$r$")
+axis.set_ylabel(r'$m B_{\theta}/r + kB_{z}$')
+
+axis.plot((r_s, r_s), (-5, 0), 'k:', linewidth=0.5)
+axis.plot((r_sk, r_sk), (-5, 0), 'k:', linewidth=0.5)
+# axis.text(1.05*r_s, -3, r"$r="+str(round(r_s, 3))+"$")
+axis.set_xticks([0, round(r_s, 3), 0.2, round(r_sk, 3), 0.4])
+axis.set_xticklabels([0, round(r_s, 3), 0.2, round(r_sk, 3), 0.4])
+
+axis.legend(frameon=False)
+
+save_plot(outdir+"resonant_surface_3.pdf")
+```
+
+## Plotting difference in pressure profiles
+
+```{python}
+i = 10
+slice_dim = "z"
+slice_loc = 0.0
+
+timedump = '{0:04d}'.format(i)
+ideal_folder = data_folder + "/v-4r-0-switching/"
+ideal_sdf = sdf.read(ideal_folder + "/Data/" + timedump + ".sdf")
+ideal_pressure_2d = get_variable_slice(ideal_sdf, "pressure", slice_dim, slice_loc).T
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, -4, -3, data_folder)
+pressure_3_2d = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+current_3_2d = get_variable_slice(swi_sdf, "magnitude_current_density", slice_dim, slice_loc).T
+current_z_3_2d = get_variable_slice(swi_sdf, "current_density_z", slice_dim, slice_loc).T
+bx_3_2d = get_variable_slice(swi_sdf, "Magnetic_Field_Bx", slice_dim, slice_loc).T
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, -4, -4, data_folder)
+pressure_4_2d = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+current_4_2d = get_variable_slice(swi_sdf, "magnitude_current_density", slice_dim, slice_loc).T
+current_z_4_2d = get_variable_slice(swi_sdf, "current_density_z", slice_dim, slice_loc).T
+bx_4_2d = get_variable_slice(swi_sdf, "Magnetic_Field_Bx", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = iso_sdf.Fluid_Energy.dims[2]
+ny = iso_sdf.Fluid_Energy.dims[1]
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2)
+
+end = midpoint_y + 128
+
+pressure_4 = pressure_4_2d[midpoint_z, midpoint_y:end]
+pressure_3 = pressure_3_2d[midpoint_z, midpoint_y:end]
+current_4 = current_4_2d[midpoint_z, midpoint_y:end]
+current_3 = current_3_2d[midpoint_z, midpoint_y:end]
+current_z_4 = current_z_4_2d[midpoint_z, midpoint_y:end]
+current_z_3 = current_z_3_2d[midpoint_z, midpoint_y:end]
+# bx_4 = bx_2d[midpoint_z, midpoint_y:end]
+# bx_3 = bx_2d[midpoint_z, midpoint_y:end]
+ideal_pressure = ideal_pressure_2d[midpoint_z, midpoint_y:end]
+
+ohmic_heating_4 = 1e-4 * current_4**2
+ohmic_heating_3 = 1e-3 * current_3**2
+
+r = np.linspace(0, 1, 128)
+
+fig, axis = create_axes(3)
+axis.plot(r, pressure_3, 'k-', label=r"$\eta = 10^{-3}$")
+axis.plot(r, pressure_4, 'k--', label=r"$\eta = 10^{-4}$")
+axis.plot(r, ideal_pressure, 'k:', label=r"$\eta = 0$")
+axis.legend(frameon=False)
+axis.set_xlim(0, 1)
+axis.set_ylim(-0.03, 0.7)
+axis.set_ylabel(r"$p$")
+axis.set_xlabel(r"$r$")
+# plt.show()
+save_plot(outdir+"pressure_profiles.pdf")
+
+fig, axis = create_axes(3)
+axis.plot(r, ohmic_heating_3, 'k-', label=r"$\eta = 10^{-3}$")
+axis.plot(r, ohmic_heating_4, 'k--', label=r"$\eta = 10^{-4}$")
+# axis.plot(r, ideal_pressure, 'k:', label=r"$\eta = 0$")
+# axis.legend(frameon=False)
+axis.set_xlim(0, 1)
+axis.set_ylim(0, 0.13)
+axis.set_ylabel(r"$Q_{\eta}$")
+axis.set_xlabel(r"$r$")
+# plt.show()
+save_plot(outdir+"ohmic_heating_profiles.pdf")
+
+fig, axis = create_axes(3)
+axis.plot(r, -current_z_3, 'k-', label=r"$\eta = 10^{-3}$")
+axis.plot(r, -current_z_4, 'k--', label=r"$\eta = 10^{-4}$")
+axis.plot((0, 1), (0,0), '-', color='grey', linewidth=0.5)
+# axis.plot(r, ideal_pressure, 'k:', label=r"$\eta = 0$")
+# axis.legend(frameon=False)
+axis.set_xlim(0, 1)
+# axis.set_ylim(0, 0.13)
+axis.set_ylabel(r"$-j_z$")
+axis.set_xlabel(r"$r$")
+# plt.show()
+save_plot(outdir+"current_profiles.pdf")
+```
+
+## Plotting twist
+
+```{python}
+def fetch_mag_field(sdffile):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_By", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_Bz", slice_dim, slice_loc).T
+    
+    return (by_2d, bz_2d)
+```
+
+```{python}
+def get_radial(sdffile, by_2d, bz_2d):
+    nz = sdffile.Magnetic_Field_By.dims[2]
+    ny = sdffile.Magnetic_Field_By.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    end = 256+128
+
+    r_max = dr*(end - midpoint_y)
+
+    by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+    bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+
+    r = np.linspace(r_min, r_max, end-midpoint_y)
+    
+    return (r, by, bz)
+```
+
+```{python}
+def calc_twist(r, by, bz):
+    L = 4.0
+    return L*by/(2*np.pi*r*bz)
+```
+
+```{python}
+eta = -3
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(10, -4, eta, folder)
+sdffile = swi_sdf
+by_2d_10, bz_2d_10 = fetch_mag_field(sdffile)
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(15, -4, eta, folder)
+sdffile = swi_sdf
+by_2d_15, bz_2d_15 = fetch_mag_field(sdffile)
+```
+
+```{python}
+r, by, bz = get_radial(sdffile, by_2d_10, bz_2d_10)
+twist_10 = calc_twist(r, by, bz)
+
+r, by, bz = get_radial(sdffile, by_2d_15, bz_2d_15)
+twist_15 = calc_twist(r, by, bz)
+```
+
+```{python}
+plt.plot(r, twist_10)
+plt.plot(r, twist_15)
+plt.show()
+```
+
+```{python}
+eta = -4
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(10, -4, eta, folder)
+sdffile = swi_sdf
+by_2d_10, bz_2d_10 = fetch_mag_field(sdffile)
+```
+
+```{python}
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(14, -4, eta, folder)
+sdffile = swi_sdf
+by_2d_14, bz_2d_14 = fetch_mag_field(sdffile)
+```
+
+```{python}
+r, by, bz = get_radial(sdffile, by_2d_10, bz_2d_10)
+twist_10 = calc_twist(r, by, bz)
+
+r, by, bz = get_radial(sdffile, by_2d_14, bz_2d_14)
+twist_14 = calc_twist(r, by, bz)
+```
+
+```{python}
+plt.plot(r, twist_10)
+plt.plot(r, twist_14)
+plt.show()
+```
+
+```{python active="", eval=FALSE}
+nz = sdffile.Magnetic_Field_By.dims[2]
+ny = sdffile.Magnetic_Field_By.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 1
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+m = 4
+L=4.0
+
+if eta < 5e-4:
+    end = 256 + int(0.4/dr)
+    k = 22
+else:
+    end = 256 + int(0.4/dr)
+    k = 16
+r_max = dr*(end - midpoint_y)
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end+1])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end+1])
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+density = density_2d[midpoint_z, midpoint_y:end]
+
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+dqdr = (q[1:] - q[:-1])/dr
+
+by = np.abs(by_2d[midpoint_z, midpoint_y:end])
+bz = np.abs(bz_2d[midpoint_z, midpoint_y:end])
+
+b2 = by**2 + bz**2
+
+dpdr = (pressure[1:] - pressure[:-1])/dr
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz/(L*by)
+# print(r.shape, dqdr.shape, q.shape)
+S = r * dqdr/q
+
+u_0 = 2*r*dpdr/(bz*S)**2
+r_c = r * (by**2 + bz**2)/(by**2)
+
+# s = -1/2 + np.power(1/4 + u_0, 1/2)
+
+suydam = (bz*S)**2 / 4 + 2*r*dpdr
+
+c_Atheta = np.sqrt(by**2/density)
+
+gamma2 = np.sqrt(5/3*pressure[:-1]/density)/q * (2*np.pi/L)
+
+# gamma3 = np.sqrt(-2*m**2 * dpdr * c_Atheta**2 / (r**3 * bz**2))
+
+r_s = 0.1 # Estimate
+k = 21 # Estimate
+
+gamma4 = np.pi*c_Atheta / (r*(m+1)*(m+2)) * (k**2*r_s**2 / m**2 - S*(m-1)/2)
+
+gamma_resistive = np.power((S*c_Atheta/r)**2 * (eta * m**2 / r**2)**3, 1/5)
+
+s_omega = c_Atheta/r*(-S/2 + np.sqrt(S**2/4 + 2*r*dpdr/bz**2))
+
+gamma_resistive2 = np.power(s_omega**2 * (eta * m**2 / r**2), 1/3)
+
+gamma_resistive3 = np.power((c_Atheta/bz)**2 * -2*dpdr *m**2/r**3 * eta,1/3)
+
+gamma_priest = np.sqrt(2*m/r*pressure[:-1]/(r_c*density) - b2/(density*L**2))
+
+suydam2 = (bz*S)**2 / 4 + 2*r*dpdr - 4/(m**2-1) * (by**2/bz)
+
+inv_alpha = bz*S*np.sqrt(-suydam)
+# plt.plot(r, np.sqrt(-suydam))
+# plt.plot(r, inv_alpha)
+# plt.show()
+lamb = 16*np.exp(-np.pi*inv_alpha - 0.577 + np.pi/2)
+# gamma_ideal = lamb*S*c_Atheta/r
+gamma_ideal = S*c_Atheta/r
+
+fluting_gamma_lt = np.sqrt(-2*dpdr/(density*r_c) - b2/(density*L**2))
+fluting_gamma = np.sqrt(-2*dpdr/(density*r_c))
+
+plt.plot(r, suydam, 'k')
+plt.plot(r, S**2 * bz**2 / 4, 'k--')
+plt.plot(r, 2*r*dpdr, 'k:')
+# plt.plot(r, fluting_gamma, 'k,')
+# plt.plot(r, suydam2)
+plt.plot((0, 0.4), (0,0), 'grey', linewidth=0.5)
+plt.show()
+
+# plt.plot(r, gamma_ideal)
+plt.plot(r, fluting_gamma)
+# plt.plot(r, fluting_gamma_lt)
+# plt.plot(r, gamma_priest)
+# plt.plot(r, gamma2)
+# plt.plot(r, gamma4)
+# print(gamma4[18])
+# plt.plot(r, gamma_resistive2)
+# plt.plot(r, gamma_resistive3)
+plt.xlim(0.0, 0.5)
+plt.ylim(0.0, 2)
+plt.show()
+
+# print(np.argmin(gamma_ideal))
+# print(r[np.argmin(gamma_ideal)])
+
+print(gamma_priest[20])
+
+# print(np.argmax(gamma_ideal))
+# print(np.max(gamma_ideal))
+# print(r[np.argmax(gamma_ideal)])
+
+k = -2*np.pi*m/(L * q)
+plt.plot(r, k)
+k_peak = k[18]
+plt.plot((0, 0.4), (k_peak, k_peak), 'k:')
+plt.show()
+
+s2 = -S/2 + np.power(S**2/4 + 2*r*-dpdr/bz**2, 1/2)
+
+# plt.plot(r, s2)
+# plt.show()
+
+# plt.plot(r, by)
+# plt.plot(r, bz)
+# plt.show()
+
+plt.plot(r, S**2)
+plt.plot(r, pressure[:-1]/b2)
+plt.ylim(0, 0.2)
+plt.show()
+
+plt.plot(r, S**2 * bz**2 / 4)
+plt.plot(r, 2*r*dpdr)
+plt.show()
+
+
+#     eta = pow(10, eta_power)
+
+#     gamma_resistive = np.power(eta/density * np.power(2*k* -dpdr / (r_c*j), 2), 1/3)
+
+#     return r, gamma_resistive
+```
+
+```{python}
+
+```

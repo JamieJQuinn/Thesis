@@ -1,0 +1,420 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.6.0
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import sdf
+import sys
+import importlib
+import math
+import matplotlib
+import matplotlib.pyplot as plt
+# %matplotlib inline
+
+sys.path.insert(0,'../shared')
+from energy import Energy
+
+import plotting
+importlib.reload(plotting)
+from plotting import *
+
+import sdf_helper
+importlib.reload(sdf_helper)
+from sdf_helper import *
+
+import fan_plane_integrator
+importlib.reload(fan_plane_integrator)
+from fan_plane_integrator import *
+
+import field_line_integrator
+importlib.reload(field_line_integrator)
+from field_line_integrator import *
+```
+
+```{python}
+data_folder = "/nas/1101974q/kink-instability-str8/high-res/wyper-bcs/"
+data_folder = "/nas/1101974q/archie-latest-organisation-sept-2018/kink-instabilities/from-straight-tube/single_run/"
+outdir = "../../images/kink_instability_straight/"
+```
+
+```{python}
+def plot_energy(axis, nu_power, eta_power, index, is_log_plot=False):
+    iso_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-isotropic"
+    swi_folder = data_folder + "v" + str(nu_power) + "r" + str(eta_power) + "-switching"
+    iso_energy_filename = iso_folder + "/Data/en.dat"
+    swi_energy_filename = swi_folder + "/Data/en.dat"
+    energy_iso = Energy(iso_energy_filename)
+    energy_swi = Energy(swi_energy_filename)
+
+    if is_log_plot:
+        axis.semilogy(energy_iso.data[:,0], energy_iso.data[:,index])
+        axis.semilogy(energy_swi.data[:,0], energy_swi.data[:,index], '--')
+    else:
+        axis.plot(energy_iso.data[:,0], energy_iso.data[:,index])
+        axis.plot(energy_swi.data[:,0], energy_swi.data[:,index], '--')
+```
+
+## Ideal case
+
+```{python}
+nu_power = -4
+filename = data_folder + "v" + str(nu_power) + "r-0-switching/Data/en.dat"
+energy =  Energy(filename)
+time = energy.data[:,0]
+ke = energy.data[:,2]
+
+plt.plot(time, ke)
+plt.show()
+```
+
+```{python}
+nu_power = -4
+
+for i, eta_power in enumerate([-3, -4]):
+    fig, axis = create_axes(2)
+    plot_energy(axis, nu_power, eta_power, 2)
+    axis.set_ylim(0.0, 0.6)
+    axis.set_xlim(0, 50)
+    axis.set_xlabel(r"$t$")
+    axis.set_ylabel(r"KE")
+#     save_plot(outdir + "kinetic_energy"+str(eta_power)+".pdf")
+```
+
+```{python}
+def fetch_sdffile(time_index, visc, resist, containing_folder, visc_model):
+    timedump = '{0:04d}'.format(time_index)
+    run_string = "v" + str(visc) + "r" + str(resist)
+    run_folder = run_string + "-" + visc_model
+    folder = containing_folder + run_folder + "/Data/"
+    sdfFilename = folder + timedump + ".sdf"
+    return sdf.read(sdfFilename)
+
+def fetch_viscosity_pair_sdffile(time_index, visc, resist, containing_folder):
+    iso_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "isotropic")
+    swi_sdfFile = fetch_sdffile(time_index, visc, resist, containing_folder, "switching")
+
+    return iso_sdfFile, swi_sdfFile
+
+def format_filename(folder, dump_number):
+    return folder + '{0:04d}'.format(dump_number) + ".sdf"
+```
+
+```{python}
+xlim=1.0
+ylim=1.0
+slice_dim='z'
+slice_loc=0.0
+i = 2
+
+# visc_powers = [-3, -4, -5]
+# resist_powers = [-3, -4]
+
+visc_powers = [-4]
+resist_powers = [-3]
+
+for i in range(12, 20):
+    print(i)
+    for nu in visc_powers:
+        for eta in resist_powers:   
+            print(nu, eta)
+            # Load SDF files
+            folder = data_folder
+            iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, eta, folder)
+#             iso_sdf = fetch_sdffile(i, nu, eta, folder, 'isotropic')
+
+            extents = get_slice_extents(iso_sdf, slice_dim)
+
+#             iso_image = get_variable_slice(iso_sdf, "magnitude_current_density", slice_dim, slice_loc).T
+            swi_image = get_variable_slice(swi_sdf, "magnitude_current_density", slice_dim, slice_loc).T
+
+            vmax = max(iso_image.max(), swi_image.max())
+            vmin = min(iso_image.min(), swi_image.min())
+    #         vmax = 1e-4
+    #         vmin = -1e-4
+
+            fig, axes = create_axes(1, subplots_columns=2)
+            im = axes[0].imshow(iso_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+            im = axes[1].imshow(swi_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+
+            attach_colorbar(axes[1], im)
+            for axis in axes:
+                axis.set_xlim((-xlim, xlim))
+                axis.set_ylim((-ylim, ylim))
+
+            plt.show()
+```
+
+```{python}
+xlim=1.0
+ylim=1.0
+slice_dim='z'
+slice_loc=0.0
+i = 2
+
+# visc_powers = [-3, -4, -5]
+# resist_powers = [-3, -4]
+
+visc_powers = [-4]
+resist_powers = [-4]
+
+ideal_folder = data_folder + "/v-4r-0-switching/"
+
+for i in range(10, 11):
+    print(i)
+    timedump = '{0:04d}'.format(i)
+    ideal_sdf = sdf.read(ideal_folder + "/Data/" + timedump + ".sdf")
+    iso_image = get_variable_slice(ideal_sdf, "pressure", slice_dim, slice_loc).T
+    for nu in visc_powers:
+        for eta in resist_powers:   
+            print(nu, eta)
+            # Load SDF files
+            folder = data_folder
+            iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, eta, folder)
+#             iso_sdf = fetch_sdffile(i, nu, eta, folder, 'isotropic')
+
+            extents = get_slice_extents(iso_sdf, slice_dim)
+
+#             iso_image = get_variable_slice(iso_sdf, "magnitude_current_density", slice_dim, slice_loc).T
+            swi_image = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
+
+            vmax = max(iso_image.max(), swi_image.max())
+            vmin = min(iso_image.min(), swi_image.min())
+    #         vmax = 1e-4
+    #         vmin = -1e-4
+
+            fig, axes = create_axes(1, subplots_columns=2)
+            im = axes[0].imshow(iso_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+            im = axes[1].imshow(swi_image, cmap="coolwarm", extent=extents, origin='lower',
+                               vmax=vmax, vmin=vmin)
+
+            attach_colorbar(axes[1], im)
+            for axis in axes:
+                axis.set_xlim((-xlim, xlim))
+                axis.set_ylim((-ylim, ylim))
+
+            plt.show()
+```
+
+## Calculating growth rates 
+
+```{python}
+def calculate_gamma2(sdffile):
+    slice_dim = "y"
+    slice_loc = 0.0
+
+    by_2d = get_variable_slice(sdffile, "Magnetic_Field_by_centred", slice_dim, slice_loc).T
+    bz_2d = get_variable_slice(sdffile, "Magnetic_Field_bz_centred", slice_dim, slice_loc).T
+    pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+    density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+    
+    nz = sdffile.Magnetic_Field_by_centred.dims[2]
+    ny = sdffile.Magnetic_Field_by_centred.dims[1]
+
+    dr = 4.0 / (ny+1)
+    n_points_from_centre = 1
+    r_min = dr*n_points_from_centre
+
+    midpoint_z = int(nz/2)
+    midpoint_y = int(ny/2) + n_points_from_centre
+
+    end = int(ny*5/8)
+    r_max = dr*(end - midpoint_y)
+
+    by = by_2d[midpoint_z, midpoint_y:end]
+    bz = bz_2d[midpoint_z, midpoint_y:end]
+    pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+    density = density_2d[midpoint_z, midpoint_y:end]
+
+    dpdr = (pressure[1:] - pressure[:-1])/dr
+
+    r = np.linspace(r_min, r_max, by.shape[0])
+    r_c = r * (by**2 + bz**2)/(by**2)
+
+    gamma2 = 2.0 * -dpdr / (density * r_c)
+
+    return r, gamma2
+```
+
+```{python}
+i = 2
+nu = -4
+folder = data_folder
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -4, folder)
+r, gamma2_iso_4 = calculate_gamma2(iso_sdf)
+r, gamma2_swi_4 = calculate_gamma2(swi_sdf)
+del iso_sdf, swi_sdf
+
+iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -3, folder)
+r, gamma2_iso_3 = calculate_gamma2(iso_sdf)
+r, gamma2_swi_3 = calculate_gamma2(swi_sdf)
+del iso_sdf, swi_sdf
+```
+
+```{python}
+fig, axes = create_axes(1, subplots_columns=2)
+axes[0].plot(r, gamma2_iso_4)
+axes[0].plot(r, gamma2_swi_4, '--')
+axes[1].plot(r, gamma2_iso_3)
+axes[1].plot(r, gamma2_swi_3, '--')
+plt.show()
+```
+
+```{python}
+def sqrt_gamma(gamma2):
+    gamma = np.zeros_like(gamma2)
+    gamma[gamma2 > 0] = gamma2[gamma2 > 0]
+    gamma = np.sqrt(gamma)
+    return gamma
+```
+
+```{python}
+fig, axes = create_axes(1, subplots_columns=2)
+axes[0].plot(r, sqrt_gamma(gamma2_iso_4))
+axes[0].plot(r, sqrt_gamma(gamma2_swi_4), '--')
+axes[1].plot(r, sqrt_gamma(gamma2_iso_3))
+axes[1].plot(r, sqrt_gamma(gamma2_swi_3), '--')
+plt.show()
+
+print(r[np.argmax(gamma2_iso_4)])
+print(np.argmax(gamma2_iso_4))
+```
+
+## Calculating safety factors
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+L = 4.0
+
+sdffile, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -3, folder)
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_by_centred", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_bz_centred", slice_dim, slice_loc).T
+pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+# density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_by_centred.dims[2]
+ny = sdffile.Magnetic_Field_by_centred.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 5
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - midpoint_y)
+
+by = by_2d[midpoint_z, midpoint_y:end]
+bz = bz_2d[midpoint_z, midpoint_y:end]
+pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+# density = density_2d[midpoint_z, midpoint_y:end]
+
+dpdr = (pressure[1:] - pressure[:-1])/dr
+r = np.linspace(r_min, r_max, by.shape[0])
+
+q = 2*np.pi*r*bz / (L*by)
+dqdr = (q[2:] - q[:-2])/(2.0*dr)
+
+LHS = (dqdr/q[1:-1])**2
+
+RHS = -8.0* dpdr / (r*bz**2)
+
+plt.plot((0, 1), (0,0), 'k--')
+plt.plot(r[1:-1], LHS - RHS[1:-1] )
+# plt.plot(r[1:-1], LHS, '--')
+
+plt.xlim(0, 0.5)
+```
+
+## Calculating resonant surfaces
+
+```{python}
+slice_dim = "y"
+slice_loc = 0.0
+
+L = 4.0
+
+sdffile, swi_sdf = fetch_viscosity_pair_sdffile(i, nu, -3, folder)
+
+by_2d = get_variable_slice(sdffile, "Magnetic_Field_by_centred", slice_dim, slice_loc).T
+bz_2d = get_variable_slice(sdffile, "Magnetic_Field_bz_centred", slice_dim, slice_loc).T
+# pressure_2d = get_variable_slice(sdffile, "pressure", slice_dim, slice_loc).T
+# density_2d = get_variable_slice(sdffile, "Fluid_Rho", slice_dim, slice_loc).T
+```
+
+```{python}
+nz = sdffile.Magnetic_Field_by_centred.dims[2]
+ny = sdffile.Magnetic_Field_by_centred.dims[1]
+
+dr = 4.0 / (ny+1)
+n_points_from_centre = 5
+r_min = dr*n_points_from_centre
+
+midpoint_z = int(nz/2)
+midpoint_y = int(ny/2) + n_points_from_centre
+
+end = int(ny*5/8)
+r_max = dr*(end - midpoint_y)
+
+by = by_2d[midpoint_z, midpoint_y:end]
+bz = bz_2d[midpoint_z, midpoint_y:end]
+# pressure = pressure_2d[midpoint_z, midpoint_y:end+1]
+# density = density_2d[midpoint_z, midpoint_y:end]
+
+# dpdr = (pressure[1:] - pressure[:-1])/dr
+r = np.linspace(r_min, r_max, by.shape[0])
+
+m = 4
+
+# k = 1
+
+# plt.plot(r, by)
+# plt.plot(r, bz)
+
+# for k in range(40):
+#     plt.plot(r, m*np.abs(by)/r + k*bz, label=str(k))
+
+k = 4*by[25]/(0.22*bz[25])
+
+print(k)
+# print(2*np.pi/k)
+
+wavelength_field = 2*np.pi * r * bz / -by
+k_field = 2*np.pi / wavelength_field
+
+k_field = - by/(r*bz)
+
+print(k_field[25])
+
+res_condition = m*np.abs(by)/r + k*bz
+
+# plt.plot(r, k_field)
+plt.plot(r, res_condition)
+# plt.plot(r, twist_field)
+
+# plt.plot(r, m*by/(r*bz))
+plt.plot((0,1), (0,0), 'k--')
+# plt.legend()
+
+plt.xlim(0, 0.5)
+```

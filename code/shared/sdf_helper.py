@@ -1,5 +1,7 @@
 import sys
 import math
+from time import asctime
+import gc
 
 import sdf
 import numpy as np
@@ -183,12 +185,17 @@ def calc_alfven_velocity(sdfFile):
     return B/np.sqrt(rho)
 
 def get_magnetic_field(sdfFile):
-    mag_field = np.array([
-        get_variable_data(sdfFile, variable) for variable in
-        ['Magnetic_Field_bx_centred', 'Magnetic_Field_by_centred', 'Magnetic_Field_bz_centred']
-    ])
+    components = ['x', 'y', 'z']
+    field = []
+    for i, variable in enumerate(
+        ['Magnetic_Field_Bx', 'Magnetic_Field_By', 'Magnetic_Field_Bz']
+    ):
+        b = get_variable_data(sdfFile, variable)
+        b_centred = centre_field_component(b, components[i])
+        del b
+        field.append(b_centred)
 
-    return mag_field
+    return field
 
 
 def plot_slice(sdfFile, variable_name, dimension, slice_loc,
@@ -293,12 +300,24 @@ def get_magnitude_vorticity(sdfFile):
 
     return mag_curl(vx, vy, vz, dx, dy, dz)
 
-def centre_magnetic_field(bx, by, bz):
-    bx = 0.5*(bx[:-1,:,:] + bx[1:,:,:])
-    by = 0.5*(by[:,:-1,:] + by[:,1:,:])
-    bz = 0.5*(bz[:,:,:-1] + bz[:,:,1:])
+def centre_field_component(b, comp):
+    if comp == "x":
+        b = 0.5*(b[:-1,:,:] + b[1:,:,:])
+    elif comp == "y":
+        b = 0.5*(b[:,:-1,:] + b[:,1:,:])
+    elif comp == "z":
+        b = 0.5*(b[:,:,:-1] + b[:,:,1:])
 
-    return bx, by, bz
+    return b
+
+
+def centre_magnetic_field(bx, by, bz):
+    # This operates inplace
+    bx_centred = centre_field_component(bx, "x")
+    by_centred = centre_field_component(by, "y")
+    bz_centred = centre_field_component(bz, "z")
+
+    return bx_centred, by_centred, bz_centred
 
 def get_magnitude_current(sdfFile):
     bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
@@ -312,23 +331,37 @@ def get_magnitude_current(sdfFile):
     return mag_curl(bx, by, bz, dx, dy, dz)
 
 def calc_current_slice(sdfFile, slice_dim, slice_loc):
-    bx = get_variable_data(sdfFile, "Magnetic_Field_Bx")
-    by = get_variable_data(sdfFile, "Magnetic_Field_By")
-    bz = get_variable_data(sdfFile, "Magnetic_Field_Bz")
-
-    bx, by, bz = centre_magnetic_field(bx, by, bz)
-
     slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
     indices_around_slice = (slice_index-1, slice_index, slice_index+1)
-
     slice_dim = sanitise_dimension(slice_dim)
 
-    bx = bx.take(indices_around_slice, axis=slice_dim)
-    by = by.take(indices_around_slice, axis=slice_dim)
-    bz = bz.take(indices_around_slice, axis=slice_dim)
+    print(asctime(), "Loading magnetic field")
+    bx_raw = get_variable_data(sdfFile, "Magnetic_Field_Bx")
+    centre_field_component(bx_raw, "x")
+    bx = np.copy(bx_raw.take(indices_around_slice, axis=slice_dim))
+    del bx_raw
+    if slice_dim != 0:
+        bx = bx[:-1]
+
+    by_raw = get_variable_data(sdfFile, "Magnetic_Field_By")
+    centre_field_component(by_raw, "y")
+    by = np.copy(by_raw.take(indices_around_slice, axis=slice_dim))
+    del by_raw
+    if slice_dim != 1:
+        by = by[:,:-1]
+
+    bz_raw = get_variable_data(sdfFile, "Magnetic_Field_Bz")
+    centre_field_component(bz_raw, "z")
+    bz = np.copy(bz_raw.take(indices_around_slice, axis=slice_dim))
+    del bz_raw
+    if slice_dim != 2:
+        bz = bz[:,:,:-1]
+
+    gc.collect()
 
     dx = get_dx_dy_dz(sdfFile, cell_centre=True)
 
+    print(asctime(), "Calculating current")
     cx, cy, cz = calc_curl(bx, by, bz, dx)
 
     cx = np.squeeze(cx[1:-1,:,:])
@@ -338,21 +371,28 @@ def calc_current_slice(sdfFile, slice_dim, slice_loc):
     return (cx, cy, cz)
 
 def calc_vorticity_slice(sdfFile, slice_dim, slice_loc):
-    vx = get_variable_data(sdfFile, "Velocity_Vx")
-    vy = get_variable_data(sdfFile, "Velocity_Vy")
-    vz = get_variable_data(sdfFile, "Velocity_Vz")
-
     slice_index = length_to_index(sdfFile, slice_loc, slice_dim)
     indices_around_slice = (slice_index-1, slice_index, slice_index+1)
-
     slice_dim = sanitise_dimension(slice_dim)
 
-    vx = vx.take(indices_around_slice, axis=slice_dim)
-    vy = vy.take(indices_around_slice, axis=slice_dim)
-    vz = vz.take(indices_around_slice, axis=slice_dim)
+    print(asctime(), "Loading velocity")
+    vx_raw = get_variable_data(sdfFile, "Velocity_Vx")
+    vx = np.copy(vx_raw.take(indices_around_slice, axis=slice_dim))
+    del vx_raw
+
+    vy_raw = get_variable_data(sdfFile, "Velocity_Vy")
+    vy = np.copy(vy_raw.take(indices_around_slice, axis=slice_dim))
+    del vy_raw
+
+    vz_raw = get_variable_data(sdfFile, "Velocity_Vz")
+    vz = np.copy(vz_raw.take(indices_around_slice, axis=slice_dim))
+    del vz_raw
+
+    gc.collect()
 
     dx = get_dx_dy_dz(sdfFile, cell_centre=True)
 
+    print(asctime(), "Calculating vorticity")
     cx, cy, cz = calc_curl(vx, vy, vz, dx)
 
     cx = np.squeeze(cx[1:-1,:,:])

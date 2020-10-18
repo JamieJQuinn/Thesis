@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.3.4
+      jupytext_version: 1.6.0
   kernelspec:
     display_name: Python 3
     language: python
@@ -47,25 +47,18 @@ parameter_study_folder = "/twisting-driver/parameter-study/"
 ```
 
 ```{python}
-def example_filename():
-    run_folder = "v-4r-4-switching"
-    folder = data_folder + parameter_study_folder + run_folder + "/Data/"
-    i=14
-    timedump = '{0:04d}'.format(i)
-    sdfFilename = folder + timedump + ".sdf"
-    
-    return sdfFilename
+sdfFilename = data_folder +\
+"/twisting-driver/high-resolution/v-4r-4-isotropic/Data/0033.sdf"
+
+sdffile = sdf.read(sdfFilename)
+field = load_magnetic_field(sdffile)
 ```
 
 ```{python}
-sdfFilename = example_filename()
-
-field = load_magnetic_field(sdfFilename)
-
 NUM_POINTS = int(1e4)
 
 N_ANGLES = 10
-RADIUS = 0.05
+RADIUS = 0.02
 
 # field = Field(sdfFilename)
 lines = [Line(RADIUS*np.cos(theta), RADIUS*np.sin(theta), 0.23, NUM_POINTS) for theta in np.linspace(0, 2.0*np.pi, N_ANGLES)]
@@ -85,16 +78,22 @@ for line in lines:
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 for i, line in enumerate(lines[::-1]):
-#     if i<N_ANGLES:
-#         color = "red"
-#     else:
-#         color = "blue"
+    if i<len(lines)/2:
+        color = "red"
+    else:
+        color = "blue"
     cmap = matplotlib.cm.get_cmap('viridis')
     rgba = cmap(0.0)
-    line.plot(ax, color=rgba, linewidth=0.5)
+    line.plot(ax, color=color, linewidth=0.5)
     
-ax.set_xlim(-2.0, 2.0)
-ax.set_ylim(-2.0, 2.0)
+ax.set_xlim(-0.5, 0.5)
+ax.set_ylim(-0.5, 0.5)
+ax.set_zlim(-0.1, 0.1)
+ax.set_axis_off()
+ax.elev = 10
+
+ax.azim = 90
+
 plt.show()
 ```
 
