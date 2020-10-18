@@ -1,0 +1,252 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import sys
+import sdf
+import math
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+# %matplotlib inline
+
+sys.path.insert(0,'../')
+from plotting_parameters import *
+
+sys.path.insert(0,'../../visualisation-tools')
+from energy import Energy
+from plotting_functions import *
+# from helper_functions import *
+
+specific_case = "parameter-study/v-4r-4"
+iso_data_folder = main_data_folder + specific_case + "-isotropic/Data/"
+swi_data_folder = main_data_folder + specific_case + "-switching/Data/"
+```
+
+```{python}
+def make_specific_filename(name):
+    return specific_case_save_folder + "/" + name + "." + SAVE_FILETYPE
+```
+
+# Energy plots from v-4r-4
+
+```{python}
+isotropic_energy = Energy(iso_data_folder + "en.dat")
+switching_energy = Energy(swi_data_folder + "en.dat")
+
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,2], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,2], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 0.06)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE')
+
+save_plot(make_specific_filename('kinetic_energy_over_time'))
+```
+
+```{python}
+isotropic_energy = Energy(iso_data_folder + "en.dat")
+switching_energy = Energy(swi_data_folder + "en.dat")
+
+# fix_current_restart(isotropic_energy.data[:,8])
+# fix_current_restart(switching_energy.data[:,8])
+
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,6], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,6], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 0.06)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE$_{\parallel}$')
+
+save_plot(make_specific_filename('parallel_kinetic_energy_over_time'))
+```
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,7], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,7], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 0.06)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE$_{\perp}$')
+
+save_plot(make_specific_filename('perp_kinetic_energy_over_time'))
+```
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,1], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,1], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 90)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'ME')
+
+save_plot(make_specific_filename('magnetic_energy_density_over_time'))
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+                        
+axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,5], '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], switching_energy.data[:,5], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 2.2)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\eta}$')
+
+save_plot(make_specific_filename('ohmic_heating_over_time'))
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+
+axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,4], '-', linewidth=0.5)
+axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,4], '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(1e-8, 1)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\nu}$')
+
+save_plot(make_specific_filename('viscous_heating_over_time'))
+```
+
+```{python}
+fig, axis = create_axes(n_columns=3, axis_side='right')
+
+iso_total_heating = isotropic_energy.data[:,4] + isotropic_energy.data[:,5]
+swi_total_heating = switching_energy.data[:,4] + switching_energy.data[:,5]
+
+axis.plot(isotropic_energy.data[:,0], iso_total_heating, '-', linewidth=0.5)
+axis.plot(switching_energy.data[:,0], swi_total_heating, '--', linewidth=0.5)
+
+plt.xlim(0, 15)
+# plt.ylim(0, 2.2)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'$Q_{\nu} + Q_{\eta}$')
+
+save_plot(make_specific_filename('total_heating_over_time'))
+```
+
+### Useless log of kinetic energy
+
+```{python}
+fig, axis = create_axes(n_columns=2)
+
+axis.semilogy(isotropic_energy.data[:,0], isotropic_energy.data[:,2], '-')
+axis.semilogy(switching_energy.data[:,0], switching_energy.data[:,2], '--')
+
+# points = [12, 45]
+# growthLine = [np.power(10, 3.25/25*(x-15) - 4.9) for x in points]
+
+# axis.plot(points, growthLine, color='#888888')
+
+plt.xlim(1, 10)
+plt.ylim(1e-4, 1e-2)
+
+plt.xlabel(r"$t$")
+plt.ylabel(r'KE')
+
+plt.show()
+
+# save_plot('log_kinetic_energy_over_time.' + FILETYPE)
+```
+
+# Parameter Study
+
+```{python}
+def make_parameter_filename(name):
+    return parameter_study_save_folder + "/" + name + "." + SAVE_FILETYPE
+```
+
+```{python}
+def get_energies(viscosity_exponent, resistivity_exponent):
+    """
+    Loads Energy objects for the pair of exponents given
+    
+    Args:
+        viscosity_exponent (int): the exponent of the viscosity parameter (e.g. to fetch $10^{-4}$, set viscosity_exponent to -4)
+        resistivity_exponent (int): same as above but for the resistivity parameter
+        
+    Returns:
+        The pair of energy objects corresponding to isotropic, switching runs
+    """
+    data_folder = main_data_folder+"/parameter-study/" + \
+    "v"+str(viscosity_exponent) + \
+    "r"+str(resistivity_exponent)
+    
+    iso_fname = data_folder + "-isotropic/Data/en.dat"
+    swi_fname = data_folder + "-switching/Data/en.dat"
+    
+    return Energy(iso_fname), Energy(swi_fname)
+```
+
+```{python}
+def plot_kinetic_energy(energies, axis):
+    isotropic_energy, switching_energy = energies
+    axis.plot(isotropic_energy.data[:,0], isotropic_energy.data[:,2], '-', linewidth=0.5)
+    axis.plot(switching_energy.data[:,0], switching_energy.data[:,2], '--', linewidth=0.5)
+```
+
+```{python}
+exponents = [(v,r) for v in [-3,-4, -5] for r in [-3,-4]]
+# exponents += [(-5, -3), (-5, -4)]
+
+fig, axes = create_axes(n_columns=1,
+                        subplots_rows=3, subplots_columns=3, 
+                        sharex=True, sharey=True)
+
+# fig, axes = plt.subplots(3, 3, figsize=(7,7), sharex=True, sharey=True)
+
+for i, visc_exp in enumerate([-5, -4, -3]):
+    for j, res_exp in enumerate([-5, -4, -3]):
+        plot_kinetic_energy(get_energies(visc_exp, res_exp), axes[i,j])
+
+        axes[i,j].set_xlim(0, 15)
+        axes[i,j].set_ylim(0, 0.01)
+        axes[i,j].text(0.3, 0.009, r"$\nu=10^{"+str(visc_exp)+"}$; $\eta=10^{"+str(res_exp)+"}$")
+        
+
+axes[0,0].set_xlabel(r"$t$")
+axes[0,0].set_ylabel(r'KE')
+
+plt.show()
+
+save_plot(make_parameter_filename('kinetic_energy_over_time'))
+```
+
+```{python}
+
+```
