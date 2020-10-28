@@ -1,0 +1,601 @@
+---
+jupyter:
+  jupytext:
+    formats: ipynb,Rmd
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.3.4
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import numpy as np
+import os
+import json
+from datetime import datetime
+from multiprocessing import Pool
+import sys
+import importlib
+
+sys.path.insert(0,'../shared')
+
+import plotting
+# importlib.reload(plotting)
+from plotting import *
+
+outdir = "../../images/numerical_methods/"
+```
+
+```{python}
+PROBLEM = "sod"
+RESOLUTION = 500
+DT = 1e-4
+N_PROC = 3
+if PROBLEM == 'riemann':
+    N_TIMESTEPS = 350
+    GAMMA = 2
+elif PROBLEM == 'sod':
+    N_TIMESTEPS = 2000
+    GAMMA = 1.4
+
+NOTEBOOK_LOCATION=os.getcwd()
+
+os.chdir('/home/jamie/prog/lare1d/')
+MAIN_FOLDER = os.getcwd()
+PROBLEM_FOLDER = os.path.join('data/parameter_study/', PROBLEM)
+```
+
+```{python}
+def setup_initial_conditions(resolution, out_folder):
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
+    os.system('tools/makeICFile.py -N '+str(resolution)+' -o '+out_folder+'/initial_conditions.dat'+" "+PROBLEM)
+
+def copy_ics(in_file, out_folder):
+    os.system('cp ' + in_file + " " + out_folder)
+    
+def setup_constants(constants, folder):
+    with open(os.path.join(folder, 'constants.json'), 'w') as fp:
+        json.dump(constants, fp)
+        
+def run_lare1d(out_folder):
+    os.chdir(out_folder)
+    os.system(os.path.join(MAIN_FOLDER, 'build/lare1d'))
+    os.chdir(MAIN_FOLDER)
+
+def run_single_case(constants, out_folder, ic_file=None):
+    # Make sure folder exists
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
+    # Create or copy initial conditions
+    if ic_file:
+        copy_ics(ic_file, out_folder)
+    else:
+        setup_initial_conditions(constants['nGridPoints'], out_folder)
+    # Create constants input file
+    setup_constants(constants, out_folder)
+    # run simulation
+    run_lare1d(out_folder)
+
+def create_analytical_solution(resolution, out_folder):
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
+    os.system('python tools/makeAnalyticalSolution.py -N '+str(resolution)+' -o '+ out_folder + '/analytical.dat' + ' -t '+str(DT*N_TIMESTEPS)+' '+PROBLEM)
+
+def fetch_variable(data, variable, resolution):
+    if variable == 'pressure':
+        return data[:resolution]
+    elif variable == 'density':
+        return data[resolution:2*resolution]
+    elif variable == 'velocity':
+        return data[2*resolution:3*resolution]
+    else:
+        return data
+    
+def compare_to_analytical(resolution, numerical_folder, as_file, variable='pressure'):
+    numerical_filename = os.path.join(numerical_folder, "final.dat")
+    analytical_filename = as_file
+    os.chdir(MAIN_FOLDER)
+
+    numerical_data = np.fromfile(numerical_filename, dtype=np.dtype(np.double))
+    analytical_data = np.fromfile(analytical_filename, dtype=np.dtype(np.double))
+
+    num_var = fetch_variable(numerical_data, variable, resolution)
+    an_var = fetch_variable(analytical_data, variable, resolution)
+    
+    if variable in ['pressure', 'density', 'velocity']:
+        return np.linalg.norm((num_var - an_var)/(resolution))
+    else:
+        return np.linalg.norm((num_var - an_var)/(3*resolution))
+
+def measure_single_run_time(constants):
+    folder = os.path.join(PROBLEM_FOLDER, "runtime_estimate")
+    ic_folder = os.path.join(PROBLEM_FOLDER, 'initial_conditions')
+    ic_file = os.path.join(ic_folder, 'initial_conditions.dat')
+    setup_initial_conditions(resolution, ic_folder)
+    
+    start = datetime.now()
+    run_single_case(constants, folder, ic_file=ic_file)
+    end = datetime.now()
+    return (end-start).total_seconds()
+```
+
+# Optimising shock viscosity
+
+```{python}
+constants = {
+    'dt': DT,
+    'gamma': GAMMA,
+    'nGridPoints':RESOLUTION,
+    'nTimeSteps':N_TIMESTEPS,
+    'sigma1':0.0,
+    'sigma2':0.0
+}
+
+resolution = constants['nGridPoints']
+
+sigma1_max = 1
+sigma2_max = 0.5
+sigma1_step = 0.01
+sigma2_step = 0.01
+sigma1_min = 0
+sigma2_min = 0
+
+sigma1_array = np.arange(sigma1_min, sigma1_max, sigma1_step)
+sigma2_array = np.arange(sigma2_min, sigma2_max, sigma2_step)
+
+sigma1_n_points = len(sigma1_array)
+sigma2_n_points = len(sigma2_array)
+
+total_points = sigma2_n_points*sigma1_n_points
+print("Resolution:", RESOLUTION)
+print("Problem:", PROBLEM)
+print("Points to calculate:", total_points)
+total_time = measure_single_run_time(constants)*total_points/N_PROC
+if total_time > 1800:
+    print("Approximate time:", total_time/3600, "hours")
+elif total_time > 60:
+    print("Approximate time:", total_time/60, "minutes")
+else:
+    print("Approximate time:", total_time, "seconds")
+```
+
+```{python}
+def run_single_sigma_case(sigma_point):
+    sigma1, sigma2 = sigma_point
+    constants = {
+        'dt': DT,
+        'gamma': GAMMA,
+        'nGridPoints':RESOLUTION,
+        'nTimeSteps':N_TIMESTEPS,
+        'sigma1':sigma1,
+        'sigma2':sigma2
+    }
+    folder = "data/parameter_study/"+PROBLEM+"/"+str(sigma1)+"_"+str(sigma2)+"/"
+    run_single_case(constants, folder, ic_file=ic_file)
+```
+
+```{python}
+ic_folder = os.path.join(PROBLEM_FOLDER, 'initial_conditions')
+ic_file = os.path.join(ic_folder, 'initial_conditions.dat')
+setup_initial_conditions(resolution, ic_folder)
+
+points = [(sigma1, sigma2)
+          for sigma1 in sigma1_array
+          for sigma2 in sigma2_array]
+
+with Pool(N_PROC) as p:
+    p.map(run_single_sigma_case, points)
+```
+
+```{python}
+as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution')
+as_file = os.path.join(as_folder, 'analytical.dat')
+create_analytical_solution(resolution, as_folder)
+
+error = np.zeros((sigma1_n_points, sigma2_n_points))
+
+for i, sigma1 in enumerate(sigma1_array):
+    for j, sigma2 in enumerate(sigma2_array):
+        folder = PROBLEM_FOLDER+"/"+str(sigma1)+"_"+str(sigma2)+"/"
+        error[i,j] = compare_to_analytical(
+            constants['nGridPoints'], folder, as_file,
+        variable = 'all')
+
+min_idx = np.unravel_index(np.argmin(error, axis=None), error.shape)
+print(min_idx)
+print(error[min_idx])
+optimal_sigma1 = sigma1_array[min_idx[0]]
+optimal_sigma2 = sigma2_array[min_idx[1]]
+print("Optimal (sigma1, sigma2):", optimal_sigma1, optimal_sigma2)
+
+latexify(columns=2)
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+X, Y = np.meshgrid(sigma1_array, sigma2_array, indexing='ij')
+ax.plot_surface(X, Y, error, cmap=cm.viridis, alpha=0.9)
+ax.scatter(optimal_sigma1, optimal_sigma2,
+           error[min_idx], s=100, c='black', marker='x')
+ax.text(0.6, 0, 0.00002, str((optimal_sigma1, optimal_sigma2)))
+ax.set_zlim(0, 0.0015)
+ax.set_xlabel(r"$c_1$")
+ax.set_ylabel(r"$c_2$")
+ax.set_zlabel(r"$E$")
+
+ax.dist = 11
+
+plt.tight_layout()
+# plt.show()
+fig.subplots_adjust(left=-0.15, right=0.97, bottom=0, top=1.1)
+
+os.chdir(NOTEBOOK_LOCATION)
+# save_plot(outdir+"wide_shock_parameter_search.pdf")
+plt.savefig(outdir+"shock_parameter_search.pdf")
+```
+
+```{python}
+constants = {
+    'dt': DT,
+    'gamma': GAMMA,
+    'nGridPoints':RESOLUTION,
+    'nTimeSteps':N_TIMESTEPS,
+    'sigma1':0.0,
+    'sigma2':0.0
+}
+
+resolution = constants['nGridPoints']
+
+sigma1_max = 10
+sigma2_max = 10
+sigma1_step = 0.2
+sigma2_step = 0.2
+sigma1_min = 0
+sigma2_min = 0
+
+sigma1_array = np.arange(sigma1_min, sigma1_max, sigma1_step)
+sigma2_array = np.arange(sigma2_min, sigma2_max, sigma2_step)
+
+sigma1_n_points = len(sigma1_array)
+sigma2_n_points = len(sigma2_array)
+
+total_points = sigma2_n_points*sigma1_n_points
+print("Resolution:", RESOLUTION)
+print("Problem:", PROBLEM)
+print("Points to calculate:", total_points)
+total_time = measure_single_run_time(constants)*total_points/N_PROC
+if total_time > 1800:
+    print("Approximate time:", total_time/3600, "hours")
+elif total_time > 60:
+    print("Approximate time:", total_time/60, "minutes")
+else:
+    print("Approximate time:", total_time, "seconds")
+```
+
+```{python}
+ic_folder = os.path.join(PROBLEM_FOLDER, 'initial_conditions')
+ic_file = os.path.join(ic_folder, 'initial_conditions.dat')
+setup_initial_conditions(resolution, ic_folder)
+
+points = [(sigma1, sigma2)
+          for sigma1 in sigma1_array
+          for sigma2 in sigma2_array]
+
+with Pool(N_PROC) as p:
+    p.map(run_single_sigma_case, points)
+```
+
+```{python}
+as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution')
+as_file = os.path.join(as_folder, 'analytical.dat')
+create_analytical_solution(resolution, as_folder)
+
+error = np.zeros((sigma1_n_points, sigma2_n_points))
+
+for i, sigma1 in enumerate(sigma1_array):
+    for j, sigma2 in enumerate(sigma2_array):
+        folder = PROBLEM_FOLDER+"/"+str(sigma1)+"_"+str(sigma2)+"/"
+        error[i,j] = compare_to_analytical(
+            constants['nGridPoints'], folder, as_file,
+            variable='all')
+
+min_idx = np.unravel_index(np.argmin(error, axis=None), error.shape)
+print(min_idx)
+print(error[min_idx])
+optimal_sigma1 = sigma1_array[min_idx[0]]
+optimal_sigma2 = sigma2_array[min_idx[1]]
+print("Optimal (sigma1, sigma2):", optimal_sigma1, optimal_sigma2)
+
+latexify(columns=2)
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+X, Y = np.meshgrid(sigma1_array, sigma2_array, indexing='ij')
+ax.plot_surface(X, Y, error, cmap=cm.viridis, alpha=0.9)
+ax.scatter(optimal_sigma1, optimal_sigma2,
+           error[min_idx], s=100, c='black', marker='x')
+ax.text(0.9, 0.8, 0.0002, str((round(optimal_sigma1, 2), optimal_sigma2)))
+ax.set_zlim(0, 0.002)
+ax.set_xlabel(r"$c_1$")
+ax.set_ylabel(r"$c_2$")
+ax.set_zlabel(r"$E$")
+
+ax.dist = 11
+
+plt.tight_layout()
+# plt.show()
+fig.subplots_adjust(left=-0.15, right=0.97, bottom=0, top=1.1)
+
+os.chdir(NOTEBOOK_LOCATION)
+# save_plot(outdir+"wide_shock_parameter_search.pdf")
+plt.savefig(outdir+"wide_shock_parameter_search.pdf")
+```
+
+# Running for various resolutions
+
+```{python}
+resolutions = [50, 100, 500]
+
+os.chdir(MAIN_FOLDER)
+
+for res in resolutions:
+    print(res)
+    constants = {
+        'dt': DT,
+        'gamma': GAMMA,
+        'nGridPoints':res,
+        'nTimeSteps':N_TIMESTEPS,
+        'sigma1':0.77,
+        'sigma2':0.0
+    }
+    folder = "data/parameter_study/"+PROBLEM+"/res_"+str(res)+"/"
+    run_single_case(constants, folder)
+```
+
+```{python}
+fig, axes = create_axes(1, subplots_rows=3, sharex=True)
+
+markers = ['.', '.', '']
+
+os.chdir(MAIN_FOLDER)
+
+
+for i, res in enumerate(resolutions):
+    folder = "data/parameter_study/"+PROBLEM+"/res_"+str(res)+"/"
+    numerical_filename = os.path.join(folder, "final.dat")
+
+    numerical_data = np.fromfile(numerical_filename, dtype=np.dtype(np.double))
+
+    x = np.linspace(0, 1, res)
+    axes[0].plot(x, numerical_data[:res], marker=markers[i], label=r"$N=\ $"+str(res), fillstyle='none', markersize=5)
+    axes[1].plot(x, numerical_data[res:2*res], marker=markers[i], label=str(res), fillstyle='none', markersize=5)
+    axes[2].plot(x, numerical_data[2*res:3*res], marker=markers[i], label=str(res), fillstyle='none', markersize=5)
+  
+res = resolutions[-1]
+
+as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution_'+str(res))
+as_file = os.path.join(as_folder, 'analytical.dat')
+create_analytical_solution(res, as_folder)
+analytical_data = np.fromfile(as_file, dtype=np.dtype(np.double))
+
+x = np.linspace(0, 1, res)
+axes[0].plot(x, analytical_data[:res], '--', color='grey', label=r"$u(x)$")
+axes[1].plot(x, analytical_data[res:2*res], '--', color='grey', label=r"$u(x)$")
+axes[2].plot(x, analytical_data[2*res:3*res], '--', color='grey', label=r"$u(x)$")
+
+axes[0].set_ylim(0, 1.1)
+axes[1].set_ylim(0, 1.1)
+axes[2].set_ylim(0, 1.1)
+axes[0].set_xlim(0, 1)
+axes[1].set_xlim(0, 1)
+axes[2].set_xlim(0, 1)
+axes[0].set_ylabel(r"$p$")
+axes[1].set_ylabel(r"$\rho$")
+axes[2].set_ylabel(r"$u$")
+axes[2].set_xlabel(r"$x$")
+
+axes[0].legend(frameon=False)
+# plt.show()
+os.chdir(NOTEBOOK_LOCATION)
+
+save_plot(outdir+'resolution_study.pdf')
+```
+
+```{python}
+resolutions = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+
+os.chdir(MAIN_FOLDER)
+
+for res in resolutions:
+    print(res)
+    constants = {
+        'dt': DT,
+        'gamma': GAMMA,
+        'nGridPoints':res,
+        'nTimeSteps':N_TIMESTEPS,
+        'sigma1':0.77,
+        'sigma2':0.0
+    }
+    folder = "data/parameter_study/"+PROBLEM+"/res_"+str(res)+"/"
+    run_single_case(constants, folder)
+```
+
+```{python}
+errors = []
+    
+for i, res in enumerate(resolutions):
+    as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution_'+str(res))
+    as_file = os.path.join(as_folder, 'analytical.dat')
+    create_analytical_solution(res, as_folder)
+    folder = "data/parameter_study/"+PROBLEM+"/res_"+str(res)+"/"
+
+    os.chdir(MAIN_FOLDER)
+    
+    errors += [compare_to_analytical(
+            res, folder, as_file,
+            variable='all')]
+    
+fig, axis = create_axes(2)
+axis.loglog(resolutions, errors, 'xk')
+axis.set_xlabel(r"$N$")
+axis.set_ylabel(r"$E_N$")
+# axis.set_xticks(resolutions)
+# plt.show()
+
+os.chdir(NOTEBOOK_LOCATION)
+
+save_plot(outdir+'effect_of_res_on_error.pdf')
+```
+
+# No shock viscosity
+
+```{python}
+res = 500
+
+fig, axes = create_axes(1, subplots_rows=3, sharex=True)
+
+for sigma_pt in [(0, 0), (0.1, 1.0), (0.77, 0)]:
+    sigma1 = sigma_pt[0]
+    sigma2 = sigma_pt[1]
+    constants = {
+        'dt': DT,
+        'gamma': GAMMA,
+        'nGridPoints':res,
+        'nTimeSteps':N_TIMESTEPS,
+        'sigma1':sigma1,
+        'sigma2':sigma2
+    }
+
+    os.chdir(MAIN_FOLDER)
+
+    folder = "data/parameter_study/"+PROBLEM+"/res_"+str(res)+"_sigma1_"+str(sigma1)+"_sigma2_"+str(sigma2)+"/"
+    run_single_case(constants, folder)
+    numerical_filename = os.path.join(folder, "final.dat")
+    numerical_data = np.fromfile(numerical_filename, dtype=np.dtype(np.double))
+
+    x = np.linspace(0, 1, res)
+    label = r"$\sigma_1 =\ $"+str(sigma1)+", $\sigma_2 ="+str(sigma2)+"$"
+    axes[0].plot(x, numerical_data[:res], marker='.', label=label)
+    axes[1].plot(x, numerical_data[res:2*res], marker='.', label=label)
+    axes[2].plot(x, numerical_data[2*res:3*res], marker='.', label=label)
+
+
+res = 2000
+x = np.linspace(0, 1, res)
+    
+as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution_'+str(res))
+as_file = os.path.join(as_folder, 'analytical.dat')
+create_analytical_solution(res, as_folder)
+analytical_data = np.fromfile(as_file, dtype=np.dtype(np.double))
+
+axes[0].plot(x, analytical_data[:res], '--', color='grey', label=r"$u(x)$")
+axes[1].plot(x, analytical_data[res:2*res], '--', color='grey', label=r"$u(x)$")
+axes[2].plot(x, analytical_data[2*res:3*res], '--', color='grey', label=r"$u(x)$")
+
+axes[0].set_ylim(0, 1.1)
+axes[1].set_ylim(0, 1.1)
+axes[2].set_ylim(0, 1.1)
+axes[0].set_xlim(0.8, 0.9)
+axes[1].set_xlim(0.8, 0.9)
+axes[2].set_xlim(0.8, 0.9)
+axes[0].set_ylabel(r"$p$")
+axes[1].set_ylabel(r"$\rho$")
+axes[2].set_ylabel(r"$u$")
+axes[2].set_xlabel(r"$x$")
+
+axes[1].legend(frameon=False)
+# plt.show()
+os.chdir(NOTEBOOK_LOCATION)
+save_plot(outdir+'shock_viscosity_variables.pdf')
+```
+
+# Analytical solution
+
+```{python}
+fig, axes = create_axes(1, subplots_rows=3, sharex=True)
+
+res = 2000
+x = np.linspace(0, 1, res)
+os.chdir(MAIN_FOLDER)
+    
+as_folder = os.path.join(PROBLEM_FOLDER, 'analytical_solution_'+str(res))
+as_file = os.path.join(as_folder, 'analytical.dat')
+create_analytical_solution(res, as_folder)
+analytical_data = np.fromfile(as_file, dtype=np.dtype(np.double))
+
+axes[0].plot(x, analytical_data[:res], '-k')
+axes[1].plot(x, analytical_data[res:2*res], '-k')
+axes[2].plot(x, analytical_data[2*res:3*res], '-k')
+
+a_L = math.sqrt(GAMMA)
+T = 0.2
+x_0 = 0.5
+
+print(a_L)
+x_1 = x_0 - a_L*T
+print("$x_1$", x_1)
+
+u_2 = analytical_data[int(2.6*res)] # aproximate
+p_2 = analytical_data[int(0.6*res)]
+rho_2 = analytical_data[int(1.6*res)]
+a_2 = math.sqrt(GAMMA* p_2 / rho_2)
+print(u_2, a_2, u_2 - a_2)
+x_2 = x_0 + (u_2 - a_2)*T
+print("$x_2$", x_2)
+
+x_3 = x_0 + u_2*T
+print("$x_3$", x_3)
+
+x_4 = x_0 + 1.75*T
+print("$x_4$", x_4)
+
+for axis in axes:
+    for x_coord in [x_1, x_2, x_3, x_4]:
+        axis.plot((x_coord, x_coord), (0, 2.0), '--,', color='grey')
+
+axes[0].set_ylim(0, 1.1)
+axes[1].set_ylim(0, 1.1)
+axes[2].set_ylim(0, 1.1)
+
+axes[2].set_xlim(0, 1)
+axes[0].set_ylabel(r"$p$")
+axes[1].set_ylabel(r"$\rho$")
+axes[2].set_ylabel(r"$u$")
+# axes[2].set_xlabel(r"$x$")
+
+axis = axes[0]
+
+height=0.6
+
+axis.text(0.925, height, r"R", fontsize=15)
+axis.text(0.76, height, r"1", fontsize=15)
+axis.text(0.57, height, r"2", fontsize=15)
+axis.text(0.4, height, r"E", fontsize=15)
+axis.text(0.12, height, r"L", fontsize=15)
+
+axis = axes[2]
+
+axis.set_xticks([x_1, x_2, x_3, x_4])
+
+axis.text(x_1, -0.4, r"$x_1$", ha='center', fontsize=12)
+axis.text(x_2, -0.4, r"$x_2$", ha='center', fontsize=12)
+axis.text(x_3, -0.4, r"$x_3$", ha='center', fontsize=12)
+axis.text(x_4, -0.4, r"$x_4$", ha='center', fontsize=12)
+
+# axes[1].legend(frameon=False)
+# plt.show()
+os.chdir(NOTEBOOK_LOCATION)
+save_plot(outdir+'sod_analytical_solution.pdf')
+```
+
+```{python}
+
+```
