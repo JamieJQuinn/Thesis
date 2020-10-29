@@ -1,9 +1,39 @@
-\chapter{Developed Software}
+\chapter{Software and analysis}
+
+This thesis has involved the development of a number of tools used to analyse the outputs from Lare3d, mostly written in Python. For the purpose of proper reproducibility, this appendix details major elements of the analysis, the precise software versions and parameters used to run the simulations, and the locations of all relevant code and data. All code is included in the git repository containing the thesis which can be found at \url{https://github.com/jamiejquinn/thesis}. The specific version of the code 
+
+Due to the size of the output files from Lare3d (the total amount of data generated in the entire thesis is approximately 10 TB) only the code and relevant parameters are published. These should provide enough information to reproduce the simulation results, however if a required piece is missing, I encourage the reader to contact me.
+
+All simulations were performed on a single, multi-core machine with $40$ cores and $192$ GB of RAM, although this amount of RAM is much higher than was required; a conservative estimate of the memory used in the largest simulations is around $64$ GB. Most simulations completed in under $2$ days, although the longest running simulations (the highest-resolution cases in chapter~\ref{chp:null_point_khi}) completed in around $2$ weeks. 
 
 \section{Field line integrator}
 
-\section{SDF Slicer}
+As detailed in section~\ref{sec:kink_methods_analysis}, the reconnection rate local to a single field line is given by the electric field parallel to the magnetic field, integrated along the field line. The global reconnection rate for a given region of magnetic diffusion is the maximum value of the local reconnection rate over all field lines threading the region. In chapter~\ref{chp:kink_instability} this is calculated using the visualisation tool Mayavi (more details are found in section~\ref{sec:kink_methods_analysis}) while in all other chapters, a field line integrator was developed specifically for the calculation of reconnection rate and is detailed here.
+
+Magnetic field lines lie tangential to the local magnetic field at every point $\vec{x}(s)$ along the line,
+\begin{equation}
+  \label{eq:field_line_equation}
+  \frac{d\vec{x}(s)}{ds} = \vec{b}(\vec{x}(s)),
+\end{equation}
+where $s$ is a variable which tracks along a single field line and $\vec{b}$ is the unit vector in the direction of $\vec{B}$. This equation is discretised using a second-order Runge-Kutta scheme to iteratively calculate the discrete positions $\vec{x}_i$ along a field line passing through some seed position $\vec{x}_0$,
+\begin{align}
+  \label{eq:field_line_calculation}
+  \vec{x}_{i+1} &= \vec{x}_i + h\vec{b}(\vec{x}'_i),\\
+  \vec{x}'_i &= \vec{x}_i + \tfrac{h}{2}\vec{b}(\vec{x}_i)
+\end{align}
+where $h$ is a small step size. Since $\vec{b}$ is discretised, the value at an arbitrary location $\vec{x}_i$ is calculated using a linear approximation. The integration of a scalar variable $y$ is carried out along a field line given by a sequence of $N$ locations $\vec{x}_i$ using the midpoint rule,
+\begin{equation}
+  \label{eq:midpoint_rule}
+  Y = \sum_{i=1}^{i=N} \frac{(y(\vec{x}_{i-1}) + y(\vec{x}_{i}))}{2},
+\end{equation}
+where $Y$ is the result of the integration. In practice, $N$ is not specified and the discretised field line contains the required number of points to thread from its seed location to the boundary of the domain.
+
+While the linear interpolation, second-order Runge-Kutta and midpoint rule are all low order methods, testing higher-order methods showed little change in results but dramatically increased the runtime of the analysis. The lower-order methods used offer an acceptable compromise between speed and accuracy. The above algorithm is implemented in Python and can be found in \verb|code/shared/field_line_integrator.py| with examples of use in \verb|code/null_point_khi/field_line_integrator.Rmd|. The integration of multiple field lines is an embarrassingly parallel problem and is parallelised in a straight-forward manner using a pool of threads supplied by the \verb|Pool| feature of the Python library \verb|multiprocessing|. Although the integrator is solely used to integrate the parallel electric field along magnetic field lines in this thesis, the tool can be easily applied to arbitrary vector and scalar fields.
 
 \section{Misc analysis}
+
+\todo{Put thesis folder in Zenodo}
+\todo{Zenodo specific versions/branches of lare3d}
+\todo{Zenodo simple aniso branch of lare3d}
 
 The specific version of lare3d used can be found via Zenodo~\cite{tonyarber_2019_3560251}. The data analysis and instructions for reproducing all results found in this report may be also found at~\cite{jamie_j_quinn_2019_3560245}. Finally, our field line integration tool may be found at~\cite{jamie_j_quinn_2019_3560249}.
