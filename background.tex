@@ -20,7 +20,7 @@ Above (and including) the photosphere is the atmosphere of the Sun, consisting o
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{Traceimage.jpg}
-  \caption{Solar coronal loops observed by the Transition Region And Coronal Explorer (TRACE), 171 Å filter.}%
+  \caption{\emph{Solar coronal loops observed by the Transition Region And Coronal Explorer (TRACE), 171 Å filter.}}%
   \label{fig:coronal_loops}
 \end{figure}
 
@@ -39,7 +39,7 @@ Although there are many kinds of impulsive heating events which could constitute
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{visc_dep_on_temp.pdf}
-  \caption{Dependence of non-dimensionalised viscosity $\nu$ and Spitzer resistivity $\eta$ on temperature. These are non-dimensionalised using typical coronal values of a magnetic field strength of $B = 5$ mT, a length of $L = 1$ Mm and a density of $\rho = 1.67 \times 10^{-12}$ kg m$^{-3}$. In this non-dimensionalisation, the Reynolds and Lundquist numbers are the inverses of $\nu$ and $\eta$, respectively.}
+  \caption{\emph{Dependence of non-dimensionalised viscosity $\nu$ and Spitzer resistivity $\eta$ on temperature.} These are non-dimensionalised using typical coronal values of a magnetic field strength of $B = 5$ mT, a length of $L = 1$ Mm and a density of $\rho = 1.67 \times 10^{-12}$ kg m$^{-3}$. In this non-dimensionalisation, the Reynolds and Lundquist numbers are the inverses of $\nu$ and $\eta$, respectively.}
   \label{fig:visc_dep_on_temp}
 \end{figure}
 
@@ -55,7 +55,7 @@ where $T$ is the plasma temperature in Kelvin. Both expressions are taken from~\
 \end{equation}
 Using this non-dimensionalisation scheme the Reynolds number is given $Re = 1/\nu$ and the Lundquist number $S = 1/\eta$. Figure~\ref{fig:visc_dep_on_temp} shows the dependences of the non-dimensionalised $\nu$ and $\eta$ on temperature $T$. For a typical active region temperature of $T = 10^6$ K, $\nu \approx 10^{-3}$ and $\eta \approx 10^{-13}$.
 
-Comparing the transport parameters for each dissipation mechanism suggests viscous heating should outperform Ohmic heating by several orders of magnitude. Indeed, many studies provide evidence to this effect~\cite{browningMechanismsSolarCoronal1991,craigViscousDissipation3D2013,craigAnisotropicViscousDissipation2009a,armstrongViscoResistiveDissipation2013,hollwegViscosityChewGoldbergerLowEquations1986a}. However, these parameters are unlikely to reflect the true degree of dissipation in the solar corona due to the influence of various effects which can enhance the effective dissipation beyond the values found via~\ref{eq:nu_and_eta}. 
+Comparing the transport parameters for each dissipation mechanism suggests viscous heating should outperform Ohmic heating by several orders of magnitude. Indeed, many studies provide evidence to this effect~\cite{browningMechanismsSolarCoronal1991,craigViscousDissipation3D2013,craigAnisotropicViscousDissipation2009a,armstrongViscoResistiveDissipation2013,hollwegViscosityChewGoldbergerLowEquations1986a}. However, these parameters are unlikely to reflect the true degree of dissipation in the solar corona due to the influence of various effects which can enhance the effective dissipation beyond the values found via~\eqref{eq:nu_and_eta}. 
 
 Turbulence can enhance viscosity~\cite{canutoTurbulentViscosity1988} and many mechanisms for the anomalous enhancement of resistivity have been suggested, including turbulence~\cite{cheHowAnomalousResistivity2017} and the impact of electron scattering~\cite{maEffectiveResistivityCollisionless2018}. The degree to which either dissipation mechanism is enhanced in the solar corona is difficult to estimate, however some studies have attempted to infer the effective transport parameters from observations of wave motions in coronal loops~\cite{nakariakovTRACEObservationDamped1999}, although results are disputed~\cite{klimchukCoronalSeismologyPropagation2004}. A further complication in attempting to model dissipation in the solar corona is that it is still unknown how far the collisional approximation holds and how that may affect coronal heating~\cite{klimchukSolvingCoronalHeating2006a}.
 
@@ -147,7 +147,7 @@ This equation essentially describes the advection and generation of a magnetic f
 
 Additional non-ideal physics like ambipolar diffusion and the Hall effect can be modelled through additional terms in Ohm's law. However, in the solar corona these effects are small compared to resistivity and are neglected as a result~\cite{priestMagnetohydrodynamicsSuna}.
 
-In order to describe the effect of the magnetic field on the fluid, additional terms must be added to the momentum~\ref{eq:ns_momentum} and energy~\ref{eq:ns_energy} equations. The Lorentz force describes the force exerted by the magnetic field on the fluid and is given by
+In order to describe the effect of the magnetic field on the fluid, additional terms must be added to the momentum~\eqref{eq:ns_momentum} and energy~\eqref{eq:ns_energy} equations. The Lorentz force describes the force exerted by the magnetic field on the fluid and is given by
 \begin{equation}
   \label{eq:lorentz_force}
 \vec{\jmath} \times \vec{B}.
@@ -161,7 +161,7 @@ When the fluid is resistive, the dissipation of currents can heat the fluid thro
 
 \label{sec:mhd_equations}
 
-Combining the fluid equations~\ref{eq:ns_continuity}--~\ref{eq:ns_energy} and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
+Combining the fluid equations~\eqref{eq:ns_continuity}--~\eqref{eq:ns_energy} and the induction equation, we now write the full set of MHD equations in their non-dimensionalised form
 \begin{gather}
 %\begin{equation}
 \label{eq:mhda}
@@ -362,7 +362,7 @@ Figure~\ref{fig:visc_dep_on_temp} shows the dependence of $\eta_0$ on temperatur
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{brag_coeffs.pdf}
-  \caption{Dependence of $\eta_1$ and $\eta_3$ on magnetic field strength, using a typical coronal value of $\tau = 0.77$ s, corresponding to $T=10^6$ K. Both expressions are normalised against $\eta_0$.}
+  \caption{\emph{Dependence of $\eta_1$ and $\eta_3$ on magnetic field strength.} The collision time $\tau = 0.77$ s, corresponding to a typical coronal temperature of $T=10^6$ K. Both expressions are normalised against $\eta_0$.}
 \label{fig:visc_dep}%
 \end{figure}
 
@@ -385,11 +385,11 @@ The relative strength of the five coefficients is important in considering which
 
 The origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. As illustrated by Hollweg~\cite{hollwegViscosityMagnetizedPlasma1985}, the parallel viscous stress can be modelled as the result of pressure anisotropies being repartitioned by particle collisions. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. The inclusion of collisions again acts to repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}.
 
-While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\ref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^{(0)}$, $\ten{W}^{(1)}$ and $\ten{W}^{(2)}$, they are also orthogonal to $\ten{W}$. By equation~\ref{eq:viscous_heat_generation2}, the drift terms produce no viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While the drift terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis is broadly focused on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
+While it is illustrative to understand in a kinetic way why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\eqref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^{(0)}$, $\ten{W}^{(1)}$ and $\ten{W}^{(2)}$, they are also orthogonal to $\ten{W}$. By equation~\eqref{eq:viscous_heat_generation2}, the drift terms produce no viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While the drift terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis is broadly focused on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), these terms are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
 
 \subsection{Limit of strong magnetic field}
 
-As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, the Braginskii tensor can be reduced to its strong-field approximation,
+As already discussed, in an solar active region, $\omega \tau \approx 10^5 \gg 1$ and the transport coefficients in equations~\eqref{eq:perp_visc_coeff} and~\eqref{eq:drift_visc_coeff} become negligibly small compared to the parallel coefficient. As a result, the Braginskii tensor can be reduced to its strong-field approximation,
 \begin{equation}
   \label{eq:strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \eta_0 \ten{W}^{(0)} = \tfrac{3}{2} \eta_0 (\ten{W} \vec{b} \cdot \vec{b}) ( \vec{b} \otimes \vec{b} - \tfrac{1}{3} \ten{I}).
@@ -399,7 +399,7 @@ In a local coordinate system where the magnetic field is aligned with $\vec{e}_z
   \label{eq:z_aligned_strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 W_{zz} ( \vec{e}_z \otimes \vec{e}_z - \tfrac{1}{3} \ten{I}),
 \end{equation}
-where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\ref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
+where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\eqref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
 \begin{equation}
   \label{eq:z_aligned_iso}
   (\sigma_{\text{iso}})_{zz} = (\sigma_{\text{brag}})_{zz} = \eta_0 W_{zz}.
@@ -410,7 +410,7 @@ This approximation is valid even for quiet Sun conditions, where $\omega\tau \ap
 
 \subsection{Limit of weak magnetic field}
 
-While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $\vec{b}$ in equations~\ref{eq:braginskii_parallel_term}--\ref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $\vec{b}$ near the null would involve division by the magnitude of the field, a quantity close to or exactly zero, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\ref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
+While the full Braginskii tensor~\eqref{eq:braginskii_tensor} suitably presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $\vec{b}$ in equations~\eqref{eq:braginskii_parallel_term}--\eqref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $\vec{b}$ near the null would involve division by the magnitude of the field, a quantity close to or exactly zero, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\eqref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
 \begin{eqnarray}\label{eq:brag_new}
 \ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{2|\vec{B}|^4}(\ten{W}\vec{B}\cdot\vec{B})(\vec{B}\otimes\vec{B})\\% \label{new1} \\
 \nonumber
@@ -422,9 +422,9 @@ While the full Braginskii tensor~\ref{eq:braginskii_tensor} suitably presents th
 \nonumber
 & &+~ \eta_1\ten{W},%\label{new4}
 \end{eqnarray}
-the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to explicitly check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\ref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
+the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to explicitly check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\eqref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
 
-Similar to the strong-field limit, it can be shown that the magnetic field in the weak-field limit has no effect on the field-aligned component of momentum transport in~\ref{eq:brag_new}. That is~\ref{eq:z_aligned_iso} still holds.
+Similar to the strong-field limit, it can be shown that the magnetic field in the weak-field limit has no effect on the field-aligned component of momentum transport in~\eqref{eq:brag_new}. That is~\eqref{eq:z_aligned_iso} still holds.
 
 \section{Conclusion}
 

@@ -57,7 +57,7 @@ It describes how a quantity within a parcel of fluid changes as that parcel is a
       \caption{Remap step}%
       \label{fig:remap}
     \end{subfigure}
-    \caption{\ref{fig:staggered_grid} Staggered grid showing velocity located at cell-boundaries and pressure located at cell-centres, and~\ref{fig:remap} illustration of the deformation of the grid during the Lagrangian step and the remapping of variables back to the original grid during the remap step.}
+    \caption{\emph{Illustrations of the staggered grid and its deformation.} In \ref{fig:staggered_grid} the staggered grid shows velocity located at cell-boundaries and pressure located at cell-centres and in~\ref{fig:remap} the deformation of the grid during the Lagrangian step and the remapping of variables back to the original grid during the remap step is illustrated.}
 \label{fig:grid_and_remap}%
 \end{figure}
 
@@ -161,7 +161,7 @@ where we use $\rho_i$ without the dash to denote the density before the Lagrangi
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.7\linewidth]{mass_movement.pdf}
-  \caption{Advection of mass from one cell to an adjacent cell.}%
+  \caption{\emph{Advection of mass from one cell to an adjacent cell.}}%
   \label{fig:mass_movement}
 \end{figure}
 
@@ -274,7 +274,7 @@ Any oscillation which is generated in the wake of a shock generates local maxima
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.4\linewidth]{van_leer_flux_limiter}
-  \caption{The gradient at index $i$, $D_i$ (solid line) is limited to the gradient $D_i^{mono}$ (heavy solid line) to ensure the value of $f_i$ extrapolated to the left-hand boundary of the cell is less than the average value of the neighbouring cell, $f_{i-1}$. This diagram is a modified reproduction of that found in~\cite{vanleerUltimateConservativeDifference1997}.}%
+  \caption{\emph{Illustration of the van Leer flux limiter.} The gradient at index $i$, $D_i$ (solid line) is limited to the gradient $D_i^{mono}$ (heavy solid line) to ensure the value of $f_i$ extrapolated to the left-hand boundary of the cell is less than the average value of the neighbouring cell, $f_{i-1}$. This diagram is a modified reproduction of that found in~\cite{vanleerUltimateConservativeDifference1997}.}%
   \label{fig:van_leer_flux_limiter}
 \end{figure}
 
@@ -306,7 +306,7 @@ s =
 	\end{array}
 \right.
 \end{equation}
-The action of this second part of the limiter, represented by $s$, can be understood by considering a few example cases. The outputted gradient is only non-zero when the gradient $D_i$ aligns with neighbouring gradients, that is the signs of the gradients are all equal, as is the case in figure~\ref{fig:van_leer_flux_limiter}. In this case, the outputted slope is either the original slope if the monotonicity conditions are met, or a first-order approximation otherwise, as given by equation~\ref{eq:flux_limiter3}. In all other cases, for example where the cell $i$ represents a maxima or minima, the outputted gradient is zero to ensure monotonicity.
+The action of this second part of the limiter, represented by $s$, can be understood by considering a few example cases. The outputted gradient is only non-zero when the gradient $D_i$ aligns with neighbouring gradients, that is the signs of the gradients are all equal, as is the case in figure~\ref{fig:van_leer_flux_limiter}. In this case, the outputted slope is either the original slope if the monotonicity conditions are met, or a first-order approximation otherwise, as given by equation~\eqref{eq:flux_limiter3}. In all other cases, for example where the cell $i$ represents a maxima or minima, the outputted gradient is zero to ensure monotonicity.
 
 \subsection{Shock Viscosity}
 
@@ -328,12 +328,12 @@ The major difference between the 1D and 3D schemes is in the choice of staggered
 
 The Lagrangian step in 3D remains relatively similar to that in 1D, with the exception that the MHD equations are solved in place of the Euler equations. The solenoidal condition on the magnetic field $\nabla \cdot \vec{B} =0$ is maintained to machine precision by solving for the induction equation using constrained transport~\cite{evansSimulationMagnetohydrodynamicFlows1988a}. The remap step in 3D is analogous to the 1D remap process, merely requiring a more complex geometrical argument. 
 
-In the full 3D code, the shock viscosity given in equation~\ref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
+In the full 3D code, the shock viscosity given in equation~\eqref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
 \begin{equation}
   \label{eq:3d_shock_viscosity}
 \ten{\sigma}_{shock} = (c_1 \rho c_f L |s| + c_2 L^2 \rho s^2) \ten{W},
 \end{equation}
-where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\ref{eq:3d_shock_viscosity} reduces to equation~\ref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
+where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\eqref{eq:3d_shock_viscosity} reduces to equation~\eqref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
 
 \section{Implementation of Lare1d}
 \subsection{Full recipe}
@@ -351,12 +351,12 @@ This example of a LARE scheme was implemented in C++, a language which effective
 
 \section{Results of numerical tests}
 
-The code was tested using the Sod shock tube problem. The problem was used to run parameter studies over the two shock viscosity parameters to identify optimal values, values which minimise an error function. The optimal values found indicate that the linear shock viscosity term, the first term in equation~\ref{eq:artificial_viscosity}, is mostly sufficient for this problem. Other parameter choices give benefits that are unquantified by the chosen error function.
+The code was tested using the Sod shock tube problem. The problem was used to run parameter studies over the two shock viscosity parameters to identify optimal values, values which minimise an error function. The optimal values found indicate that the linear shock viscosity term, the first term in equation~\eqref{eq:artificial_viscosity}, is mostly sufficient for this problem. Other parameter choices give benefits that are unquantified by the chosen error function.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{sod_analytical_solution.pdf}
-  \caption{Analytical solution to the Sod shock tube problem. The solution is separated into five regions: the left (L) and right (R) regions, which keep the values of the initial conditions; the right (1) and left (2) states on either side of the contact discontinuity, region 1 bounded to the right by the shock and region 2 to the left by the rarefaction wave; and the rarefaction wave itself (E).}%
+  \caption{\emph{Analytical solution to the Sod shock tube problem.} The solution is separated into five regions: the left (L) and right (R) regions, which keep the values of the initial conditions; the right (1) and left (2) states on either side of the contact discontinuity, region 1 bounded to the right by the shock and region 2 to the left by the rarefaction wave; and the rarefaction wave itself (E).}%
   \label{fig:sod_analytical_solution}
 \end{figure}
 
@@ -441,7 +441,7 @@ E_N = \frac{1}{3N} \left(
 + \sum_{i=0}^{N-1} \norm{\rho_i - \rho(x_i)}_2
 + \sum_{i=0}^{N-1} \norm{u_i - u(x_i)}_2 \right).
 \end{equation}
-This is only one possible way to evaluate a numerical solution. As shall be seen later, certain choices of parameters lead to numerical solutions which are closest to the analytical solution, that is they minimise $E_N$ for a given $N$, however other parameter choices better resolve features like steep gradients at the expense of an increase in global error. Since this is only a toy problem, I will not attempt to quantify such trade-offs here, opting to use the simple error measure given by equation~\ref{eq:total_error}.
+This is only one possible way to evaluate a numerical solution. As shall be seen later, certain choices of parameters lead to numerical solutions which are closest to the analytical solution, that is they minimise $E_N$ for a given $N$, however other parameter choices better resolve features like steep gradients at the expense of an increase in global error. Since this is only a toy problem, I will not attempt to quantify such trade-offs here, opting to use the simple error measure given by equation~\eqref{eq:total_error}.
 
 \begin{figure}[t]
     \hfill
@@ -457,7 +457,7 @@ This is only one possible way to evaluate a numerical solution. As shall be seen
       \caption{Focused parameter search}%
       \label{fig:shock_parameter_search}
     \end{subfigure}
-    \caption{Wide and focused parameter searches over the shock viscosity parameters $c_1$ and $c_2$, giving overall optimal values of $c_1 = 0.77$ and $c_2 = 0$ (crosses). The optimal values are calculated as those values which minimise the error given by equation~\ref{eq:total_error}. The colour is added to aid visibility and represents the error $E$. }
+    \caption{\emph{Wide and focused parameter searches over the shock viscosity parameters $c_1$ and $c_2$.} Overall optimal values of $c_1 = 0.77$ and $c_2 = 0$ (crosses) are calculated as those values which minimise the error given by equation~\eqref{eq:total_error}. The colour is added to aid visibility and represents the error $E$. }
 \label{fig:shock_parameter_searches}%
 \end{figure}
 
@@ -466,25 +466,25 @@ Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ a
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{shock_viscosity_variables.pdf}
-  \caption{Solutions to the Sod problem for various values of the shock parameters at $t=0.2$ and for a resolution of $N=500$. The solution is plotted in the region $0.8 \leq x \leq 0.9$ to focus the shock itself. The analytical solution is also shown. Without shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using the optimal values of $c_1 = 0.77$ and $c_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, but at the expense of the shock being smeared over many grid points. Using values of $c_1 = 0.1$ and $c_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot, tracks the shock location better than no shock viscosity. Although using these values results in a more accurate, steeper shock gradient, the optimal values track the shock location more accurately.}%
+  \caption{\emph{Solutions to the Sod problem for various values of the shock parameters at $t=0.2$ and for a resolution of $N=500$.} The solution is plotted in the region $0.8 \leq x \leq 0.9$ to focus the shock itself. The analytical solution is also shown. Without shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using the optimal values of $c_1 = 0.77$ and $c_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, but at the expense of the shock being smeared over many grid points. Using values of $c_1 = 0.1$ and $c_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot, tracks the shock location better than no shock viscosity. Although using these values results in a more accurate, steeper shock gradient, the optimal values track the shock location more accurately.}%
   \label{fig:shock_viscosity_variables}
 \end{figure}
 
-While the optimal values minimise the error given in equation~\ref{eq:total_error}, using a lower $c_1$ and higher $c_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
+While the optimal values minimise the error given in equation~\eqref{eq:total_error}, using a lower $c_1$ and higher $c_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
 
 \subsubsection{Effect of resolution}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=1.0\linewidth]{resolution_study.pdf}
-  \caption{Solutions to the Sod problem for resolutions of $N=50,\ 100,$ and $500$ (solid lines). The analytical solution is also shown (dotted line). The solutions at resolutions $N=50$ and $N=100$ are shown with dots at the grid point locations. The solution given for $t=0.2$ and the shock viscosity parameters are $c_1 = 0.77$ and $c_2 = 0$.}
+  \caption{\emph{Solutions to the Sod problem for resolutions $N=50,\ 100,$ and $500$ (solid lines).} The analytical solution is also shown (dotted line). The solutions at resolutions $N=50$ and $N=100$ are shown with dots at the grid point locations. The solution given for $t=0.2$ and the shock viscosity parameters are $c_1 = 0.77$ and $c_2 = 0$.}
   \label{fig:resolution_study}
 \end{figure}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{effect_of_res_on_error.pdf}
-  \caption{The effect of resolution on the solution accuracy. Each data point represents a simulation run with the optimal shock parameter values to $t=0.2$ using a resolution $N$. The error is calculated via equation~\ref{eq:total_error}.}%
+  \caption{\emph{The effect of resolution on the solution accuracy.} Each data point represents a simulation run with the optimal shock parameter values to $t=0.2$ using a resolution $N$. The error is calculated via equation~\eqref{eq:total_error}.}%
   \label{fig:effect_of_res_on_error}
 \end{figure}
 

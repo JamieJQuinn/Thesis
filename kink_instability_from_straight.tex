@@ -30,14 +30,14 @@ When the magnetic field is sheared, as in a twisted magnetic flux tube, an inter
 \end{equation}
 In contrast to kink instabilities, fluting instabilities are surface instabilities.
 
-The stability of a cylindrical flux tube to perturbations of the form~\ref{eq:kink_perturbation} is given by the classical Suydam's criterion
+The stability of a cylindrical flux tube to perturbations of the form~\eqref{eq:kink_perturbation} is given by the classical Suydam's criterion
 \begin{equation}
   \label{eq:suydams_criterion}
 \frac{B_z^2 S^2}{4} + 2 r p' > 0,
 \end{equation}
-where $S = r q'/q$ is a measure of the shear, $q = 2\pi r B_z / L B_{\theta}$ is the safety factor for a flux tube of length $L$~\cite{mikhailovskiiInstabilitiesConfinedPlasma1998} and a dash denotes differentiation with respect to $r$. Where~\ref{eq:suydams_criterion} is unsatisfied, the flux tube may be unstable to perturbations of the form~\ref{eq:kink_perturbation}. When $m>1$, the perturbations remain local to resonant surfaces given by~\ref{eq:resonant_surface}.
+where $S = r q'/q$ is a measure of the shear, $q = 2\pi r B_z / L B_{\theta}$ is the safety factor for a flux tube of length $L$~\cite{mikhailovskiiInstabilitiesConfinedPlasma1998} and a dash denotes differentiation with respect to $r$. Where~\eqref{eq:suydams_criterion} is unsatisfied, the flux tube may be unstable to perturbations of the form~\eqref{eq:kink_perturbation}. When $m>1$, the perturbations remain local to resonant surfaces given by~\eqref{eq:resonant_surface}.
 
-When the criterion is satisfied and the flux tube is linearly stable, it may still be unstable to non-local perturbations, where the shear and pressure are low enough that interchange perturbations do not need to satisfy~\ref{eq:resonant_surface}. Additionally, the inclusion of resistivity generally reduces the stabilising effect of the shear, permitting growth of a resistive interchange mode, albeit at a lower rate than that in the ideal case~\cite{mikhailovskiiInstabilitiesConfinedPlasma1998}. It will be found that the ideal linear analysis is sufficient for understanding the fluting instabilities investigated in this chapter since the flux tubes investigated here adequately fail the criterion~\ref{eq:suydams_criterion}.
+When the criterion is satisfied and the flux tube is linearly stable, it may still be unstable to non-local perturbations, where the shear and pressure are low enough that interchange perturbations do not need to satisfy~\eqref{eq:resonant_surface}. Additionally, the inclusion of resistivity generally reduces the stabilising effect of the shear, permitting growth of a resistive interchange mode, albeit at a lower rate than that in the ideal case~\cite{mikhailovskiiInstabilitiesConfinedPlasma1998}. It will be found that the ideal linear analysis is sufficient for understanding the fluting instabilities investigated in this chapter since the flux tubes investigated here adequately fail the criterion~\eqref{eq:suydams_criterion}.
 
 The linear growth rate of the ideal fluting instability $\gamma$ can be found via a stability analysis analogous to that of the Rayleigh-Taylor instability (see~\cite{goldstonIntroductionPlasmaPhysics2020}) and is given by
 \begin{equation}
@@ -66,7 +66,7 @@ The nondimensionalisation scheme and values are identical to those used in chapt
 \begin{equation}
 \vec{B} = (0, 0, 1)^{\text{T}},
 \end{equation}
-in a cube of dimension $[-2,2]^3$. The velocity is set everywhere to $\vec{u} = \vec{0}$, the density to $\rho = 1$, the internal energy to $\varepsilon = 8.67\times 10^{-4}$ (corresponding to a temperature of $10^6$K). At the boundaries the magnetic field, density, and energy are fixed to their initial values and the velocity zero except at the upper and lower boundary where the twisting driver, described below, is prescribed. The spatial derivatives of these variables are also set to zero at the boundaries. The resolution is $512$ grid points per dimension, comparable to the highest resolution kink instability studies of~\cite{hoodCoronalHeatingMagnetic2009} or medium resolution studies of~\cite{barefordShockHeatingNumerical2015}. The switching function employed was the von Mises function~\ref{eq:switching_function} and the switching parameter was set to $a_0 = 150$, a value which ensures the viscosity is anisotropic throughout the entire domain. 
+in a cube of dimension $[-2,2]^3$. The velocity is set everywhere to $\vec{u} = \vec{0}$, the density to $\rho = 1$, the internal energy to $\varepsilon = 8.67\times 10^{-4}$ (corresponding to a temperature of $10^6$K). At the boundaries the magnetic field, density, and energy are fixed to their initial values and the velocity zero except at the upper and lower boundary where the twisting driver, described below, is prescribed. The spatial derivatives of these variables are also set to zero at the boundaries. The resolution is $512$ grid points per dimension, comparable to the highest resolution kink instability studies of~\cite{hoodCoronalHeatingMagnetic2009} or medium resolution studies of~\cite{barefordShockHeatingNumerical2015}. The switching function employed was the von Mises function~\eqref{eq:switching_function} and the switching parameter was set to $a_0 = 150$, a value which ensures the viscosity is anisotropic throughout the entire domain. 
 
 \begin{figure}[t]
   \centering
@@ -83,7 +83,7 @@ in a cube of dimension $[-2,2]^3$. The velocity is set everywhere to $\vec{u} = 
   \label{fig:kink_driver_accel}
   \end{subfigure}
   
-  \caption{Driver velocity radial profile $u(r)$ and acceleration profile $u(t)$.}
+  \caption{\emph{Driver velocity radial profile $u(r)$ and acceleration profile $u(t)$.}}
   \label{fig:kink_driver}
 \end{figure}
 
@@ -108,7 +108,7 @@ These driver parameters correspond to a peak rotational period of $T_R = 15.92$,
 
 This configuration produces a $z$-directed tube of increasingly twisted magnetic field that eventually becomes unstable to both the fluting instability and the helical kink instability. The perturbation for both instabilities develops naturally from numerical noise. Although the setup is similar to that of a twisted coronal loop, including the resulting kink instability, it is not intended to be a realistic simulation of an erupting loop. Similarly, although use is made of the results of a linear stability analysis, the twisted tube which develops in the course of the simulation is not in MHD equilibrium and the stability analysis results have limited applicability as a result.
 
-Two pairs of simulations were performed, one pair where $\eta=10^{-3}$ and another where $\eta=10^{-4}$. Each simulation pair consists of one simulation using isotropic viscosity and another using the switching model~\ref{eq:switching_model_simple} with the von Mises switching function~\ref{eq:switching_function}. The value of viscosity is set to $\nu = 10^{-4}$ in all cases.
+Two pairs of simulations were performed, one pair where $\eta=10^{-3}$ and another where $\eta=10^{-4}$. Each simulation pair consists of one simulation using isotropic viscosity and another using the switching model~\eqref{eq:switching_model_simple} with the von Mises switching function~\eqref{eq:switching_function}. The value of viscosity is set to $\nu = 10^{-4}$ in all cases.
 
 \section{Results}
 
@@ -135,7 +135,7 @@ The overall development of both instabilities is broadly similar for the two val
       \caption{Pressure}
       \label{fig:pressure_profiles}
     \end{subfigure}
-  \caption{Gradients in the current density generate pressure gradients through Ohmic heating. All plots are from switching cases when $t=20$ through the plane $z=0$. Note the axial current density $j_z$ has been flipped for comparison and the Ohmic heating is given by $Q_{\eta} = \eta j^2$. The pressure profile of an additional test-case where $\eta=0$ is also shown.}%
+  \caption{\emph{Gradients in the current density generate pressure gradients through Ohmic heating.} All plots are from switching cases when $t=20$ through the plane $z=0$. Note the axial current density $j_z$ has been flipped for comparison and the Ohmic heating is given by $Q_{\eta} = \eta j^2$. The pressure profile of an additional test-case where $\eta=0$ is also shown.}%
   \label{fig:pressure_and_heating}
 \end{figure}
 
@@ -186,7 +186,7 @@ In all cases unstable to the fluting instability, it occurs some time between $t
       \caption{$t=30$}
       \label{fig:swi-4_pressure_15}
     \end{subfigure}
-\caption{Pressure profiles during the development of the fluting and kink instabilities. Shown are slices of pressure through $z=0$ where $\eta = 10^{-4}$ and the viscosity model is switching. Note the difference in colour scale in Figure~\ref{fig:swi-4_pressure_15}. The development in the isotropic case is similar.}
+\caption{\emph{Pressure profiles during the development of the fluting and kink instabilities.} Shown are slices of pressure through $z=0$ where $\eta = 10^{-4}$ and the viscosity model is switching. Note the difference in colour scale in Figure~\ref{fig:swi-4_pressure_15}. The development in the isotropic case is similar.}
 \label{fig:kink_pressure_slices-4}%
 \end{figure}
 
@@ -205,7 +205,7 @@ Figure~\ref{fig:kink_pressure_slices-4} shows the pressure profile through $z=0$
       \caption{Switching}
       \label{fig:field_line_plots_swi}
     \end{subfigure}
-\caption{Field line plots and contours of pressure (where $p=0.3$) at $t=28$. Also shown is the velocity driver as a slice. The fluting instability grows in both cases, though faster in the switching case. The initial stages of the kink instability can also be observed in the field lines of the isotropic case in subfigure (a).}
+\caption{\emph{Field line plots and contours of pressure (where $p=0.3$) at $t=28$.} Also shown is the velocity driver as a slice. The fluting instability grows in both cases, though faster in the switching case. The initial stages of the kink instability can also be observed in the field lines of the isotropic case in subfigure (a).}
 \label{fig:kink_field_line_plots}%
 \end{figure}
 
@@ -224,7 +224,7 @@ Figure~\ref{fig:kink_field_line_plots} shows the effect the viscosity models has
       \caption{Growth rate estimation}
       \label{fig:kink_ke_log-4}
     \end{subfigure}
-  \caption{Kinetic energy as a function of time showing the development of the fluting and kink instabilities as well as their measured growth rates. Both plots are from results where $\eta=10^{-4}$.}
+  \caption{\emph{Kinetic energy as a function of time showing the development of the fluting and kink instabilities as well as their measured growth rates.} Both plots are from results where $\eta=10^{-4}$.}
 \label{fig:kink_str8_ke-4}%
 \end{figure}
 
@@ -245,11 +245,11 @@ The faster growth of the kink compared to, say that of chapter~\ref{chp:kink_ins
       \caption{Linear growth rate}
       \label{fig:growth_rate_4}
     \end{subfigure}
-\caption{Plots of Suydam's stability criterion and contributing terms (LHS of~\eqref{eq:suydams_criterion}) and predicted linear growth rate~\eqref{eq:fluting_growth_rate2} at $t=20$ for $\eta=10^{-4}$ and using the switching model. The location of the peak linear growth rate is also shown.}
+\caption{\emph{Stability and linear growth rate of the fluting instability.} In~\ref{fig:suydam_condition_4}, Suydam's stability criterion and contributing terms (LHS of~\eqref{eq:suydams_criterion})  are plotted and in~\ref{fig:growth_rate_4} the predicted linear growth rate~\eqref{eq:fluting_growth_rate2} is plotted. Both plots are produced at $t=20$ for $\eta=10^{-4}$ and using the switching model. The location of the peak linear growth rate is also shown.}
 \label{fig:stability_and_growth}%
 \end{figure}
 
-Prior to the onset of either instability, the flux tube is found to be linearly unstable to perturbations of the form~\ref{eq:kink_perturbation} at $t=20$ via Suydam's criterion~\ref{eq:suydams_criterion} (Figure~\ref{fig:suydam_condition_4}). The criterion represents a balance between destabilising pressure gradients and stabilising magnetic shear. The shear is so small and the pressure gradient so large that the tube is unstable over a wide range of radii, for $ 0.02 \lessapprox r \lessapprox 0.29$. The measure of linear fluting growth rate $\gamma$ is plotted as a function of $r$ at the same time (Figure~\ref{fig:growth_rate_4}). While the magnitude of the peak linear growth rate predicts the observed rate reasonably well, the location of the peak growth matches nearly exactly the location of the resonant surface where the observed perturbation grows (Figure~\ref{fig:swi-4_pressure_13}).
+Prior to the onset of either instability, the flux tube is found to be linearly unstable to perturbations of the form~\eqref{eq:kink_perturbation} at $t=20$ via Suydam's criterion~\eqref{eq:suydams_criterion} (Figure~\ref{fig:suydam_condition_4}). The criterion represents a balance between destabilising pressure gradients and stabilising magnetic shear. The shear is so small and the pressure gradient so large that the tube is unstable over a wide range of radii, for $ 0.02 \lessapprox r \lessapprox 0.29$. The measure of linear fluting growth rate $\gamma$ is plotted as a function of $r$ at the same time (Figure~\ref{fig:growth_rate_4}). While the magnitude of the peak linear growth rate predicts the observed rate reasonably well, the location of the peak growth matches nearly exactly the location of the resonant surface where the observed perturbation grows (Figure~\ref{fig:swi-4_pressure_13}).
 
 \begin{figure}[t]
   \centering
@@ -264,13 +264,13 @@ Prior to the onset of either instability, the flux tube is found to be linearly 
       \caption{Resonance function}
       \label{fig:resonant_surface_4}
     \end{subfigure}
-\caption{Plots of the pressure and velocity perturbations in $z$ (corresponding to the fluting and kink instabilities, respectively) and of the resonance function $m B_{\theta}(r)/r + kB_z(r)$ as a function of $r$ using the observed fluting perturbation wavenumbers. All plots are from snapshots at $t=26$ where $\eta=10^{-4}$ and the viscosity model is switching.}
+\caption{\emph{The pressure and velocity perturbations in $z$ (corresponding to the fluting and kink instabilities, respectively) and of the resonance function $m B_{\theta}(r)/r + kB_z(r)$ as a function of $r$ using the observed fluting perturbation wavenumbers.} All plots are from snapshots at $t=26$ where $\eta=10^{-4}$ and the viscosity model is switching.}
 \label{fig:k_and_resonance}%
 \end{figure}
 
 Figure~\ref{fig:pressure_pert_4} plots the observed perturbations corresponding to the fluting and kink instabilities at $t=26$. The fluting perturbation is observed in the pressure and is plotted as a function of $z$ following a line through the point $(r, \theta) = (0.101, 0)$. The kink instability is observed in the $x$-velocity (a proxy for the radial velocity) through the axis. Comparing the magnitudes of the perturbations at this time suggests the fluting instability is close to transitioning to its nonlinear phase while the kink instability is still very much in its linear phase.
 
-The value of $k$ for each perturbation is calculated as $k = 2\pi/\tilde{\lambda}$ where $\tilde{\lambda}$ is the wavelength of the perturbation, measured as the difference between two of the peaks. This gives a value of $k_{flute}=23.61$ and $k_{kink}=4.57$ for both viscosity models. Hence, the observed most unstable fluting perturbation is that of the form~\ref{eq:kink_perturbation} where $m=4$ and $k=23.61$ and the observed kink instability is that where $m=1$ and $k=4.57$. Using these values, it is observed that the fluting perturbation exactly resonates with the field, that is $m B_{\theta}(r)/r + kB_z(r) = 0$, at $r=0.125$ (figure~\ref{fig:resonant_surface_4}). This is precisely the predicted radius of peak linear growth (figure~\ref{fig:growth_rate_4}). At this time the perturbation is close to resonance, that is $m B_{\theta}(r)/r + kB_z(r) \approx 0$, over a range of radii from $r=0.125$ to $0.2$.
+The value of $k$ for each perturbation is calculated as $k = 2\pi/\tilde{\lambda}$ where $\tilde{\lambda}$ is the wavelength of the perturbation, measured as the difference between two of the peaks. This gives a value of $k_{flute}=23.61$ and $k_{kink}=4.57$ for both viscosity models. Hence, the observed most unstable fluting perturbation is that of the form~\eqref{eq:kink_perturbation} where $m=4$ and $k=23.61$ and the observed kink instability is that where $m=1$ and $k=4.57$. Using these values, it is observed that the fluting perturbation exactly resonates with the field, that is $m B_{\theta}(r)/r + kB_z(r) = 0$, at $r=0.125$ (figure~\ref{fig:resonant_surface_4}). This is precisely the predicted radius of peak linear growth (figure~\ref{fig:growth_rate_4}). At this time the perturbation is close to resonance, that is $m B_{\theta}(r)/r + kB_z(r) \approx 0$, over a range of radii from $r=0.125$ to $0.2$.
 
 Comparing the effect of the viscous models on the perturbations, in the isotropic case, the fluting perturbation is damped, while in the switching case the kink perturbation is diminished, explaining why the fluting instability appears more readily in the switching case (figure~\ref{fig:kink_ke-4}).
 
@@ -313,7 +313,7 @@ Comparing the effect of the viscous models on the perturbations, in the isotropi
       \caption{$t=36$}
       \label{fig:swi-3_pressure_18}
     \end{subfigure}
-\caption{Pressure profiles through $z=0$ during the development of the fluting and kink instabilities. The viscosity model is switching and $\eta = 10^{-3}$. In contrast to the case of $\eta=10^{-4}$, the nonlinear development of the fluting instability has time to mix the interior of the flux tube before the onset of the kink instability, the growth of which is affected by the mixed plasma.}
+\caption{\emph{Pressure profiles through $z=0$ during the development of the fluting and kink instabilities.} The viscosity model is switching and $\eta = 10^{-3}$. In contrast to the case of $\eta=10^{-4}$, the nonlinear development of the fluting instability has time to mix the interior of the flux tube before the onset of the kink instability, the growth of which is affected by the mixed plasma.}
 \label{fig:kink_pressure_slices-3}%
 \end{figure}
 
@@ -332,7 +332,7 @@ Figures~\ref{fig:kink_pressure_slices-3} show the prolonged development of the f
       \caption{Growth rate estimation}
       \label{fig:kink_ke_log-3}
     \end{subfigure}
-\caption{Kinetic energy as a function of time in the cases where $\eta=10^{-3}$. The results from both viscosity models are shown. The fluting instability appears earlier than where $\eta=10^{-4}$ and the growth rate of the kink instability is decreased.}
+\caption{\emph{Kinetic energy as a function of time in the cases where $\eta=10^{-3}$.} The results from both viscosity models are shown. The fluting instability appears earlier than where $\eta=10^{-4}$ and the growth rate of the kink instability is decreased.}
 \label{fig:kink_str8_ke-3}%
 \end{figure}
 

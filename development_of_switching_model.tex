@@ -7,7 +7,7 @@ In this chapter I initially explore the effect of resolution on the Braginskii m
 
 \section{The transition from isotropic to anisotropic in the full Braginskii tensor}
 
-In strong magnetic fields, the Braginskii tensor can be approximated by the parallel term~\ref{eq:braginskii_parallel_term} while in weak or null fields, the tensor reduces to that of isotropic viscosity~\ref{eq:isotropic_viscous_tensor}. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. The form of the Braginskii tensor as written in equation~\ref{eq:brag_new} is nearly in a form useful in understanding how quickly the tensor transitions from isotropic to anisotropic with changing magnetic field strength, since the isotropic component is completely isolated. Similarly, the parallel component can be isolated by further rewriting the tensor as,
+In strong magnetic fields, the Braginskii tensor can be approximated by the parallel term~\eqref{eq:braginskii_parallel_term} while in weak or null fields, the tensor reduces to that of isotropic viscosity~\eqref{eq:isotropic_viscous_tensor}. Between these extremes the perpendicular and drift components of the tensor can become relevant~\cite{erdelyiResonantAbsorptionAlfven1995a}. The form of the Braginskii tensor as written in equation~\eqref{eq:brag_new} is nearly in a form useful in understanding how quickly the tensor transitions from isotropic to anisotropic with changing magnetic field strength, since the isotropic component is completely isolated. Similarly, the parallel component can be isolated by further rewriting the tensor as,
 \begin{equation}
 \begin{split}
 \ten{\sigma}_{\rm brag} &= \frac{3\eta_0+\eta_1-4\eta_2}{3}\ten{W}^{(0)}\\% \label{new1} \\
@@ -20,24 +20,24 @@ In strong magnetic fields, the Braginskii tensor can be approximated by the para
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{brag_coeffs_2.pdf}
-  \caption{Coefficients of the terms in equation~\ref{eq:brag_new2}, normalised against $\eta_0$. In these plots, $\alpha = 10^{8}$, a value realistic of the corona.}%
+  \caption{\emph{Coefficients of the terms in the Braginskii tensor ~\eqref{eq:brag_new2} normalised against $\eta_0$.} In these plots, $\alpha = 10^{8}$, a value realistic of the corona.}%
   \label{fig:brag_coeffs2}
 \end{figure}
 
-Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\ref{eq:brag_new2} when $\alpha = 10^{8}$ (recall that the coefficients $\eta_1$ and $\eta_2$ are defined in terms of the quantity $x=\alpha |\vec{B}|$). Over the extremely small range between $|\vec{B}| = 0$T and $10^{-7}$T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively significant before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\ref{eq:brag_new2}.
+Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in equation~\eqref{eq:brag_new2} when $\alpha = 10^{8}$ (recall that the coefficients $\eta_1$ and $\eta_2$ are defined in terms of the quantity $x=\alpha |\vec{B}|$). Over the extremely small range between $|\vec{B}| = 0$T and $10^{-7}$T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively significant before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in equation~\eqref{eq:brag_new2}.
 
 In the simulations of magnetic null points found later in section~\ref{sec:slow_null_point}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ per dimension to even begin to resolve the region of transition. Whether this region is physically significant or not is unknown, however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. At the resolutions typically studied in general 3D MHD simulations (between $300$ and $1000$ grid points per dimension) the isotropic regions in the vicinity of null points are likely to be poorly resolved. This is particularly true in simulations where null points are not the main focus of the simulation, but are dynamically created by some process.
 
-Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution of a given simulation and better resolve the viscosity transition region, however such approaches can be complex to implement in existing codes. An alternative to improving the resolution itself is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\ref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. This is done by modifying the arguments of the parallel and perpendicular coefficients in~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff}. Equations~\ref{eq:perp_visc_coeff} and~\ref{eq:drift_visc_coeff} are written in terms of the dimensionless quantity $x = \alpha |\vec{B}|$, where $\alpha$ is a physical parameter given by the expression $\alpha = e \tau / m$. By artificially setting $\alpha$ to a value other than its physical value, the viscous response can be adapted to a given resolution.
+Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution of a given simulation and better resolve the viscosity transition region, however such approaches can be complex to implement in existing codes. An alternative to improving the resolution itself is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\eqref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. This is done by modifying the arguments of the parallel and perpendicular coefficients in~\eqref{eq:perp_visc_coeff} and~\eqref{eq:drift_visc_coeff}. Equations~\eqref{eq:perp_visc_coeff} and~\eqref{eq:drift_visc_coeff} are written in terms of the dimensionless quantity $x = \alpha |\vec{B}|$, where $\alpha$ is a physical parameter given by the expression $\alpha = e \tau / m$. By artificially setting $\alpha$ to a value other than its physical value, the viscous response can be adapted to a given resolution.
 
 Consider the effect of decreasing $\alpha$ on the coefficients shown in Figure~\ref{fig:brag_coeffs2}. Decreasing $\alpha$ exaggerates the size of the region near $|\vec{B}| = 0$ where the isotropic and perpendicular components are significant. In this way, $\alpha$ can be used as a controllable parameter to prescribe the size of the region of isotropic (or perpendicular) viscosity around a null point.
 
-As well as exaggerating the region of isotropic viscosity, this approach requires exaggerating the region of perpendicular viscosity. To see this, consider the contributions to the field-aligned component of~\ref{eq:brag_new2} in a coordinate system where the field lies in the $z$-direction,
+As well as exaggerating the region of isotropic viscosity, this approach requires exaggerating the region of perpendicular viscosity. To see this, consider the contributions to the field-aligned component of~\eqref{eq:brag_new2} in a coordinate system where the field lies in the $z$-direction,
 \begin{equation}
   \label{eq:z_aligned_field}
 (\sigma_{brag})_{zz} = \frac{3\eta_0+\eta_1-4\eta_2}{3} W_{zz} + (\eta_2 - \eta_1) \frac{4}{3} W_{zz} + \eta_1 W_{zz} = \eta_0 W_{zz}.
 \end{equation}
-If the coefficient of the perpendicular component $\eta_2 - \eta_1$ is not scaled identically to the isotropic and parallel coefficients, the terms in~\ref{eq:z_aligned_field} no longer cancel appropriately and the field-aligned momentum transport is no longer independent of $|\vec{B}|$. Hence, scaling the coefficients in the Braginskii tensor to enlarge the isotropic region necessarily requires also scaling the size of the perpendicular region. While this may be a useful feature, creating a purely parallel-isotropic switching model offers an alternative which avoids the inclusion of perpendicular viscosity altogether.
+If the coefficient of the perpendicular component $\eta_2 - \eta_1$ is not scaled identically to the isotropic and parallel coefficients, the terms in~\eqref{eq:z_aligned_field} no longer cancel appropriately and the field-aligned momentum transport is no longer independent of $|\vec{B}|$. Hence, scaling the coefficients in the Braginskii tensor to enlarge the isotropic region necessarily requires also scaling the size of the perpendicular region. While this may be a useful feature, creating a purely parallel-isotropic switching model offers an alternative which avoids the inclusion of perpendicular viscosity altogether.
 
 \section{The switching model}
 
@@ -62,7 +62,7 @@ This trivially satisfies the requirement that the field-aligned component of mom
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{s_against_a.pdf}
-  \caption{Plots of $s$, $s^2$ and the spline representation of $s^2$ as functions of $a$.}%
+  \caption{\emph{Plots of $s$, $s^2$ and the spline representation of $s^2$ as functions of $a$.}}%
   \label{fig:s_against_a}
 \end{figure}
 
@@ -73,13 +73,13 @@ s(|\vec{B}|) = \frac{3 \exp[2a]}{2\sqrt{2\pi a} \text{erfi}[\sqrt{2a}]} - \frac{
 \end{equation}
 and $a(|\vec{B}|)$ is a constitutive function controlling the sensitivity of the interpolation function to changes in magnetic field strength. Here, erfi is the imaginary error function. Where this model is used in throughout this thesis, the choice $a(|\vec{B}|) = a_0 |\vec{B}|^2$ is made, where $a_0$ is a parameter which effectively controls the size of the isotropic region near magnetic null points. 
 
-For more efficient evaluation of~\ref{eq:switching_function}, it is approximated and implemented numerically using a piecewise polynomial spline. For $a < 0.5051$, the function is clamped to $s=0$ and for $a > 29.41$, $s=1$. Between these cut-offs, $s^2$ is approximated using eight splines. The upper cut-off gives the halo effect in the results presented later in section~\ref{sec:slow_null_point}. The function~\ref{eq:switching_function}, its square and its spline approximation are plotted in Figure~\ref{fig:s_against_a}. 
+For more efficient evaluation of~\eqref{eq:switching_function}, it is approximated and implemented numerically using a piecewise polynomial spline. For $a < 0.5051$, the function is clamped to $s=0$ and for $a > 29.41$, $s=1$. Between these cut-offs, $s^2$ is approximated using eight splines. The upper cut-off gives the halo effect in the results presented later in section~\ref{sec:slow_null_point}. The function~\eqref{eq:switching_function}, its square and its spline approximation are plotted in Figure~\ref{fig:s_against_a}. 
 
 \subsection{Braginskii-inspired switching functions}
 
-Two alternatives to the phenomenological von Mises switching function~\ref{eq:switching_function} can be extracted from the Braginskii tensor itself. The tensor, written in the form~\ref{eq:brag_new2}, suggests two alternative interpolation functions, one based on the coefficient for the isotropic part $\eta_1$, and another based on the coefficient of the parallel part $(3\eta_0+\eta_1-4\eta_2)/3$. Figure~\ref{fig:brag_coeffs2} shows that the coefficient of the perpendicular term $\eta_2 - \eta_1$ is not suitable as an interpolation function.
+Two alternatives to the phenomenological von Mises switching function~\eqref{eq:switching_function} can be extracted from the Braginskii tensor itself. The tensor, written in the form~\eqref{eq:brag_new2}, suggests two alternative interpolation functions, one based on the coefficient for the isotropic part $\eta_1$, and another based on the coefficient of the parallel part $(3\eta_0+\eta_1-4\eta_2)/3$. Figure~\ref{fig:brag_coeffs2} shows that the coefficient of the perpendicular term $\eta_2 - \eta_1$ is not suitable as an interpolation function.
 
-The Braginskii switching functions are easiest written using a form of $\eta_2(x)$ (equation~\ref{eq:perp_visc_coeff}) normalised against $\eta_0$,
+The Braginskii switching functions are easiest written using a form of $\eta_2(x)$ (equation~\eqref{eq:perp_visc_coeff}) normalised against $\eta_0$,
 \begin{equation}
   \label{eq:eta_function}
   \tilde{\eta}(x) = \eta_2(x)/\eta_0 = \frac{\tfrac{6}{5}x^2 + 2.23}{2.23 + 4.03 x^2 + x^4}.
@@ -98,7 +98,7 @@ s_{iso}(x) = 1 - \tilde{\eta}(2x).
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{alt_switching.pdf}
-  \caption{A comparison of three potential switching functions.}%
+  \caption{\emph{A comparison of three potential switching functions.}}%
   \label{fig:alt_switching}
 \end{figure}
 
@@ -116,7 +116,7 @@ The two types of viscosity already present in the Lare3D code are shock and isot
 
 \subsection{Review of the implementation of isotropic viscosity}
 
-The isotropic viscous stress tensor is implemented in Lare3D as six 3D arrays, each storing the values for the six required components of a symmetric stress tensor. These are filled during the Lagrangian step using equation~\ref{eq:isotropic_viscous_tensor}, where the components of the strain rate tensor are calculated via equation~\ref{eq:rate_of_strain}. This stress tensor is used in the calculation of forces in the momentum equation and in the calculation of viscous heat contribution in the energy equation. This entire process is presented in detail below.
+The isotropic viscous stress tensor is implemented in Lare3D as six 3D arrays, each storing the values for the six required components of a symmetric stress tensor. These are filled during the Lagrangian step using equation~\eqref{eq:isotropic_viscous_tensor}, where the components of the strain rate tensor are calculated via equation~\eqref{eq:rate_of_strain}. This stress tensor is used in the calculation of forces in the momentum equation and in the calculation of viscous heat contribution in the energy equation. This entire process is presented in detail below.
 
 The strain rate tensor $\ten{W}$ is calculated in the code as \verb|s*|
 \begin{verbatim}
@@ -126,7 +126,7 @@ for the diagonal elements \verb|sxx|, \verb|syy| and \verb|szz| and
 \begin{verbatim}
 sxy = dvxy * 0.5_num
 \end{verbatim}
-for the off-diagonal elements \verb|sxy|, \verb|sxz| and \verb|syz|. Since $\ten{W}$ is a symmetric tensor, only six components need to be calculated. The gradients of velocity, \verb|dv*|, are calculated using finite differences between appropriate velocity components, where the velocity is averaged over neighbouring grid points to ensure the resultant stress tensor is defined at the appropriate grid location. Note, the calculation of \verb|s*| in the code is a factor of a half smaller than the definition of $\ten{W}$ used in this thesis, equation~\ref{eq:rate_of_strain}. This is corrected for during the calculation of the viscous stress tensor, stored in the variable \verb|q*|, where a factor of two is included,
+for the off-diagonal elements \verb|sxy|, \verb|sxz| and \verb|syz|. Since $\ten{W}$ is a symmetric tensor, only six components need to be calculated. The gradients of velocity, \verb|dv*|, are calculated using finite differences between appropriate velocity components, where the velocity is averaged over neighbouring grid points to ensure the resultant stress tensor is defined at the appropriate grid location. Note, the calculation of \verb|s*| in the code is a factor of a half smaller than the definition of $\ten{W}$ used in this thesis, equation~\eqref{eq:rate_of_strain}. This is corrected for during the calculation of the viscous stress tensor, stored in the variable \verb|q*|, where a factor of two is included,
 \begin{verbatim}
 qxx(ix,iy,iz) = qxx(ix,iy,iz) + 2.0_num * sxx * rho(ix,iy,iz) * visc3
 \end{verbatim}
@@ -152,9 +152,9 @@ and, just as in the calculation of the forces above, this same code is used to c
 
 \subsection{Implementation of the Braginskii tensor}
 
-Since the contribution of a generic viscous stress tensor to the momentum and energy equations is already included in the numerical implementation of isotropic viscosity, the only new piece of code required to implement a new stress tensor is the calculation of the stress tensor itself. The Braginskii tensor given by equation~\ref{eq:brag_new} is implemented in the following way and, when enabled, replaces the calculation of the isotropic viscous stress tensor. 
+Since the contribution of a generic viscous stress tensor to the momentum and energy equations is already included in the numerical implementation of isotropic viscosity, the only new piece of code required to implement a new stress tensor is the calculation of the stress tensor itself. The Braginskii tensor given by equation~\eqref{eq:brag_new} is implemented in the following way and, when enabled, replaces the calculation of the isotropic viscous stress tensor. 
 
-The four coefficients of the terms in equation~\ref{eq:brag_new} are calculated as
+The four coefficients of the terms in equation~\eqref{eq:brag_new} are calculated as
 \begin{verbatim}
 a = (3._num*visc3 + brag_visc1 - 4._num*brag_visc2)&
     / MAX(2._num*mB2**2, none_zero)
@@ -162,7 +162,7 @@ b = (brag_visc1 - visc3)/(2._num*mB2)
 c = (brag_visc2 - brag_visc1)/(mB2)
 d = brag_visc1
 \end{verbatim}
-where \verb|visc3| is the variable holding the value of $\eta_0$, \verb|brag_visc1| and \verb|brag_visc2| hold the values of $\eta_1$ and $\eta_2$, calculated via equation~\ref{eq:perp_visc_coeff}, and \verb|mB2| holds the value of $|\vec{B}|^2$. This calculation is performed in the following way
+where \verb|visc3| is the variable holding the value of $\eta_0$, \verb|brag_visc1| and \verb|brag_visc2| hold the values of $\eta_1$ and $\eta_2$, calculated via equation~\eqref{eq:perp_visc_coeff}, and \verb|mB2| holds the value of $|\vec{B}|^2$. This calculation is performed in the following way
 \begin{verbatim}
 xi2 = (brag_alpha**2) * mB2
 brag_visc_coeff = visc3*(6._num/5._num*xi2 + 2.23_num)&
@@ -216,7 +216,7 @@ bsxy = visc3*((1.0_num-s2)*sxy*2.0_num + 1.5_num*s2&
 /MAX(mB2**2, none_zero)*wbdotb*(btxy))
 \end{verbatim}
 
-As discussed in section~\ref{sec:switching_function}, the von Mises switching function $s^2$ is implemented as a spline approximation. The Braginskii switching functions~\ref{eq:alt_switching1} and~\ref{eq:alt_switching2} have been simplified using the Python package \emph{SymPy} and are implemented directly. 
+As discussed in section~\ref{sec:switching_function}, the von Mises switching function $s^2$ is implemented as a spline approximation. The Braginskii switching functions~\eqref{eq:alt_switching1} and~\eqref{eq:alt_switching2} have been simplified using the Python package \emph{SymPy} and are implemented directly. 
 
 \section{Application to stressed null point}
 
@@ -304,7 +304,7 @@ Table~\ref{tab:total_heating_slow_null} shows the total heat generated by $t=10$
       \label{fig:iso_heating_switching3_10}
     \end{subfigure}
 
-    \caption{A comparison of the isotropic heating generated by the isotropic, full Braginskii and switching models at time $t=10$, sliced through $y=0$. Note the peak colour of the isotropic plot is an order of magnitude greater than that of the anisotropic models. The isotropic model overestimates local heating by an order of magnitude and heats more extensively throughout the null. The heating distribution generated by the isotropic switching model best matches that of the Braginskii model. Due to the numerical implementation of the von Mises switching function, some isotropic heating far from the null is neglected.}
+    \caption{\emph{A comparison of the isotropic heating generated by the isotropic, full Braginskii and switching models at time $t=10$, sliced through $y=0$.} Note the peak colour of the isotropic plot is an order of magnitude greater than that of the anisotropic models. The isotropic model overestimates local heating by an order of magnitude and heats more extensively throughout the null. The heating distribution generated by the isotropic switching model best matches that of the Braginskii model. Due to the numerical implementation of the von Mises switching function, some isotropic heating far from the null is neglected.}
 \label{fig:isotropic_heating}%
 \end{figure}
 
@@ -337,7 +337,7 @@ In order to evaluate the real efficiency of each model of viscosity, a set of be
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{benchmark.pdf}
-  \caption{Comparison of mean runtime for each viscosity model scaled by the runtime for the isotropic model.}%
+  \caption{\emph{A comparison of mean runtime for each viscosity model scaled by the runtime for the isotropic model.}}%
   \label{fig:benchmark}
 \end{figure}
 
@@ -349,7 +349,7 @@ This chapter details the switching model, a new model of anisotropic viscosity s
 
 Overall, the three switching functions behave similarly and each provide unique advantages. While the von Mises switching function is computationally faster than the Braginskii-inspired functions, it is a phenomenological model and requires a spline approximation for efficient implementation. In contrast, the Braginskii switching functions utilise the interpolation already implicit in the Braginskii tensor and can be implemented directly in the code. 
 
-In chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight} the von Mises switching model is employed although the field is strong enough everywhere that the tensor reduces to purely parallel (i.e. $\tilde{s} = 1$ everywhere). In chapter~\ref{chp:null_point_khi} the Braginskii-inspired parallel function~\ref{eq:alt_switching1} is used to avoid the numerical cut-off associated with the spline representation.
+In chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight} the von Mises switching model is employed although the field is strong enough everywhere that the tensor reduces to purely parallel (i.e. $\tilde{s} = 1$ everywhere). In chapter~\ref{chp:null_point_khi} the Braginskii-inspired parallel function~\eqref{eq:alt_switching1} is used to avoid the numerical cut-off associated with the spline representation.
 
 \begin{figure}[t]
     \hfill
@@ -376,7 +376,7 @@ In chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight} t
       \caption{Switching (iso)}%
       \label{fig:aniso_heating_switching3_10}
     \end{subfigure}
-    \caption{A comparison of the anisotropic heating generated by the full Braginskii and switching models at time $t=10$. Close to the fan plane the Braginskii model shows notably greater anisotropic heating than any of the switching models. The switching models all appear similar though with minor differences near the null point.}
+    \caption{\emph{A comparison of the anisotropic heating generated by the full Braginskii and switching models at time $t=10$.} Close to the fan plane the Braginskii model shows notably greater anisotropic heating than any of the switching models. The switching models all appear similar though with minor differences near the null point.}
 \label{fig:anisotropic_heating}%
 \end{figure}
 
@@ -407,7 +407,7 @@ In chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight} t
       \label{fig:diff_switching3_resolution}
     \end{subfigure}
 
-    \caption{A comparison between the anisotropic heating rates produced by the Braginskii and switching models at resolutions of $100$ (left of each plot) and $500$ (right of each plot) grid points per dimension. Both plots are slices through $x=0$ at $t=5$. When the null point is less resolved (left half of both figures) Braginskii viscosity erroneously permits anisotropic heating at the null. At higher resolutions (left half of both figures) the null is better resolved and much less anisotropic viscous heating is found at the null. All switching models avoid this issue.}
+    \caption{\emph{A comparison between the anisotropic heating rates produced by the Braginskii and switching models at resolutions of $100$ (left of each plot) and $500$ (right of each plot) grid points per dimension.} Both plots are slices through $x=0$ at $t=5$. When the null point is less resolved (left half of both figures) Braginskii viscosity erroneously permits anisotropic heating at the null. At higher resolutions (left half of both figures) the null is better resolved and much less anisotropic viscous heating is found at the null. All switching models avoid this issue.}
 \label{fig:anisotropy_bleeding}%
 \end{figure}
 
