@@ -23,8 +23,8 @@ A twisted magnetic flux rope is used as the model of an idealised coronal loop. 
 $B_0$ & $L_0$ & $\rho_0$ & $u_A = B_0 / \sqrt{\rho_0 \mu_0}$ & $t_A = L_0/u_A$ & $T_0$ \\ \midrule
 $5 \times 10^{-3} \ \text{T}$ & $1\ \text{Mm}$ & $1.67 \times 10^{-12} \ \text{kgm}^{-3}$ & $3.45\ \text{Mms}^{-1}$ & $0.29\ \text{s}$ & $1.73 \times 10^{9}K$\\
 \end{tabular}
-\caption{Reference values for the magnetic field, length, density, and
-  temperature. These are used to non-dimensionalise the MHD
+\mycaption{Reference values for the magnetic field, length, density, and
+  temperature.}{These are used to non-dimensionalise the MHD
   equations \eqref{eq:mhda}--\eqref{eq:energy} and to calculate the reference values for velocity, time and temperature.}
 \label{tab:reference-values}
 \end{table}
@@ -65,7 +65,7 @@ for $r > 1$, where $\lambda$ is a parameter measuring the twist in the tube. The
     \end{overpic}
   \end{center}
   \end{subfigure}
-  \caption{\textit{The initial field configuration.} In \textbf{(a)} field lines are plotted corresponding to inner (red), outer (blue) and straight (yellow) regions of twist, with slices of $\alpha(r)$ shown at the footpoints. In the slices, red corresponds to $\alpha(r) > 0$, blue to $\alpha(r) < 0$ and white to $\alpha(r) = 0$. In \textbf{(b)} the profiles of $\alpha(r)$ and the field components $B_z$ and $B_{\theta}$ across the flux tube are plotted.}
+  \mycaption{The initial field configuration.}{In \textbf{(a)} field lines are plotted corresponding to inner (red), outer (blue) and straight (yellow) regions of twist, with slices of $\alpha(r)$ shown at the footpoints. In the slices, red corresponds to $\alpha(r) > 0$, blue to $\alpha(r) < 0$ and white to $\alpha(r) = 0$. In \textbf{(b)} the profiles of $\alpha(r)$ and the field components $B_z$ and $B_{\theta}$ across the flux tube are plotted.}
 \label{fig:field_configuration}
 \end{figure}
 
@@ -168,8 +168,8 @@ In this section, I present results from a pair of simulations with a single choi
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{log_kinetic_energy_over_time.pdf}
-  \caption{\textit{Logarithmic plot of the total kinetic
-      energy during the linear phase.} Overlaid is a straight
+  \mycaption{Logarithmic plot of the total kinetic
+      energy during the linear phase.}{Overlaid is a straight
     line corresponding to the linear growth rate $\sigma = 0.13$. The
     isotropic case is represented as a blue, solid line and the
     switching case as an orange, dashed line. Though the kinetic energy is initially slightly greater using the switching model, the growth rate appears unaffected by choice of viscosity model. The duration of the linear phase also appears to be negligibly affected.}%
@@ -190,7 +190,7 @@ The linear development of the kink instability lasts until $t\approx 35$ as illu
       \caption{$t=50$}
       \label{fig:field_lines_0010}
     \end{subfigure}
-\caption{\textit{The transition from linear to nonlinear instability in the isotropic case.} The yellow field lines start at $z=10$ and the blue field lines at $z=-10$. The isosurfaces are at $|\vec{\jmath}| = 4$. The slices are plots of $\alpha(r)$. The linear growth of the instability ends around $t=35$ and the inner field compresses into the outer field, creating a current sheet. Between $t=45$ and $50$ this current sheet enables reconnection between the two regions. The transition for the switching case is qualitatively similar. In all three plots, $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$, respectively.}
+\mycaption{The transition from linear to nonlinear instability in the isotropic case.}{The yellow field lines start at $z=10$ and the blue field lines at $z=-10$. The isosurfaces are at $|\vec{\jmath}| = 4$. The slices are plots of $\alpha(r)$. The linear growth of the instability ends around $t=35$ and the inner field compresses into the outer field, creating a current sheet. Between $t=45$ and $50$ this current sheet enables reconnection between the two regions. The transition for the switching case is qualitatively similar. In all three plots, $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$, respectively.}
 \label{fig:reconnecting_field_lines}%
 \end{figure}
 
@@ -226,7 +226,7 @@ During the transition from the linear to the nonlinear phase, field lines in the
       \caption{Magnetic energy}
       \label{fig:magnetic_energy_density_over_time}
     \end{subfigure}
-    \caption{\textit{Energy components and current as functions of time.} Both isotropic (blue, solid) and switching (orange, dashed) viscosity models are shown, with diffusion parameters $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$.}
+    \mycaption{Energy components and current as functions of time.}{Both isotropic (blue, solid) and switching (orange, dashed) viscosity models are shown, with diffusion parameters $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$.}
     \label{fig:energies}
 \end{figure}
 
@@ -267,7 +267,7 @@ in other quantities related to magnetic reconnection.
       \caption{Difference in connectivity}
       \label{fig:mean_difference_in_connectivity}
     \end{subfigure}
-    \caption{\textit{Reconnection rates.} The maximum integrated parallel electric field and mean difference in connectivity are plotting for the isotropic (blue dot \& solid line) and switching (orange cross \& dashed line) cases with $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. The difference in time between each data point is $5$ Alfv\'en times.}
+    \mycaption{Reconnection rates.}{The maximum integrated parallel electric field and mean difference in connectivity are plotting for the isotropic (blue dot \& solid line) and switching (orange cross \& dashed line) cases with $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. The difference in time between each data point is $5$ Alfv\'en times.}
     \label{fig:reconnection-rates}
 \end{figure}
 
@@ -318,9 +318,9 @@ Figure~\ref{fig:reconnection-rates} displays the time series of the maximum inte
     \caption{swi; $t=100$}
     \label{fig:final_switching_current_density_0020}
   \end{subfigure}
-  \caption{\textit{The difference in the evolution of current density,
+  \mycaption{The difference in the evolution of current density,
       temperature and velocity structures between the isotropic
-        and the switching viscosity cases}. Slices at $z=0$ of
+        and the switching viscosity cases}.{Slices at $z=0$ of
     current density (top of each figure; blue is $|\vec{\jmath}| =
     3.5$, white is $|\vec{\jmath}| = 0$) and temperature (bottom of
     each figure; red is $T = 5\times10^{-2}$, white is
@@ -377,7 +377,7 @@ switching case as illustrated in Figure~\ref{fig:turning-point}. Since the visco
     \caption{swi; $t=175$}
     \label{fig:final_switching_current_density_0035}
   \end{subfigure}
-  \caption{\textit{The formation of a reconnection feedback loop in the isotropic and the switching viscosity cases.} Plotting parameters are identical to those of Figure~\ref{fig:turning-point}. The isotropic case shows two current sheets causing reconnection at the top and bottom of the tube, producing flows that sustains another central current sheet, which feeds back into the top and bottom sheets. The switching case instead shows one single main current sheet at the right hand side, along with numerous smaller current structures throughout the domain.}
+  \mycaption{The formation of a reconnection feedback loop in the isotropic and the switching viscosity cases.}{Plotting parameters are identical to those of Figure~\ref{fig:turning-point}. The isotropic case shows two current sheets causing reconnection at the top and bottom of the tube, producing flows that sustains another central current sheet, which feeds back into the top and bottom sheets. The switching case instead shows one single main current sheet at the right hand side, along with numerous smaller current structures throughout the domain.}
   \label{fig:feedback-reconnection}
 \end{figure}
 
@@ -396,7 +396,7 @@ The contrast between fine-scale current and flow structures for the switching mo
     \caption{Switching}
     \label{fig:reconnection-field-lines-swi}
   \end{subfigure}
-  \caption{\textit{The difference in 3D current structures at $t=175$.} Isosurfaces are at $|\vec{\jmath}| = 1.5$.}
+  \mycaption{The difference in 3D current structures at $t=175$.}{Isosurfaces are at $|\vec{\jmath}| = 1.5$.}
 \label{fig:reconnection-field-lines}
 \end{figure}
 
@@ -429,7 +429,7 @@ During this phase, the kinetic energy in the switching model case also increases
     \includegraphics[width=\linewidth]{field_line_plots/cropped/v1e-4r5e-4.5-switching_0059_cropped.png}
     \caption{Switching}
   \end{subfigure}
-  \caption{\textit{Late-time magnetic field structures at $t=600$.}}
+  \mycaption{Late-time magnetic field structures at $t=600$.}{}
 \label{fig:finale-field-lines}
 \end{figure}
 
@@ -451,7 +451,7 @@ For both cases, the asymptotic relaxed magnetic field is a linear force-free fie
       \includegraphics[width=\textwidth]{total_heating_over_time.pdf}
       \caption{Total heating}
     \end{subfigure}
-    \caption{\textit{Heating rates as functions of time.} Plots are shown for isotropic (blue, solid) and switching (orange, dashed) viscosity, with diffusion parameters $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. Ohmic heating dominates isotropic viscous heating by an order of magnitude, and switching viscosity by four orders. Isotropic viscosity generates a factor of around $10^{3}$ more heat that switching viscosity. Even though more Ohmic heat is generated in the switching case, it does not compensate for the much weaker viscous heating.}
+    \mycaption{Heating rates as functions of time.}{Plots are shown for isotropic (blue, solid) and switching (orange, dashed) viscosity, with diffusion parameters $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. Ohmic heating dominates isotropic viscous heating by an order of magnitude, and switching viscosity by four orders. Isotropic viscosity generates a factor of around $10^{3}$ more heat that switching viscosity. Even though more Ohmic heat is generated in the switching case, it does not compensate for the much weaker viscous heating.}
     \label{fig:heating}
 \end{figure}
 
@@ -468,8 +468,8 @@ I have described the nonlinear evolution of the kink instability for the cases o
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{kinetic-energy-changing-s.pdf}
-  \caption{\textit{Kinetic energy over time, varying the switching
-        function $s^2$.} The grey lines are the two regular cases; switching, where $s^2 = 1$ (dashed), and isotropic (solid), where $s^2=0$. The coloured lines represent values of $s^2 = 0.5$ (blue, dotted), and $s^2 = 0.6$ (orange, dash-dotted). There is a clear critical value somewhere between $0.5$ and $0.6$, where the behaviour changes.}
+  \mycaption{Kinetic energy over time varying the switching
+        function $s^2$.}{The grey lines are the two regular cases; switching, where $s^2 = 1$ (dashed), and isotropic (solid), where $s^2=0$. The coloured lines represent values of $s^2 = 0.5$ (blue, dotted), and $s^2 = 0.6$ (orange, dash-dotted). There is a clear critical value somewhere between $0.5$ and $0.6$, where the behaviour changes.}
   \label{fig:kinetic-energy-changing-s}
 \end{figure}
 
@@ -498,7 +498,7 @@ In the second study the resistivity is similarly varied as $\eta = 5 \times 10^{
       \includegraphics[width=\textwidth]{max_ke_split_inst_changing_resistivity.pdf}
       \caption{Varying resistivity; $\nu = 5\time 10^{-4.5}$}
     \end{subfigure}
-    \caption{\textit{Maximum kinetic energy corresponding to initial instability and secondary instability as functions of resistivity $\eta$ and viscosity $\nu$.} In both plots are shown the maximum kinetic energy produced by the initial instability (green, $1$-marker) and the maximum kinetic energy produced by the secondary instability (purple, $2$-marker). Only results using the isotropic viscosity are shown.}
+    \mycaption{Maximum kinetic energy corresponding to initial instability and secondary instability as functions of resistivity $\eta$ and viscosity $\nu$.}{In both plots are shown the maximum kinetic energy produced by the initial instability (green, $1$-marker) and the maximum kinetic energy produced by the secondary instability (purple, $2$-marker). Only results using the isotropic viscosity are shown.}
     \label{fig:secondary_instability}
 \end{figure}
 
@@ -530,7 +530,7 @@ The effect of resistivity $\eta$ on the secondary instability is to suppress it 
       \includegraphics[width=\textwidth]{max_kinetic_changing_visc.pdf}
       \caption{Maximum kinetic energy}
     \end{subfigure}
-    \caption{\textit{Anisotropic viscous heating, Ohmic heating, and maximum kinetic energy as functions of viscosity $\nu$.} Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of viscosity $\nu$ at the final time of $t=400$ for a fixed resistivity $\eta=5\times10^{-4.5}$, The anisotropic viscous heating has been multiplied by a factor of $10$. The maximum kinetic energy is calculated as the maximum value prior to $t=400$.}
+    \mycaption{Anisotropic viscous heating, Ohmic heating, and maximum kinetic energy as functions of viscosity $\nu$.}{Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of viscosity $\nu$ at the final time of $t=400$ for a fixed resistivity $\eta=5\times10^{-4.5}$, The anisotropic viscous heating has been multiplied by a factor of $10$. The maximum kinetic energy is calculated as the maximum value prior to $t=400$.}
     \label{fig:param_study_varying_viscosity}
 \end{figure}
 
@@ -558,9 +558,9 @@ The relationship between the isotropic viscous heating at $\nu$ appears non-triv
       \includegraphics[width=\textwidth]{max_early_time_kinetic_changing_visc.pdf}
       \caption{Maximum early-time kinetic energy}
     \end{subfigure}
-    \caption{\textit{Linear growth rate and maximum (in time) kinetic energy as
+    \mycaption{Linear growth rate and maximum (in time) kinetic energy as
         functions of viscosity $\nu$ for a fixed
-          resistivity of $\eta=5\times10^{-4.5}$.} Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of viscosity $\nu$. The maximum kinetic energies are calculated as the maximum values in time prior to $t=125$. This is to capture the behaviour of only the initial nonlinear evolution of the instability, neglecting any further instabilities like the secondary instability found in Section~\ref{sec:results}. Note, the maxima do not necessarily occur at the same time and this particular parameter study has been performed fixing $\nu$ at a slightly different value to the previous parameter studies.}
+          resistivity of $\eta=5\times10^{-4.5}$.}{Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of viscosity $\nu$. The maximum kinetic energies are calculated as the maximum values in time prior to $t=125$. This is to capture the behaviour of only the initial nonlinear evolution of the instability, neglecting any further instabilities like the secondary instability found in Section~\ref{sec:results}. Note, the maxima do not necessarily occur at the same time and this particular parameter study has been performed fixing $\nu$ at a slightly different value to the previous parameter studies.}
     \label{fig:growth_rate_varying_viscosity}
 \end{figure}
 
@@ -583,7 +583,7 @@ It can be seen from the relationship between the growth rate and $\nu$ for both 
       \includegraphics[width=\textwidth]{ohmic_heating_varying_resistivity.pdf}
       \caption{Ohmic heating}
     \end{subfigure}
-    \caption{\textit{Anisotropic viscous, and Ohmic heating as functions of resistivity $\eta$ for a fixed value of viscosity $\nu=5\times10^{-4.5}$.} Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of resistivity $\eta$ at the final time of $t=400$. The anisotropic viscous heating has been multiplied by a factor of $10$. Overlaid on Figure (b) is the scaling $\log_{10}(\eta^{1/2})$.}
+    \mycaption{Anisotropic viscous, and Ohmic heating as functions of resistivity $\eta$ for a fixed value of viscosity $\nu=5\times10^{-4.5}$.}{Plots are shown using isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of resistivity $\eta$ at the final time of $t=400$. The anisotropic viscous heating has been multiplied by a factor of $10$. Overlaid on Figure (b) is the scaling $\log_{10}(\eta^{1/2})$.}
     \label{fig:param_study_varying_resistivity}
 \end{figure}
 
@@ -608,9 +608,9 @@ Ohmic heating is observed to increase with increasing $\eta$ (Figure~\ref{fig:pa
       \includegraphics[width=\textwidth]{max_kinetic_changing_resist.pdf}
       \caption{Maximum early-time kinetic energy}
     \end{subfigure}
-    \caption{\textit{Linear growth rate and maximum (in time) kinetic energy as
+    \mycaption{Linear growth rate and maximum (in time) kinetic energy as
         functions of resistivity $\eta$ for a fixed
-          viscosity of $\nu=10^{-4}$.} \textbf{(a)} Growth rate and \textbf{(b)} maximum kinetic energy, generated by isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of resistivity $\eta$. The maximum kinetic energies are calculated as the maximum values in time prior to $t=125$. This is to capture the behaviour of only the initial nonlinear evolution of the instability, neglecting any further instabilities like the secondary instability found in Section~\ref{sec:results}. Note, the maxima do not necessarily occur at the same time and this particular parameter study has been performed fixing $\nu$ at a slightly different value to the previous parameter studies.}
+          viscosity of $\nu=10^{-4}$.}{\textbf{(a)} Growth rate and \textbf{(b)} maximum kinetic energy, generated by isotropic viscosity (blue, solid) and switching viscosity (orange, dashed) as functions of resistivity $\eta$. The maximum kinetic energies are calculated as the maximum values in time prior to $t=125$. This is to capture the behaviour of only the initial nonlinear evolution of the instability, neglecting any further instabilities like the secondary instability found in Section~\ref{sec:results}. Note, the maxima do not necessarily occur at the same time and this particular parameter study has been performed fixing $\nu$ at a slightly different value to the previous parameter studies.}
     \label{fig:growth_rate_varying_resistivity}
 \end{figure}
 
