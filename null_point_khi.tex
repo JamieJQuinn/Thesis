@@ -34,7 +34,7 @@ The non-dimensionalisation scheme is identical to that used in chapter~\ref{chp:
   \centering
       \includegraphics[width=0.5\linewidth]{field_line_plots/cropped/v-4r-4-isotropic_0008_cropped.png}
   %\caption{Field lines at $t=4$ with start points anchored at a radius of $0.05$ around the spine, with the magnitude of the velocity driver shown as a slice. At this time the driver has reached its final maximum velocity of $u_0 = 0.5$. The spines of the null point already show an appreciable degree of twist.}%
-  \caption{\emph{Field lines at $t=4$ showing the result of the driver, the speed of which is shown as a slice.}}%
+  \caption{\emph{Field configuration after $4$ Alfv\'en times.} The speed of the driver is also shown as a slice.}%
   \label{fig:field_line_plots/v-4r-4-iso-field-8}
 \end{figure}
 
@@ -329,10 +329,7 @@ In the switching case, the development of the spine-fan reconnection and associa
     \label{fig:v-4r-4_reconn_rate_over_time}
   \end{subfigure}
   \caption{\emph{Energy measures and reconnection rate as functions of time.}}
-  %\caption{Kinetic energy (a) and reconnection rate (b) as functions of time for the isotropic (blue, solid line) and switching (orange, dashed line) cases using diffusion parameters $\nu=10^{-4}$ and $\eta=10^{-4}$. The switching case shows clear growth of the KHI starting from $t=2$. While the isotropic case shows no evidence of the KHI, there is evidence of the null collapse at $t\approx18$. The reconnection rate reveals the nonlinear phase of the KHI as a period of bursty reconnection in the switching case and the eventual collapse in both cases.}
 \end{figure}
-
-\todo{expand caption of above figure}
 
 The kinetic energy in the switching case mirrors the main evolution of a KHI-unstable current-vortex sheet as presented previously (Figure~\ref{fig:v-4r-4_kinetic_energy}). The initial injection of the Alfv\'en waves and formation of the current-vortex sheet can be seen at at $t\approx3$. As the null continues to be driven, the sheet becomes unstable to the KHI and the kinetic energy grows accordingly from $t\approx3$ to $8$. At $t\approx 8$ the KHI saturates as small-scale current sheets are formed and Ohmic heating begins to drain the energy from the instability (Figure~\ref{fig:v-4r-4_ohmic_heating}). This is also reflected in the reconnection rate, Figure~\ref{fig:v-4r-4_reconn_rate_over_time}, where the small current sheets in the fan plane promote local reconnection in the rolls of the KHI. Around $t=14$, a transient increase in the kinetic energy reveals the start of the null collapse. 
 
@@ -401,8 +398,7 @@ Since the stability of the current-vortex sheet depends on the balance of veloci
       \caption{Switching; $\eta = 10^{-4}$}%
       \label{fig:mach_numbers_eta_4_swi}
     \end{subfigure}
-
-  \caption{\emph{Plots of $M_f$ and $\Lambda$ as functions of $r$ for all parameter choices at $t=8$.} Note the difference in the scale of $M_f$ for difference values of $\eta$. The cases where $\Lambda > 1$ are unstable with the exception of the isotropic cases where $\nu=10^{-4},\eta=10^{-3}$ (dashed line in figure~\ref{fig:mach_numbers_eta_3_iso}).}%
+  \caption{\emph{Plots of stability measures as functions of $r$ for all parameter choices at $t=8$.} Note the difference in the scale of $M_f$ for difference values of $\eta$. The cases where $\Lambda > 1$ are unstable with the exception of the isotropic cases where $\nu=10^{-4},\eta=10^{-3}$ (dashed line in figure~\ref{fig:mach_numbers_eta_3_iso}).}%
   \label{fig:mach_numbers}
 \end{figure}
 
@@ -470,7 +466,7 @@ The observed stability of the current-vortex sheet to the KHI in each case is de
       \label{fig:v-3r-4_kinetic_energy_ps}
     \end{subfigure}
   %\includegraphics[width=\linewidth]{param_study/kinetic_energies.pdf}
-  \caption{\emph{Kinetic energy against time for each parameter choice and each viscosity model.} An increase in $\nu$ damps the energy released during the KHI in the switching cases and totally suppresses the KHI in most isotropic cases.}%
+  \caption{\emph{Kinetic energy as functions of time for each parameter choice and viscosity model.} An increase in $\nu$ damps the energy released during the KHI in the switching cases and totally suppresses the KHI in most isotropic cases.}%
   \label{fig:param_study_kinetic_energies}
 \end{figure}
 
@@ -524,7 +520,7 @@ The Ohmic heating profile similarly reveals complex behaviour in the isotropic c
       \caption{$\eta = 10^{-4}$}%
       \label{fig:balance_of_ohmic_heating-4}
     \end{subfigure}
-  \caption{\emph{Mean Ohmic heating contributions from the spines (dotted) and current-vortex sheet (dashed) and their sum (solid) for $\eta=10^{-3}$ (a) and $\eta=10^{-4}$ (b) in only the isotropic cases at $t=10$.} The value of $\eta$ dictates how rapidly the balance of contributions shifts from fan to spine with $\nu$, resulting in different trends in total Ohmic heating.}%
+  \caption{\emph{Balance of Ohmic heating contributions from separate current structures in the spine and fan.} Shown are mean Ohmic heating contributions from the spines (dotted) and current-vortex sheet (dashed) and their sum (solid) for $\eta=10^{-3}$ (a) and $\eta=10^{-4}$ (b) in only the isotropic cases at $t=10$. The value of $\eta$ dictates how rapidly the balance of contributions shifts from fan to spine with $\nu$, resulting in different trends in total Ohmic heating.}%
   \label{fig:balance_of_ohmic_heating}
 \end{figure}
 
@@ -546,12 +542,6 @@ An important, unexpected finding of this investigation is the spontaneous collap
 The effect of the form of viscosity on the collapse of the null is also explored in the two high-resolution simulations (of Section~\ref{sec:null_point_khi_single_case}) and it is found that in the switching case, where the KHI is unstable, the null collapses notably earlier than in the isotropic case, where the KHI is stable. It is unclear if the early null collapse is a consequence of the KHI or the use of the switching model. From the results of the isotropic case, the null collapse appears to be ultimately caused by slight asymmetries in the spine-aligned flows, so one may conjecture that, in the switching case, the KHI introduces its own asymmetries which cause the early collapse of the null. A higher resolution version of the unstable, isotropic case (where $\nu = 10^{-5}$ and $\eta=10^{-3}$) would provide clarity.
 
 It is unclear how the unravelling of the null as it collapses affects the ability of the null to undergo the kind of oscillatory reconnection found in~\cite{thurgoodThreedimensionalOscillatoryMagnetic2017}. One observed phase in the oscillatory process is the generation of back-pressure which halts and reverses the spine-fan reconnection process. It may be that a collapsing twisted null is unable to produce the required back-pressure if it unravels during its initial collapse. Running the high-resolution simulations reported here for a longer time would reveal if the particular setup studied here can generate oscillatory spine-fan reconnection. Alternatively, using a pre-twisted null point as an initial condition with the perturbation used to collapse the null found in~\cite{thurgoodThreedimensionalOscillatoryMagnetic2017} would provide a similar experiment.
-
-%\subsubsection{Limitations of the simulations}
-
-%In many of the results presented, the effect of the boundaries is small but apparent (for instance, where the KHI first appears along the diagonals of the $x-y$ plane) despite the use of a damping layer. 
-
-%In the simulations performed here, the resolution was set such that the same number of grid points were used in each direction. In hindsight, the resolution could have been better balanced by using more grid points in the relatively long $x$ and $y$ directions than the relatively short $z$ direction, although this would have impacted the resolution across the shear layers. A non-uniform grid could have been used, with higher resolution focused near the null point. This is commonly done in other studies of null point dynamics~\cite{wyperKelvinHelmholtzInstabilityCurrentvortex2013,thurgoodThreedimensionalOscillatoryMagnetic2017}.
 
 \section{Conclusions}
 \label{sec:khi_conclusions}
