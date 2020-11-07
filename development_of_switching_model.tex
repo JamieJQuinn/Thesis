@@ -110,13 +110,13 @@ The parameters $a_0$ and $\alpha$ control the effective size of the isotropic re
 
 In the numerical experiments performed in chapter~\ref{chp:null_point_khi}, the magnetic field strength increases linearly with distance from the null point and the grid separation is found to be $\Delta x \approx 0.014$. If we wish to consider the viscosity fully anisotropic at a radius of, say, ten grid points, the field at $x = 10 \Delta x$ is $|\vec{B}| = 0.14$, resulting in a calibrated $\alpha \approx 70$. The associated von Mises parameter would be $a_0 \approx 4900$. 
 
-\section{Implementation of viscosity in Lare3D}
+\section{Implementation of viscosity in Lare3d}
 
-The two types of viscosity already present in the Lare3D code are shock and isotropic viscosities. Since shock viscosity is turned off for most numerical experiments presented in this thesis, I shall only detail the numerical implementation of isotropic viscosity, before discussing the implementations of the Braginskii and switching models.
+The two types of viscosity already present in the Lare3d code are shock and isotropic viscosities. Since shock viscosity is turned off for most numerical experiments presented in this thesis, I shall only detail the numerical implementation of isotropic viscosity, before discussing the implementations of the Braginskii and switching models.
 
 \subsection{Review of the implementation of isotropic viscosity}
 
-The isotropic viscous stress tensor is implemented in Lare3D as six 3D arrays, each storing the values for the six required components of a symmetric stress tensor. These are filled during the Lagrangian step using equation~\eqref{eq:isotropic_viscous_tensor}, where the components of the strain rate tensor are calculated via equation~\eqref{eq:rate_of_strain}. This stress tensor is used in the calculation of forces in the momentum equation and in the calculation of viscous heat contribution in the energy equation. This entire process is presented in detail below.
+The isotropic viscous stress tensor is implemented in Lare3d as six 3D arrays, each storing the values for the six required components of a symmetric stress tensor. These are filled during the Lagrangian step using equation~\eqref{eq:isotropic_viscous_tensor}, where the components of the strain rate tensor are calculated via equation~\eqref{eq:rate_of_strain}. This stress tensor is used in the calculation of forces in the momentum equation and in the calculation of viscous heat contribution in the energy equation. This entire process is presented in detail below.
 
 The strain rate tensor $\ten{W}$ is calculated in the code as \verb|s*|
 \begin{verbatim}
@@ -201,7 +201,7 @@ Finally, the contribution from the Braginskii stress tensor is added to the tota
 \begin{verbatim}
 qxx = qxx + rho*bsxx
 \end{verbatim}
-and similar for the other components. A later calculation in Lare3D requires that the Braginskii stress tensor is multiplied by \verb|rho|.
+and similar for the other components. A later calculation in Lare3d requires that the Braginskii stress tensor is multiplied by \verb|rho|.
 
 \subsection{Implementation of the switching model}
 
