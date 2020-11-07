@@ -162,7 +162,7 @@ When the fluid is resistive, the dissipation of currents can heat the fluid thro
 
 \label{sec:mhd_equations}
 
-Combining the fluid equations~\eqref{eq:ns_continuity}--\eqref{eq:ns_energy} and the induction equation~\eqref{eq:induction_equation}, the full set of MHD equations can be written in their non-dimensionalised form
+Combining the fluid equations~\eqref{eq:ns_continuity}--\eqref{eq:ns_energy} and the induction~\eqref{eq:induction_equation}, the full set of MHD equations can be written in their non-dimensionalised form
 \begin{gather}
 %\begin{equation}
 \label{eq:mhda}
@@ -363,7 +363,9 @@ The parallel viscosity coefficient $\eta_0$ is identical to the dynamic viscosit
 \label{fig:visc_dep}%
 \end{figure}
 
-For simplicity, the dimensionless quantity $x = \omega \tau$ is used in the expressions for the remaining transport parameters, as is done in~\cite{braginskiiTransportProcessesPlasma1965}, and all coefficients have identical units to $\eta_0$. The two perpendicular coefficients are written,
+For simplicity, the dimensionless quantity $x = \omega \tau$ is used in the expressions for the remaining transport parameters, as is done in~\cite{braginskiiTransportProcessesPlasma1965}, and all coefficients have identical units to $\eta_0$. This quantity is alternatively written as $x = \alpha |\vec{B}|$ to reveal the dependence on the magnetic field strength, where $\alpha = e\tau/m$.
+
+The two perpendicular coefficients are written,
 \begin{equation}
   \label{eq:perp_visc_coeff}
   \eta_2(x) = \frac{\eta_0}{\Delta} \left( \tfrac{6}{5} x^2 + 2.23 \right), \quad \eta_1 = \eta_2(2x),
@@ -382,7 +384,7 @@ The relative strength of the five coefficients is important in considering which
 
 As has already been discussed, the origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. Collisions repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}. 
 
-While it is illustrative to understand from a kinetic perspective why the drift terms produce no dissipation, it can be shown explicitly for the terms given in equation~\eqref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^{(0)}$, $\ten{W}^{(1)}$ and $\ten{W}^{(2)}$, they are also orthogonal to $\ten{W}$. By equation~\eqref{eq:viscous_heat_generation2}, the drift terms cannot contribute to overall viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While these terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis focuses on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), they are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
+While it is illustrative to understand from a kinetic perspective why the drift terms produce no dissipation, it can be shown explicitly for the terms given in~\eqref{eq:drift_terms}. The strain rate tensor can be written as the sum of only the parallel and perpendicular terms, $\ten{W} = \ten{W}^{(0)} + \ten{W}^{(1)} + \ten{W}^{(2)}$. Since the drift terms are individually orthogonal to $\ten{W}^{(0)}$, $\ten{W}^{(1)}$ and $\ten{W}^{(2)}$, they are also orthogonal to $\ten{W}$. By~\eqref{eq:viscous_heat_generation2}, the drift terms cannot contribute to overall viscous dissipation. Furthermore, the relative size of the transport coefficients ($\eta_3 \propto \eta_0/(\omega\tau)$) suggests the drift terms may be completely neglected. While these terms can still meaningfully participate in certain dynamics~\cite{dellarPlanarChannelFlow2011,ferraroFiniteElementImplementation2006}, this thesis focuses on the impacts of viscosity on coronal heating and so the drift terms will be neglected throughout the remainder of this work. While a similar argument suggests the perpendicular terms should also be neglected ($\eta_1 \propto \eta_0/(\omega\tau)^2$), they are required to rewrite the Braginskii tensor in a form useful for numerical simulation, as discussed later.
 
 \subsection{Limit of strong magnetic field}
 
@@ -396,7 +398,7 @@ In a local coordinate system where the magnetic field is aligned with $\vec{e}_z
   \label{eq:z_aligned_strong_field_approx}
 \ten{\sigma}_{\text{brag}} = \tfrac{3}{2} \eta_0 W_{zz} ( \vec{e}_z \otimes \vec{e}_z - \tfrac{1}{3} \ten{I}),
 \end{equation}
-where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor, equation~\eqref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
+where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only velocity gradient to enter into the above tensor is that which is aligned with the magnetic field (including gradients stemming from the compressional $\nabla \cdot \vec{u}$ term in the rate of strain tensor~\eqref{eq:rate_of_strain}). It can also be seen that the magnetic field has no effect on the component of viscosity parallel to the field; it is identical to the corresponding component in the isotropic stress tensor,
 \begin{equation}
   \label{eq:z_aligned_iso}
   (\sigma_{\text{iso}})_{zz} = (\sigma_{\text{brag}})_{zz} = \eta_0 W_{zz}.
@@ -407,7 +409,7 @@ This approximation is valid even for quiet Sun conditions, where $\omega\tau \ap
 
 \subsection{Limit of weak magnetic field}
 
-While the full Braginskii tensor~\eqref{eq:braginskii_tensor} presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $\vec{b}$ in equations~\eqref{eq:braginskii_parallel_term}--\eqref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $\vec{b}$ involves division by the magnitude of the field which is a quantity close to or exactly zero near a null point, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of equation~\eqref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
+While the full Braginskii tensor~\eqref{eq:braginskii_tensor} presents the natural separation of viscous responses into parallel, perpendicular and drift components, this form is unsuitable for numerical simulation when null points are present in the magnetic field. As the field strength goes to zero approaching a null point, the unit vector $\vec{b}$ in equations~\eqref{eq:braginskii_parallel_term}--\eqref{eq:drift_terms} becomes mathematically undefined. Numerically, the calculation of $\vec{b}$ involves division by the magnitude of the field which is a quantity close to or exactly zero near a null point, leading to errors or complete failure of the numerical scheme. Even if a numerical implementation were to check for a locally small field, it's unclear how the viscous terms and transport coefficients, as written in the form of~\eqref{eq:braginskii_tensor}, interact as the field strength tends to zero. By rewriting the tensor as
 \begin{eqnarray}\label{eq:brag_new}
 \ten{\sigma}_{\rm brag} = &&\frac{3\eta_0+\eta_1-4\eta_2}{2|\vec{B}|^4}(\ten{W}\vec{B}\cdot\vec{B})(\vec{B}\otimes\vec{B})\\
 \nonumber
@@ -417,7 +419,7 @@ While the full Braginskii tensor~\eqref{eq:braginskii_tensor} presents the natur
 \nonumber
 & &+~ \eta_1\ten{W},
 \end{eqnarray}
-the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in equation~\eqref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
+the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in~\eqref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
 
 Similar to the strong-field limit, it can be shown that the magnetic field in the weak-field limit has no effect on the field-aligned component of momentum transport in~\eqref{eq:brag_new}. That is, ~\eqref{eq:z_aligned_iso} still holds.
 

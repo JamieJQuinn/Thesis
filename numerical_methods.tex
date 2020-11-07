@@ -79,12 +79,12 @@ and similarly the derivative of pressure (or any of the other cell-centred varia
 The Lagrangian step uses a kind of predictor-corrector scheme to advance the system one timestep\footnote{It is unclear whether this type of numerical integration scheme could be considered a ``true'' predictor-corrector scheme or a form of explicit Runge-Kutta method. Predictor-corrector schemes typically provide a prediction of the system at a single advanced timestep using an explicit method and then correct the values at that timestep using an implicit method~\cite{butcherNumericalMethodsOrdinary2004}. In contrast, an explicit Runge-Kutta scheme advances the system using multiple approximate solutions at intermediate timesteps. It is my opinion that this scheme is better described as a Runge-Kutta method however the full 3D MHD code, Lare3d, and its corresponding literature~\cite{arberStaggeredGridLagrangian2001} use predictor-corrector nomenclature, so those terms are used here for consistency with~\cite{arberStaggeredGridLagrangian2001}.}. Each timestep is split into two substeps, the first calculating an approximation of the pressure, and the second using this pressure to advance all other variables to the next full timestep. Here, the current timestep is denoted as timestep $n$, the predictor step advances the pressure to timestep $n+1/2$ and then finally the corrector step advances the remaining variables to timestep $n+1$.
 
 \paragraph{The predictor step}
-It can be shown by Taylor expansion that calculating $u^{n+1}$, $\varepsilon^{n+1}$ and $\rho^{n+1}$ to second order only requires calculating $p^{n+1/2}$ to first order. Using equation~\eqref{eqn-Lare1d-equation-of-state},
+It can be shown by Taylor expansion that calculating $u^{n+1}$, $\varepsilon^{n+1}$ and $\rho^{n+1}$ to second order only requires calculating $p^{n+1/2}$ to first order. Using~\eqref{eqn-Lare1d-equation-of-state},
 \begin{equation}
   p_i^{n+1/2} = \varepsilon_i^{n+1/2}(\gamma-1)\rho_i^{n+1/2}.
   \label{eqn-predictor-pressure}
 \end{equation}
-The energy density at the half timestep is calculated from the discretisation of equation~\eqref{eqn-Lare1d-energy},
+The energy density at the half timestep is calculated from the discretisation of~\eqref{eqn-Lare1d-energy},
 \begin{equation}
   \varepsilon_i^{n+1/2} = \varepsilon_i^{n} - \frac{dt}{2} \frac{1}{\rho_i^n} \frac{u_i^n - u_{i-1}^n}{dxb_i^n}p_i^{n+1/2}.
   \label{eqn-predictor-energy}
@@ -106,7 +106,7 @@ This is fed into the calculation of the change in volume to give the updated den
 
 \paragraph{The corrector step}
 \label{sec-corrector-step}
-After the half timestep pressure has been calculated, the velocity, energy and grid spacing are all advanced to time index $n+1$. The velocity is updated through the discretisation of equation~\eqref{eqn-Lare1d-velocity},
+After the half timestep pressure has been calculated, the velocity, energy and grid spacing are all advanced to time index $n+1$. The velocity is updated through the discretisation of~\eqref{eqn-Lare1d-velocity},
 \begin{equation}
   u_i^{n+1} = u_i^n - dt \frac{1}{\rho^n_{i+1/2}}\frac{p^{n+1/2}_{i+1} - p^{n+1/2}_i}{dxc_i^n},
   \label{}
@@ -123,7 +123,7 @@ In order to advance the remaining variables the half timestep value for the velo
   u_i^{n+1/2} = \frac{1}{2}(u_i^{n} + u_i^{n+1}).
   \label{}
 \end{equation}
-This allows the advancement of the energy to the next full timestep, calculated from the discretisation of equation~\eqref{eqn-Lare1d-energy},
+This allows the advancement of the energy to the next full timestep, calculated from the discretisation of~\eqref{eqn-Lare1d-energy},
 \begin{equation}
   \varepsilon_i^{n+1} = \varepsilon_i^{n} - dt \frac{1}{\rho_i^n} \frac{u_i^{n+1/2} - u_{i-1}^{n+1/2}}{dxb_i^n}p_i^{n+1/2}.
   \label{}
@@ -159,7 +159,7 @@ During a single Lagrangian step an amount of mass $dM_i$ leaves the $i$-th Euler
   \rho^{n+1}_i dxb_i = \rho'_i dxb'_i - dM_i + dM_{i-1},
   \label{eqn-remap-mass-in-cell}
 \end{equation}
-where $\rho_i$ without the dash denotes the density before the Lagrangian step, $\rho'_i$ denotes the density of the $i$-th cell after a Lagrangian step (but before the remap step) and $\rho_i^{n+1}$ to denote the final density after the remap step. Note that the grid spacing is remapped to its original Eulerian value so $dxb^{n+1}_i = dxb_i$. By conservation of mass during the Lagrangian step, $\rho_i dxb_i = \rho'_i dxb'_i$ and equation~\eqref{eqn-remap-mass-in-cell} becomes
+where $\rho_i$ without the dash denotes the density before the Lagrangian step, $\rho'_i$ denotes the density of the $i$-th cell after a Lagrangian step (but before the remap step) and $\rho_i^{n+1}$ to denote the final density after the remap step. Note that the grid spacing is remapped to its original Eulerian value so $dxb^{n+1}_i = dxb_i$. By conservation of mass during the Lagrangian step, $\rho_i dxb_i = \rho'_i dxb'_i$ and~\eqref{eqn-remap-mass-in-cell} becomes
 \begin{equation}
   \rho^{n+1}_i = \rho_i + \frac{1}{dxb_i} (dM_{i-1} - dM_i).
   \label{eqn-remap-density}
@@ -191,7 +191,7 @@ The corresponding method for variables located at the boundaries uses a similar 
 dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\partial x'} \right) \bar{u}_i dt,
 \label{eqn-remap-mass-diff}
 \end{equation} 
-and feeding that into equation~\eqref{eqn-remap-density} completes the density remap.
+and feeding that into~\eqref{eqn-remap-density} completes the density remap.
 
 \subsection{The Specific Energy Density Remap}
 At this point in the algorithm, the mass leaving the $i$-th cell $dM_i$ has already been calculated and this is used to form a change of coordinates, from $x$-coordinates to mass coordinates, denoted by $\xi$, which is used to remap the remaining variables. The distance $dxb_i$ can be written in mass coordinates as
@@ -242,7 +242,7 @@ to rewrite $dE_i$ as
   dE_i = \left( \varepsilon_i' + \frac{1}{2}dxb_i\frac{\partial \varepsilon_i'}{\partial x} \left( 1 - \frac{dM_i}{\rho_i dxb_i} \right) \right)dM_i,
   \label{eqn-remap-energy-difference}
 \end{equation}
-where, in practice, calculation of $\partial \varepsilon_i'/\partial\xi$ is again performed using a flux limiter (discussed in section~\ref{sec-flux-limiters}). Feeding this final equation into equation~\eqref{eqn-remap-specific-energy-density} completes the specific energy density remap.
+where, in practice, calculation of $\partial \varepsilon_i'/\partial\xi$ is again performed using a flux limiter (discussed in section~\ref{sec-flux-limiters}). Feeding this final equation into~\eqref{eqn-remap-specific-energy-density} completes the specific energy density remap.
 
 \subsection{The velocity remap}
 \label{sec-remap-velocity}
@@ -318,7 +318,7 @@ s =
 	\end{array}
 \right.
 \end{equation}
-The action of this second part of the limiter, represented by $s$, can be understood by considering a few example cases. The outputted gradient is only non-zero when the gradient $D_i$ aligns with neighbouring gradients, that is the signs of the gradients are all equal, as is the case in figure~\ref{fig:van_leer_flux_limiter}. In this case, the outputted slope is either the original slope if the monotonicity conditions are met, or a first-order approximation otherwise, as given by equation~\eqref{eq:flux_limiter3}. In all other cases, for example where the cell $i$ represents a maxima or minima, the outputted gradient is zero to ensure monotonicity.
+The action of this second part of the limiter, represented by $s$, can be understood by considering a few example cases. The outputted gradient is only non-zero when the gradient $D_i$ aligns with neighbouring gradients, that is the signs of the gradients are all equal, as is the case in figure~\ref{fig:van_leer_flux_limiter}. In this case, the outputted slope is either the original slope if the monotonicity conditions are met, or a first-order approximation otherwise, as given by~\eqref{eq:flux_limiter3}. In all other cases, for example where the cell $i$ represents a maxima or minima, the outputted gradient is zero to ensure monotonicity.
 
 \subsection{Shock Viscosity}
 
@@ -339,16 +339,16 @@ The major difference between the 1D and 3D schemes is in the choice of staggered
 
 The Lagrangian step in 3D remains relatively similar to that in 1D, with the exception that the MHD equations are solved in place of the Euler equations. The solenoidal condition on the magnetic field $\nabla \cdot \vec{B} =0$ is maintained to machine precision by solving for the induction equation using constrained transport~\cite{evansSimulationMagnetohydrodynamicFlows1988a}. The remap step in 3D is analogous to the 1D remap process, merely requiring a more complex geometrical argument. 
 
-In the full 3D code, the shock viscosity given in equation~\eqref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
+In the full 3D code, the shock viscosity given in~\eqref{eq:artificial_viscosity} is extended to include 3D, MHD shocks. The viscosity, modelled as a tensor similar to that of Newtonian viscosity, takes the form
 \begin{equation}
   \label{eq:3d_shock_viscosity}
 \ten{\sigma}_{shock} = (c_1 \rho c_f L |s| + c_2 L^2 \rho s^2) \ten{W},
 \end{equation}
-where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks, equation~\eqref{eq:3d_shock_viscosity} reduces to equation~\eqref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
+where the scalar quantity $q$ has been modified to include $L$ and $s$ as the grid length and strain rate, both measured in the direction of the acceleration, and $c_f$ is the fast mode speed. For 1D hydrodynamic shocks~\eqref{eq:3d_shock_viscosity} reduces to~\eqref{eq:artificial_viscosity}. Viscosity in this form has the advantage of being negligible everywhere except the locations where a compressional shock is present. Since shock viscosity applied in this way is a numerical tool originally developed for hydrodynamic purposes, it is unclear if this an appropriate tool for use in MHD shocks, where the viscosity is intrinsically anisotropic. A more complex model of shock viscosity which includes the effect of the magnetic field while still adequately capturing shocks would be more appropriate. For this reason, the shock viscosity is turned off in all 3D numerical experiments in proceeding chapters, to ensure it does not influence the investigation of anisotropic viscosity. The shock viscosity is enabled in the 1D code described here, however.
 
 \section{Results of numerical tests}
 
-Lare1d was tested using the Sod shock tube problem. The problem was used to run parameter studies over the two shock viscosity parameters to identify optimal values which minimise a given error function. The optimal values found indicate that the linear shock viscosity term, the first term in equation~\eqref{eq:artificial_viscosity}, is mostly sufficient for this problem. Other parameter choices give benefits that are not quantified by the chosen error function.
+Lare1d was tested using the Sod shock tube problem. The problem was used to run parameter studies over the two shock viscosity parameters to identify optimal values which minimise a given error function. The optimal values found indicate that the linear shock viscosity term, the first term in~\eqref{eq:artificial_viscosity}, is mostly sufficient for this problem. Other parameter choices give benefits that are not quantified by the chosen error function.
 
 \begin{figure}[t]
   \centering
@@ -438,7 +438,7 @@ E_N = \frac{1}{3N} \left(
 + \sum_{i=0}^{N-1} \norm{\rho_i - \rho(x_i)}_2
 + \sum_{i=0}^{N-1} \norm{u_i - u(x_i)}_2 \right).
 \end{equation}
-This is only one possible way to evaluate a numerical solution. As shall be seen later, certain choices of parameters lead to numerical solutions which are closest to the analytical solution in that they minimise $E_N$ for a given $N$, however other parameter choices better resolve features like steep gradients at the expense of an increase in global error. Since this is only a toy problem, I will not attempt to quantify such trade-offs here, opting to use the simple error measure given by equation~\eqref{eq:total_error}.
+This is only one possible way to evaluate a numerical solution. As shall be seen later, certain choices of parameters lead to numerical solutions which are closest to the analytical solution in that they minimise $E_N$ for a given $N$, however other parameter choices better resolve features like steep gradients at the expense of an increase in global error. Since this is only a toy problem, I will not attempt to quantify such trade-offs here, opting to use the simple error measure given by~\eqref{eq:total_error}.
 
 \begin{figure}[t]
     \hfill
@@ -454,7 +454,7 @@ This is only one possible way to evaluate a numerical solution. As shall be seen
       \caption{Focused parameter search}%
       \label{fig:shock_parameter_search}
     \end{subfigure}
-    \mycaption{Wide and focused parameter searches over the shock viscosity parameters $c_1$ and $c_2$.}{Optimal values of $c_1 = 0.77$ and $c_2 = 0$ (crosses) are estimated as those values which minimise the error given by equation~\eqref{eq:total_error}. The colour is added to aid visibility and represents the error $E$. }
+    \mycaption{Wide and focused parameter searches over the shock viscosity parameters $c_1$ and $c_2$.}{Optimal values of $c_1 = 0.77$ and $c_2 = 0$ (crosses) are estimated as those values which minimise the error given by~\eqref{eq:total_error}. The colour is added to aid visibility and represents the error $E$. }
 \label{fig:shock_parameter_searches}%
 \end{figure}
 
@@ -467,7 +467,7 @@ Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ a
   \label{fig:shock_viscosity_variables}
 \end{figure}
 
-While the values $c_1 = 0.77$ and $c_2 = 0$ minimise the error given in equation~\eqref{eq:total_error}, using a lower $c_1$ and higher $c_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). Without any shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using values of $c_1 = 0.77$ and $c_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, at the expense of the shock being smeared over many grid points. Using values of $c_1 = 0.1$ and $c_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot and tracks the shock location better than no shock viscosity. Although using these values result in a more accurate, steeper shock gradient, the values $c_1 = 0.77$ and $c_2 = 0$ track the shock location more accurately. As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
+While the values $c_1 = 0.77$ and $c_2 = 0$ minimise the error given in~\eqref{eq:total_error}, using a lower $c_1$ and higher $c_2$ more accurately maintains the steep shock gradient, at the expense of less effectively tracking the shock location (figure~\ref{fig:shock_viscosity_variables}). Without any shock viscosity the solution overshoots the true value behind the shock and does not effectively track the shock's position. Using values of $c_1 = 0.77$ and $c_2 = 0$ removes the overshoot and appears to track the approximate location of the shock well, at the expense of the shock being smeared over many grid points. Using values of $c_1 = 0.1$ and $c_2 = 1.0$, as is done in~\cite{arberStaggeredGridLagrangian2001}, removes the overshoot and tracks the shock location better than no shock viscosity. Although using these values result in a more accurate, steeper shock gradient, the values $c_1 = 0.77$ and $c_2 = 0$ track the shock location more accurately. As with many optimisation problems, choosing shock viscosity parameters requires balancing which aspects of the shock are considered crucial to a specific problem. 
 
 \subsubsection{Effect of resolution}
 
@@ -481,7 +481,7 @@ While the values $c_1 = 0.77$ and $c_2 = 0$ minimise the error given in equation
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.5\linewidth]{effect_of_res_on_error.pdf}
-  \mycaption{Numerical error as a function of resolution.}{Each data point represents a simulation run with the optimal shock parameter values to $t=0.2$ using a resolution $N$. The error is calculated via equation~\eqref{eq:total_error}.}%
+  \mycaption{Numerical error as a function of resolution.}{Each data point represents a simulation run with the optimal shock parameter values to $t=0.2$ using a resolution $N$. The error is calculated via~\eqref{eq:total_error}.}%
   \label{fig:effect_of_res_on_error}
 \end{figure}
 
