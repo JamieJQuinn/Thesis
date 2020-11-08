@@ -290,7 +290,7 @@ Any oscillation which is generated in the wake of a shock generates local maxima
   \label{fig:van_leer_flux_limiter}
 \end{figure}
 
-Consider the cells shown in figure~\ref{fig:van_leer_flux_limiter}, where we wish to calculate the gradient of the quantity $f$ at the index $i$. This scheme is valid regardless of method of discretisation of the gradient so we label this gradient $D_i$ for now. The monotonicity requirement of van Leer requires the value of $f$, extrapolated to the boundary to the right, to be less than the average value of that cell, $f_{i+1}$. For a cell centred variable, this condition can be written
+Consider the cells shown in figure~\ref{fig:van_leer_flux_limiter}, where we wish to calculate the gradient of the quantity $f$ at the index $i$. This scheme is valid regardless of method of discretisation of the gradient so this gradient is labelled $D_i$ for now. The monotonicity requirement of van Leer requires the value of $f$, extrapolated to the boundary to the right, to be less than the average value of that cell, $f_{i+1}$. For a cell centred variable, this condition can be written
 \begin{equation}
   \label{eq:flux_limiter1}
 f_i + \tfrac{1}{2}D_i^{mono} dxb_i < f_{i+1}, \quad \text{or,} \quad D_i^{mono} < 2 (f_{i+1} - f_i) / dxb_i.
