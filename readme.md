@@ -52,21 +52,21 @@ The `makefile` in this chapter can be used to run all notebooks at once. To inte
 
 ### null_point_khi
 
-`exploratory_data_analysis.Rmd` - exploratory analysis
-`khi_typical_case.Rmd` - single case analysis
-`parameter_study.Rmd` - parameter study analysis
-`field_line_integrator.Rmd` - development of field line integrator (does not produce figures)
-`fan_plane_integrator.Rmd` - development of fan plane integrator (does not produce figures)
-`sdf_file_subsampler.Rmd` - notebook used to extract and save parts of the SDF files for more efficient analysis
+- `khi_typical_case.Rmd` - single case analysis
+- `parameter_study.Rmd` - parameter study analysis
+- `exploratory_data_analysis.Rmd` - exploratory analysis (does not produce figures)
+- `field_line_integrator.Rmd` - development of field line integrator (does not produce figures)
+- `fan_plane_integrator.Rmd` - development of fan plane integrator (does not produce figures)
+- `sdf_file_subsampler.Rmd` - notebook used to extract and save parts of the SDF files for more efficient analysis (does not produce figures)
 
 ### shared
 
-`energy.py` - functions for manipulating and plotting the continuous energy outputs from `lare3d` stored in `en.dat` files
-`fan_plane_integrator.py` - functions for integrating around the fan plane in chapter 6 (null_point_khi)
-`field_line_integrator.py` - functions for integrating along field lines in chapters 5 and 6
-`parameters.py` - holds relevant physical parameters used in the simulations
-`plotting.py` - functions for plotting
-`sdf_helper.py` - functions for manipulating SDF files
+- `energy.py` - functions for manipulating and plotting the continuous energy outputs from `lare3d` stored in `en.dat` files
+- `fan_plane_integrator.py` - functions for integrating around the fan plane in chapter 6 (null_point_khi)
+- `field_line_integrator.py` - functions for integrating along field lines in chapters 5 and 6
+- `parameters.py` - holds relevant physical parameters used in the simulations
+- `plotting.py` - functions for plotting
+- `sdf_helper.py` - functions for manipulating SDF files
 
 ## Building the thesis
 
@@ -119,6 +119,10 @@ Run notebook:
 [in code/<project>]
 pipenv run jupyter <notebook>
 ```
+
+## Plotting field lines
+
+The field lines are not plotted in jupyter notebooks. These are, instead, plotted using the package VisIt. The plotting scripts can be found in the `field_line_plots` folder. A field line plot is produced by specifying the input SDF files in the `fill_filelist.sh` script and calling `make`. This runs VisIt with the plotting script `plot.py`. This script is mostly constructed from the output from VisIt's Macro feature which records the user's actions in the GUI and represents them programatically. Saving this output in `plot.py` allows quick reproduction of a figure.
 
 ## Reproduction of simulation data
 
