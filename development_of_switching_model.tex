@@ -26,7 +26,9 @@ In strong magnetic fields, the Braginskii tensor can be approximated by the para
 
 Figure~\ref{fig:brag_coeffs2} presents the magnitudes of the coefficients of each of the terms in tensor~\eqref{eq:brag_new2} where $\alpha = e\tau/m = 10^{8}$ (recall that the coefficients $\eta_1$ and $\eta_2$ are defined in terms of the quantity $x = \omega \tau =\alpha |\vec{B}|$). Over the extremely small range between $|\vec{B}| = 0$ T and $10^{-7}$ T, the Braginskii tensor goes from completely isotropic to nearly completely parallel. Over the same range the coefficient corresponding to the perpendicular viscosity becomes relatively significant before tending to zero for large $|\vec{B}|$. The small transition region presents a problem in the numerical simulation of anisotropic viscosity, where the magnetic field strength likely changes more rapidly in space than can be captured by the coefficients in~\eqref{eq:brag_new2} when applied on a discretised grid. This is illustrated by an example.
 
-In the simulations of magnetic null points found later in section~\ref{sec:slow_null_point}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ per dimension to even begin to resolve the region of transition. Whether this region is physically significant or not is unknown, however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. At the resolutions typically studied in general 3D MHD simulations (between $300$ and $1000$ grid points per dimension) the isotropic regions in the vicinity of null points are likely to be poorly resolved. This is particularly true in simulations where null points are not the main focus of the simulation, but are dynamically created by some process.
+In the simulations of magnetic null points found later in section~\ref{sec:slow_null_point}, the magnetic field strength changes linearly in the $x$-direction. Given a typical grid spacing of $\Delta x = 0.01$, the jump in magnetic field from one grid point to the next is $5\times 10^{-5}$ T. This is much greater than the range over which the Braginskii tensor transitions between isotropic and anisotropic regimes and the viscous response is under-resolved as a result. For these simulations, the resolution would have to increase by a factor of $100$ per dimension to even begin to resolve the region of transition. Whether this region is physically significant or not is unknown,\todo{consider expanding to mention fragmented current
+layers at nulls, also the heliospheric current layer. Large-scale and weak field.
+} however, given the abundance of observable null points and their involvement in high-energy phenomena, it is possible that the isotropic (and perpendicular) viscosity near a null plays an important part in its dynamics. At the resolutions typically studied in general 3D MHD simulations (between $300$ and $1000$ grid points per dimension) the isotropic regions in the vicinity of null points are likely to be poorly resolved. This is particularly true in simulations where null points are not the main focus of the simulation, but are dynamically created by some process.
 
 Computational solutions such as refining the mesh near the null or implementing a multigrid method may help to improve the resolution of a given simulation and better resolve the viscosity transition region, however such approaches can be complex to implement in existing codes. An alternative to improving the resolution itself is to artificially scale $|\vec{B}|$ in the expression for the parallel Braginskii transport parameter~\eqref{eq:perp_visc_coeff} in order to enlarge the isotropic region to resolvable scales. This is done by artificially setting $\alpha$ in the argument $x$ of the parallel and perpendicular coefficients in~\eqref{eq:perp_visc_coeff} and~\eqref{eq:drift_visc_coeff} to a value other than its physical value.
 
@@ -71,7 +73,7 @@ The von Mises switching function was originally developed by MacTaggart and Verg
   \label{eq:switching_function}
 s(|\vec{B}|) = \frac{3 \exp[2a]}{2\sqrt{2\pi a} \text{erfi}[\sqrt{2a}]} - \frac{1}{2}\left[ 1 + \frac{3}{4a} \right],
 \end{equation}
-and $a(|\vec{B}|)$ is a constitutive function controlling the sensitivity of the interpolation function to changes in magnetic field strength. Here, erfi is the imaginary error function. Where this model is used in throughout this thesis, the choice $a(|\vec{B}|) = a_0 |\vec{B}|^2$ is made, where $a_0$ is a parameter which controls the size of the isotropic region near magnetic null points. 
+and $a(|\vec{B}|)$ is a constitutive function controlling the sensitivity of the interpolation function to changes in magnetic field strength. Here, erfi is the imaginary error function. Where this model is used throughout this thesis, the choice $a(|\vec{B}|) = a_0 |\vec{B}|^2$ is made, where $a_0$ is a parameter which controls the size of the isotropic region near magnetic null points. 
 
 For more efficient evaluation of~\eqref{eq:switching_function}, it is approximated and implemented numerically using a piecewise polynomial spline. For $a < 0.5051$, the function is clamped to $s=0$ and for $a > 29.41$, $s=1$. Between these cut-offs, $s^2$ is approximated using eight splines. The upper cut-off gives the halo effect in the results presented later in section~\ref{sec:slow_null_point}. The function~\eqref{eq:switching_function}, its square and its spline approximation are plotted in figure~\ref{fig:s_against_a}. 
 
@@ -222,7 +224,7 @@ As discussed in section~\ref{sec:switching_function}, the von Mises switching fu
 
 \label{sec:slow_null_point}
 
-As a test of the switching model in a non-trivial topology, a series of simulations of magnetic null points subjected to twisting motions were carried out. Isotropic, full Braginskii and switching viscosity, with the three switching functions presented here, were used and the results compared.
+As a test of the switching model in a non-trivial topology, a series of simulations of magnetic null points subjected to twisting motions were carried out. Isotropic, full Braginskii and switching viscosity, with the three switching functions presented here, were used and the results compared. The shock viscosity was turned off in every experiment.
 
 \subsection{Numerical setup}
 
@@ -250,7 +252,9 @@ u_y' = \left\{\begin{array}{cc}
 \end{equation}
 where $r^2=x^2+y^2$. On the opposite boundary, the twisting motion is reversed. The maximum driving velocity is set to $v_0 = 0.05$. The acceleration parameters are set to $t_0 = 2$, the time at which the velocity is half its maximum, and $t_d = 1$, resulting in maximum velocity being achieved around $t\approx4$. On the boundaries, all other variables keep their initial values and the derivatives through each boundary is zero.
 
-For comparison between the switching models, the switching parameters are set to $\alpha = 6$ and $a_0 = \alpha^2 = 36$. This dramatically exaggerates the size of the isotropic region around the null point and allows good comparison of the viscosity models.
+For comparison between the switching models, the switching parameters are set to $\alpha = 6$ and $a_0 = \alpha^2 = 36$. This dramatically exaggerates the size of the isotropic region around the null point and allows good comparison of the viscosity models. These parameter choices result in the viscosity being nearly fully parallel at a distance of around $0.8$ from the centre of the null point. From the centre to this distance, the viscosity transitions from isotropic to fully parallel.
+
+\todo{add labels to all 2d slices}
 
 \subsection{Results}
 
@@ -407,6 +411,6 @@ In chapters~\ref{chp:kink_instability} and~\ref{chp:kink_instability_straight} t
       \label{fig:diff_switching3_resolution}
     \end{subfigure}
 
-    \mycaption{The effect of resolution on anisotropic heating rates.}{The anisotropic heating rate is plotted at resolutions of $100$ (left of each plot) and $500$ (right of each plot) grid points per dimension and both plots are slices through $x=0$ at $t=5$. When the null point is less resolved (left half of both figures) Braginskii viscosity erroneously permits anisotropic heating at the null. At higher resolutions (left half of both figures) the null is better resolved and much less anisotropic viscous heating is found at the null. All switching models avoid this issue.}
+    \mycaption{The effect of resolution on anisotropic heating rates.}{The anisotropic heating rate is plotted at resolutions of $100$ (left of each plot) and $500$ (right of each plot) grid points per dimension and both plots are slices through $x=0$ at $t=5$. When the null point is less resolved (left half of both figures) Braginskii viscosity erroneously permits anisotropic heating at the null. At higher resolutions (right half of both figures) the null is better resolved and much less anisotropic viscous heating is found at the null. All switching models avoid this issue.}
 \label{fig:anisotropy_bleeding}%
 \end{figure}
