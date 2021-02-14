@@ -26,7 +26,9 @@ Above (and including) the photosphere is the atmosphere of the Sun, consisting o
 
 The solar corona, the layer of focus for the remainder of this thesis, is the outermost region of the Sun, characterised by extremely high temperatures, low densities and a topologically complex magnetic field. With coronal plasmas reaching temperatures of $1$--$10$ MK, the corona emits predominantly in extreme ultraviolet and X-ray wavelengths, observable only by space-based instrumentation. The part of the corona visible to the human eye can typically only be seen during solar eclipses, where the corona appears to surround the Sun like a crown, hence the name. Due to the near-complete ionisation of plasma in the (low) corona, it is strongly coupled to the coronal magnetic field. Due to the low density, the plasma beta $\beta$ (a measure of the dominance of plasma versus magnetic pressures) is extremely small and dynamics in the corona are heavily dominated by magnetic forces as a result. Higher in the corona, $\beta$ can become larger~\cite{gomezPlasmaUpbetaEvolution2019}. Observationally, the corona appears inhomogeneous mainly due to the coronal plasma being mostly confined to hydromagnetic structures known as coronal loops. These are tubes of plasma contained within magnetic flux ropes, arch-like in shape with footpoints anchored in the high-$\beta$ photosphere and with lengths of $1$-$100$ Mm. Since heat flux within the corona is mostly directed along magnetic field lines, the loops are typically well insulated and are unable to homogenise differences in temperatures between neighbouring loops. The differences in temperatures, and thus densities, between loops manifests as differences in emission intensity. This allows clear observation of loops which are hotter and brighter than their neighbours (for example, in figure~\ref{fig:coronal_loops}).
 
-The most dynamically exciting loops are those which create flares, releasing their stored magnetic energy as heat, radiation and through particle acceleration. Some flaring loops are capable of ejecting a large proportion of their mass into space as coronal mass ejections. The nanoflare theory of coronal heating posits that many small flares can collectively heat the corona to its observed temperature. This is just one theory which attempts to solve the coronal heating problem.
+The most dynamically exciting loops are those which create flares, releasing their stored magnetic energy as heat, radiation and through particle acceleration. Some flaring loops are capable of ejecting a large proportion of their mass into space as coronal mass ejections. The nanoflare theory of coronal heating posits that many small flares can collectively heat the corona to its observed temperature~\cite{parkerReconnectionRateMagnetic1973}. This is just one theory which attempts to solve the coronal heating problem.
+
+\todo{Add labels to axes on plots}
 
 \subsection{Coronal heating problem}
 
@@ -57,7 +59,7 @@ Using this non-dimensionalisation scheme the Reynolds number is given $Re = 1/\n
 
 Comparing the transport parameters for each dissipation mechanism suggests viscous heating should outperform Ohmic heating by several orders of magnitude. Indeed, many studies provide evidence to this effect~\cite{browningMechanismsSolarCoronal1991,craigViscousDissipation3D2013,craigAnisotropicViscousDissipation2009a,armstrongViscoResistiveDissipation2013,hollwegViscosityChewGoldbergerLowEquations1986a}. However, these parameters are unlikely to reflect the true degree of dissipation in the solar corona due to the influence of various effects which can enhance the effective dissipation beyond the values found via~\eqref{eq:nu_and_eta}. 
 
-Turbulence can enhance viscosity~\cite{canutoTurbulentViscosity1988} and many mechanisms for the anomalous enhancement of resistivity have been suggested, including turbulence~\cite{cheHowAnomalousResistivity2017} and the impact of electron scattering~\cite{maEffectiveResistivityCollisionless2018}. The degree to which either dissipation mechanism is enhanced in the solar corona is difficult to estimate, however some studies have attempted to infer the effective transport parameters from observations of wave motions in coronal loops~\cite{nakariakovTRACEObservationDamped1999}, although results are disputed~\cite{klimchukCoronalSeismologyPropagation2004}. A further complication in attempting to model dissipation in the solar corona is that it is still unknown how far the collisional approximation holds~\cite{klimchukSolvingCoronalHeating2006a}.
+Turbulence can enhance viscosity~\cite{canutoTurbulentViscosity1988} and many mechanisms for the anomalous enhancement of resistivity have been suggested, including turbulence~\cite{cheHowAnomalousResistivity2017} and the impact of electron scattering~\cite{maEffectiveResistivityCollisionless2018}. The degree to which either dissipation mechanism is enhanced in the solar corona is difficult to estimate, however some studies have attempted to infer the effective transport parameters from observations of wave motions in coronal loops~\cite{nakariakovTRACEObservationDamped1999}, although results are disputed~\cite{klimchukCoronalSeismologyPropagation2004}. A further complication in attempting to model dissipation in the solar corona is that it is still unknown how far the collisional approximation holds~\cite{klimchukSolvingCoronalHeating2006a}. While the MHD solver Lare3d (discussed in chapter~\ref{chp:numerical_methods}) features a model of anomalous resistivity (used, for example, in~\cite{hoodCoronalHeatingMagnetic2009,barefordShockHeatingNumerical2015}) only uniform, background resistivity is used throughout this thesis.
 
 Due to numerical diffusion present in any numerical scheme~\cite{ferzigerComputationalMethodsFluid2002}, state of the art, 3D numerical experiments are only able to probe diffusion parameters down to approximately $10^{-5}$ (non-dimensional). While this theoretically reaches the bounds of realistic viscosity, it is not close to even enhanced estimates of resistivity. Until numerical techniques and computational resources become sophisticated enough to probe realistic (enhanced or otherwise) dissipation parameters, the true nature of dissipation in the solar corona remains unclear. At best, the community can infer the importance of these and other dissipation mechanisms by constructing scaling laws for computationally feasible parameters, as is done in~\cite{craigViscousDissipation3D2013}.
 
@@ -129,7 +131,7 @@ where $\sigma$ is the (finite) conductivity of the fluid. The Lorentz transforma
   \label{eq:resistive_ohms_law}
   {\vec {E}}+{\vec{u}}\times {\vec {B}}=\eta{\vec {\jmath}},
 \end{equation}
-where the conductivity has been rewritten as the resistivity $\eta = 1/\sigma$. In the case of perfect conductivity, Ohm's law is written
+where the conductivity has been rewritten as the resistivity $\eta = 1/\sigma$. In the case of perfect conductivity, as in ideal MHD, Ohm's law is written
 \begin{equation}
   \label{eq:ideal_ohms_law}
   {\vec {E}}+{\vec{u}}\times {\vec {B}}=0.
@@ -141,7 +143,7 @@ Combining the remaining parts of Ampère's law, the Maxwell-Faraday equation, an
   \label{eq:nonsimple_induction_equation}
 {\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) - \nabla \times (\eta/\mu_0 \nabla \times \vec{B}),
 \end{equation}
-which, in the case of uniform resistivity, may be written
+which, in the case of uniform resistivity, may be written using~\eqref{eq:gauss_law_for_magnetism} as
 \begin{equation}
   \label{eq:induction_equation}
 {\frac {\partial \vec {B} }{\partial t}} = \nabla \times (\vec{u} \times \vec{B}) + \frac{\eta}{\mu_0}\nabla^2 \vec{B}.
@@ -179,13 +181,11 @@ Combining the fluid equations~\eqref{eq:ns_continuity}--\eqref{eq:ns_energy} and
 \label{eq:energy}
 %\end{equation}
 \end{gather}
-where $\eta$ is now the non-dimensionalised resistivity. This notation is used throughout the remainder of this thesis. The system is closed by the inclusion of the equation of state for an ideal gas
+where $\eta$ is now the non-dimensionalised resistivity. This notation is used throughout the remainder of this thesis. Note, the original induction equation~\eqref{eq:induction_equation} has been split using the vector triple produce and~\eqref{eq:gauss_law_for_magnetism}. The terms ${Q}_{\nu} = \ten{\sigma} : \vec{\nabla}\vec{u}$ and ${Q}_{\eta} = \eta | \vec{\jmath} |^2$ are viscous heating and Ohmic heating, respectively. The system is closed by the inclusion of the equation of state for an ideal gas
 \begin{equation}
 \varepsilon = \frac{p}{\rho(\gamma - 1)},
 \end{equation}
-where the specific heat ratio is given by $\gamma = 5/3$. The
-  terms ${Q}_{\nu} = \ten{\sigma} : \vec{\nabla}\vec{u}$ and
-  ${Q}_{\eta} = \eta | \vec{\jmath} |^2$ are viscous heating and Ohmic heating, respectively.
+where the specific heat ratio is given by $\gamma = 5/3$. 
 
 The non-dimensionalisation scheme is identical to that used in the code Lare3d~\cite{arberStaggeredGridLagrangian2001}, where a typical magnetic field strength $B_0$, density $\rho_0$ and length scale $L_0$ are chosen and the other variables non-dimensionalised appropriately. Velocity and time are
 non-dimensionalised using the Alfv\'en speed $u_A = B_0 / \sqrt{\rho_0
@@ -229,7 +229,7 @@ where
   \label{eq:rate_of_strain}
   \ten{W} = \nabla\vec{u} + (\nabla\vec{u})^T - \tfrac{2}{3}(\nabla \cdot \vec{u})\ten{I}.
 \end{equation}
-The tensor $\ten{W}$ quantifies the rate at which a parcel of fluid undergoes a deformation and is symmetric and trace-free by construction.
+Here, $\ten{I}$ is the $3 \times 3$ identity tensor. The tensor $\ten{W}$ quantifies the rate at which a parcel of fluid undergoes a deformation and is symmetric and trace-free by construction.
 
 Many fluids encountered in nature are Newtonian fluids, that is the viscous stress arising from any deformation of the fluid is directly proportional to the rate of strain of the deformation,
 \begin{equation}
@@ -266,7 +266,7 @@ A first approximation of the stress tensor can be found in the work of Chapman a
 
 This section presents a condensed version of Braginskii's qualitative derivation of the form of the anisotropic viscosity stress tensor in a magnetized plasma, and its associated transport parameters~\cite{braginskiiTransportProcessesPlasma1965}. 
 
-Consider a plasma where, on average, each particle moves a distance $\Delta x$ in the collision time $\tau$ before colliding. After the collision the particle has equal probability of moving to the left or the right. Since we are concerned with the viscous diffusion of momentum, and not the advection of momentum, we consider the case where the net particle flux through the plane $x=x_0$ is zero, that is the number of particles moving through the plane from the left is equal to the number of particles from the right. This implies a uniform number density in the small layer around $x_0$.
+Let us consider how momentum diffuses in the $x$-direction. Consider a plasma where, on average, each particle moves a distance $\Delta x$ in the collision time $\tau$ before colliding. After the collision the particle has equal probability of moving to the left or the right. Since we are concerned with the viscous diffusion of momentum, and not the advection of momentum, we consider the case where the net particle flux through the plane $x=x_0$ is zero, that is the number of particles moving through the plane from the left is equal to the number of particles from the right. This implies a uniform number density in the small layer around $x_0$.
 
 Now consider a non-uniform velocity component $u$ which changes slowly enough over the distance $\Delta x$ that we may write
 \begin{equation}
@@ -345,7 +345,7 @@ and two terms often called the drift or gyroviscous terms,
 \ten{W}^{(4)} &= (\ten{Z}\ten{W}\vec{b}) \otimes \vec{b} + \vec{b} \otimes (\ten{Z} \ten{W} \vec{b}),
 \label{eq:drift_terms}
 \end{align}
-where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$.
+where the tensor $\ten{Z}$ has components $Z_{ij} = \varepsilon_{ikj}b_k$, where $\varepsilon_{ikj}$ is the Ricci alternating tensor (note the index ordering). It can be shown that these five tensors are mutually orthogonal, that is $\ten{W}^{(i)}:\ten{W}^{(j)} = 0$ for $i\ne j$~\cite{braginskiiTransportProcessesPlasma1965}.
 
 Braginskii derives the five viscosity coefficients $\eta_i$ from a kinetic description of the plasma (see~\cite{epperleinPlasmaTransportCoefficients1986} for an example derivation). While more modern methods of deriving transport parameters have generally produced more accurate estimates~\cite{epperleinPlasmaTransportCoefficients1986}, Braginskii's expressions combine relative simplicity and good accuracy are are still widely used. These are the expressions used throughout this thesis.
 
@@ -379,7 +379,7 @@ The drift coefficients are written,
   \label{eq:drift_visc_coeff}
   \eta_4(x) = \frac{\eta_0}{\Delta} x \left( x^2 + 2.38 \right), \quad \eta_3 = \eta_4(2x).
 \end{equation}
-The relative strength of the five coefficients is important in considering which are most significant in the solar corona. The drift coefficients are of the order $\eta_0/(\omega \tau)$ and the perpendicular coefficients of the order $\eta_0/(\omega \tau)^2$. The dependence on the magnetic field strength can be seen in figure~\ref{fig:visc_dep}.
+The relative strength of the five coefficients is important (but not sufficient) in considering which are most significant in the solar corona. The drift coefficients are of the order $\eta_0/(\omega \tau)$ and the perpendicular coefficients of the order $\eta_0/(\omega \tau)^2$. The dependence on the magnetic field strength can be seen in figure~\ref{fig:visc_dep}. Notice that asymptotically as $x \to 0$, $\eta_1 \to \eta_0$ and $\eta_3 \to 0$.
 
 As has already been discussed, the origin of each of the five viscosity components can be understood by considering the effect of velocity gradients and collisions on a plasma from a kinetic perspective. The drift terms are products of the velocity gradient perturbing particle orbits which generates pressure anisotropies and, in the absence of collisions, produces a stress which is orthogonal to the strain, resulting in no viscous dissipation. Collisions repartition the anisotropies in the pressure giving rise to the perpendicular terms. This is explored in detail by Kaufman in~\cite{kaufmanPlasmaViscosityMagnetic1960}. 
 
@@ -404,7 +404,8 @@ where $\vec{e}_z$ is the unit vector in the $z$-direction. Notice that the only 
 \end{equation}
 In the strong-field regime, the only motion damped by viscosity is non-uniform compression or dilation of the plasma. 
 
-This approximation is valid even for quiet Sun conditions, where $\omega\tau \approx 10^4$. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an important, abundant feature in the coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}. Any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate viscosity in the limit of weak magnetic field.
+This approximation may be valid even for quiet Sun conditions, where $\omega\tau \approx 10^4$. Where this approximation fails is around magnetic null points, regions of the corona where the magnetic field vanishes. Null points are an important, abundant feature in the coronal magnetic field~\cite{edwardsNullPointDistribution2015} and participate in a number of important solar phenomena~\cite{massonNATUREFLARERIBBONS2009,moreno-insertisPLASMAJETSERUPTIONS2013,barnesRelationshipCoronalMagnetic2007}. Any general model of solar viscosity must go beyond the strong-field approximation and additionally incorporate viscosity in the limit of weak magnetic field.
+
 
 \subsection{Limit of weak magnetic field}
 
@@ -418,9 +419,9 @@ While the full Braginskii tensor~\eqref{eq:braginskii_tensor} presents the natur
 \nonumber
 & &+~ \eta_1\ten{W},
 \end{eqnarray}
-the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in~\eqref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$.
+the anisotropic terms and isotropic term are clearly separated. The grouping of terms and the explicit use of $\vec{B}$ rather than $\vec{b}$ allows a numerical implementation to check the local value of $|\vec{B}|$ and, if it's smaller than some threshold, manually set the anisotropic coefficients in~\eqref{eq:brag_new} to zero, avoiding a division by $|\vec{B}|$. Additionally, this form still retains the limiting behaviour of the original tensor~\eqref{eq:braginskii_tensor}, where~\eqref{eq:brag_new} tends to~\eqref{eq:braginskii_parallel_term} in the limit of strong fields and tends to~\eqref{eq:isotropic_viscous_tensor} in the limit of $|\vec{B}| \to 0$. This is a result of the asymptotic behaviour of equations~\eqref{eq:perp_visc_coeff} and~\eqref{eq:drift_visc_coeff}.
 
-Similar to the strong-field limit, it can be shown that the magnetic field in the weak-field limit has no effect on the field-aligned component of momentum transport in~\eqref{eq:brag_new}. That is, ~\eqref{eq:z_aligned_iso} still holds.
+Similar to the strong-field limit, it can be shown that the magnetic field has no effect on the field-aligned component of momentum transport in~\eqref{eq:brag_new}. That is, ~\eqref{eq:z_aligned_iso} still holds.
 
 \section{Conclusion}
 

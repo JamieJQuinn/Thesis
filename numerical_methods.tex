@@ -16,7 +16,7 @@ This section presents the implementation and testing of a 1D Lagrangian-remap sc
 
 \subsection{The physical model}
 
-Flows of an ideal, inviscid fluid can be described using the Euler equations, here in 1D. The continuity equation describes the change in density $\rho$ due to expansion or compression of the fluid through spatial change in the flow velocity $u$,
+Flows of an inviscid fluid can be described using the Euler equations, here in 1D. The continuity equation describes the change in density $\rho$ due to expansion or compression of the fluid through spatial change in the flow velocity $u$,
 \begin{equation}
   \frac{D \rho}{Dt} + \rho\frac{\partial u}{\partial x} = 0.\\
   \label{eqn-Lare1d-density}
@@ -193,7 +193,7 @@ dM_i = \left( \rho_i' + \frac{1}{2}dxb'_i(1-\psi) \frac{\partial \rho_i'}{\parti
 \end{equation} 
 and feeding that into~\eqref{eqn-remap-density} completes the density remap.
 
-\subsection{The Specific Energy Density Remap}
+\paragraph{The Specific Energy Density Remap}
 At this point in the algorithm, the mass leaving the $i$-th cell $dM_i$ has already been calculated and this is used to form a change of coordinates, from $x$-coordinates to mass coordinates, denoted by $\xi$, which is used to remap the remaining variables. The distance $dxb_i$ can be written in mass coordinates as
 \begin{equation}
 \label{eqn-change-of-coord}
@@ -244,14 +244,14 @@ to rewrite $dE_i$ as
 \end{equation}
 where, in practice, calculation of $\partial \varepsilon_i'/\partial\xi$ is again performed using a flux limiter (discussed in section~\ref{sec-flux-limiters}). Feeding this final equation into~\eqref{eqn-remap-specific-energy-density} completes the specific energy density remap.
 
-\subsection{The velocity remap}
+\paragraph{The velocity remap}
 \label{sec-remap-velocity}
 The velocity remap is nearly identical to the specific energy density remap shown previously so a derivation will not be given, however since the velocity is defined at cell centres, some of the relevant variables must be interpolated. The final two equations required to remap the velocity are 
 \begin{align}
   dU_i &= \left( u_i' + \frac{1}{2}dxc_i\frac{\partial u_i'}{\partial x} \left( 1 - \frac{dM_{i+1/2}}{\rho_{i+1/2} dxc_i} \right) \right)dM_{i+1/2},\\
   u_i^{n+1}  &= \frac{1}{dxc_i \rho_{i+1/2}^{n+1}}(u_i' dxc_i \rho_{i+1/2} + dU_{i-1} - dU_i),
 \end{align}
-where the boundary distance $dxb$ is replaced by the cell centre distance $dxc$, mass is interpolated using an average, $dM_{i+1/2} = (dM_{i} + dM_{i+1})/2$, and the density is interpolated using equation \eqref{eqn-lagrangian-density-interpolation}. Once again, the derivative $\partial u_i' / \partial x$ is found using a flux limiter. 
+where $dU_i$ is the velocity advected through the right hand side boundary, the boundary distance $dxb$ is replaced by the cell centre distance $dxc$, mass is interpolated using an average, $dM_{i+1/2} = (dM_{i} + dM_{i+1})/2$, and the density is interpolated using equation \eqref{eqn-lagrangian-density-interpolation}. Once again, the derivative $\partial u_i' / \partial x$ is found using a flux limiter. 
 
 \subsection{Constraints on the timestep}
 Lagrangian-remap schemes are often considered to be unconditionally stable and do not have a CFL condition like many explicit numerical schemes~\cite{batesMultiplyUpstreamSemiLagrangianAdvective1982}. Despite this, the remap step detailed previously makes some assumptions about how the grid deforms during the Lagrangian step, namely a gridpoint cannot be advected more than one grid separation away from its original position. This condition appears similar to a CFL condition and restricts the timestep $dt$ to
@@ -357,7 +357,7 @@ Lare1d was tested using the Sod shock tube problem. The problem was used to run 
   \label{fig:sod_analytical_solution}
 \end{figure}
 
-The Sod shock tube problem is commonly used in testing compressible hydrodynamic codes and has a known analytical solution~\cite{sodSurveySeveralFinite1978}, shown in figure~\ref{fig:sod_analytical_solution}. The initial conditions for the problem is a discontinuity in both pressure and density at the location $x_0=0.5$,
+The Sod shock tube problem is commonly used in testing compressible hydrodynamic codes and has a known analytical solution~\cite{sodSurveySeveralFinite1978}, shown in figure~\ref{fig:sod_analytical_solution}. The initial conditions for the problem is a discontinuity in pressure $p$ and density $\rho$ and uniform, zero velocity $u$ at the location $x_0=0.5$,
 \begin{equation}
   \label{eq:sod_problem_ic}
 \begin{pmatrix}\rho _{L}\\p_{L}\\u_{L}\end{pmatrix}
@@ -365,8 +365,9 @@ The Sod shock tube problem is commonly used in testing compressible hydrodynamic
 \begin{pmatrix}1.0\\1.0\\0.0\end{pmatrix}, \quad
 \begin{pmatrix}\rho _{R}\\p_{R}\\u_{R}\end{pmatrix}
 =
-\begin{pmatrix}0.125\\0.1\\0.0\end{pmatrix}.
+\begin{pmatrix}0.125\\0.1\\0.0\end{pmatrix},
 \end{equation}
+where the subscripts $L$ and $R$ refer to vthe alues left and right of the location of the discontinuity $x_0$.
 
 The large initial pressure jump generates three waves: a shock wave, a contact discontinuity and a rarefaction wave. Shock waves are the discontinuous limit of compressive waves, created as a result of flow velocities exceeding the local speed of sound. These can form spontaneously or as the result of a smooth compressive wave steepening. The states before and after the shock are connected by the Rankine-Hugoniot conditions, described in the proceeding paragraphs. Contact discontinuities are similar to shock waves, and are similarly governed by the Rankine-Hugoniot conditions, but only involve a jump in density, maintaining pressure equilibrium across the jump. Rarefaction (or expansion) waves are travelling regions of expanding medium, in contrast to a compressive wave. Such waves are often found in the wake of shocks, as is the case here. The rarefaction wave here travels leftwards. These three waves can be identified in figure~\ref{fig:sod_analytical_solution}.
 
@@ -406,7 +407,7 @@ u_1 &= \frac{2a_R}{\gamma + 1} \left( M_s - \frac{1}{M_s} \right).
 The velocity and pressure are equal across regions 1 and 2 and the density given by,
 \begin{equation}
   \label{eq:sod_region2}
-\rho = \rho_L \left( \frac{p_1}{p_L} \right)^{1/\gamma}.
+\rho_2 = \rho_L \left( \frac{p_2}{p_L} \right)^{1/\gamma}.
 \end{equation}
 Within the rarefaction wave, the solution is given by,
 \begin{equation}
@@ -463,7 +464,7 @@ Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ a
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{shock_viscosity_variables.pdf}
-  \mycaption{Solutions to the Sod problem for various values of the shock viscosity parameters.}{The solution is plotted at $t=0.2$ for a resolution of $N=500$ and in the region $0.8 \leq x \leq 0.9$ to focus on the shock itself. The analytical solution is also shown\todo{fix labels in legend}.}%
+  \mycaption{Solutions to the Sod problem for various values of the shock viscosity parameters.}{The solution is plotted at $t=0.2$ for a resolution of $N=500$ and in the region $0.8 \leq x \leq 0.9$ to focus on the shock itself. The analytical solution is also shown\todo{fix labels in legend and enhance size of y axis in plots 1 and 2}.}%
   \label{fig:shock_viscosity_variables}
 \end{figure}
 
