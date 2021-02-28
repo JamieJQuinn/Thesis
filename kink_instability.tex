@@ -104,26 +104,23 @@ The numerical diffusion present in the simulations (due to the numerical scheme 
 
 \label{sec:kink_methods_analysis}
 
-\subsubsection{Connectivity}
+%\subsubsection{Connectivity}
 
-The mean change in field line connectivity $\Delta\Phi_c$ is used as a practical measure of reconnection rate. The connectivity of a given field line $\Phi_c$ is determined by comparing its start and end points. Any field line that begins at one location in one of the loop footpoints will map to a corresponding point in the opposite footpoint and lines are correspondingly labelled depending on the twist regions in which they start and end. Initially, the field lines within each region map one-to-one to the same region. As the field reconnects radially during the instability, field lines begin to start and end in different twist zones. The rate of reconnection is estimated by tracking the number of field lines that have changed twist zones within a set time period. This also serves as a visual representation of where such reconnection is occurring. It should be noted that this measure of reconnection does not take into account azimuthal reconnection (that is reconnection within the same twist zone). As such, it is only a partial measure of reconnection.
+%The mean change in field line connectivity is used as an alternative measure of reconnection rate which captures the reconnection occurring between different regions of twist in the flux tube. The two footpoints of the flux tube, located at $z=\pm10$, are each partitioned into three twist zones corresponding to the different regions of twist given by $\alpha(r)$ in~\eqref{eq:field-profile-r-lt-1}. These zones are $r<0.5$, $0.5 \leq r \leq 1$ and $r > 1$. Field lines are traced and labelled depending on which regions they start and end in, for instance a field line starting in $r<0.5$ and ending in $r>1$ has one label, while another field line starting in $r<0.5$ but ending in $r<0.5$ will have another label. The label defines the connectivity $\Phi_c$ of that field line. The value of the labels are unimportant, only the rate at which they change $\Delta\Phi_c$ as field lines connect to different twist zones during reconnection in a given time period.
 
-In practice, magnetic field output is saved from Lare3d at intervals of $\Delta t = 5$. The visualisation tool Mayavi~\cite{ramachandran2011mayavi} is used to compute the magnetic field lines over a grid of starting points $(x_i, y_j)$ at a given time $n \Delta t$, where $n$ indexes the output files. This process gives a connectivity map $\Phi_c^{(n)}(x_i, y_j)$ across the profile of the flux tube at a single time. The mean difference in connectivity $\Delta \Phi_c^{(n)}$ at time $n\Delta t$ is found by subtracting one connectivity map from the previous and then taking the mean across all points $(x_i, y_j)$,
-\begin{equation}
-  \Delta \Phi_c^{(n)} = \frac{1}{N_x N_y} \sum_{i=1}^{N_x} \sum_{j=1}^{N_y} (\Phi_c^{(n)}(x_i, y_j) - \Phi_c^{(n-1)}(x_i, y_j)).
-\end{equation}
+%Initially, all field lines will start and end in corresponding zones in either footpoint. As current sheets form during the evolution of the kink instability, the magnetic field reconnects radially and as a result field lines start and end in different zones. Tracking the rate at which field lines appear to change twist zones provides a reconnection rate which does not take into account azimuthal slippage reconnection, instead revealing reconnection which is dynamically significant to the evolution of the kink instability. This can be seen in figure~\ref{fig:reconnection-rates} where the more traditional measure of reconnection rate, the maximum integrated parallel electric field (discussed later), initially measures high rates of (slippage) reconnection which is not reflected in the measure based on connectivity.
 
-\todo{improve description of this measure, how its calculated and why it was done this way}
+%In practice, magnetic field output is saved from Lare3d at intervals of $\Delta t = 5$. The visualisation tool Mayavi~\cite{ramachandran2011mayavi} is used to compute the magnetic field lines over a grid of starting points at a given time $n \Delta t$, where $n$ indexes the output files. This process gives a map of field line connectivity at each time index across the profile of the flux tube. Comparing to the connectivity from a previous time provides a count of the number of field lines which have been reconnected in the time frame $\Delta t$. Dividing by the total number of field lines traced results in the reconnection rate.
 
-\subsubsection{Parallel electric field}
+\subsubsection{Reconnection rate}
 
-Another useful measure of magnetic reconnection is the maximum value of the integral of the electric field parallel to the magnetic field $E_{\parallel} = \eta {(\vec{\jmath} \cdot \vec{B})}/|\vec{B}|$ along a magnetic field line~\cite{galsgaardSteadyStateReconnection2011,priestNatureThreedimensionalMagnetic2003,schindlerGeneralMagneticReconnection1988},
+The generally accepted measure of magnetic reconnection is the maximum value of the integral of the electric field parallel to the magnetic field $E_{\parallel} = \eta {(\vec{\jmath} \cdot \vec{B})}/|\vec{B}|$ along a magnetic field line~\cite{galsgaardSteadyStateReconnection2011,priestNatureThreedimensionalMagnetic2003,schindlerGeneralMagneticReconnection1988},
 \begin{equation}
   \Phi = \int_{C} \eta \frac{(\vec{\jmath} \cdot \vec{B})}{|\vec{B}|}\ {\rm d}l,
 \end{equation}
 where $C$ is a magnetic field line with start and end points within the footpoints at $z\pm10$.
 
-Using a similar method as in the calculation of connectivity, Mayavi is employed to compute magnetic field lines using a grid of field line starting points $(x_i, y_j)$ at a given time. The absolute value of the parallel electric field is summed along each of the magnetic field lines to give a distribution $\Phi(x_i, y_j)$ across the profile of the field. The maximum of this distribution gives a measure of the reconnection rate.
+The visualisation tool Mayavi~\cite{ramachandran2011mayavi} is employed to compute magnetic field lines using a grid of field line starting points $(x_i, y_j)$ at a given time. The absolute value of the parallel electric field is integrated along each of the magnetic field lines to give a distribution $\Phi(x_i, y_j)$ across the profile of the field. The maximum of this distribution gives a measure of the reconnection rate.
 
 It can be argued that the reconnection rate calculated by taking the global maximum is only the rate for one region of magnetic diffusion, and the nonlinear phase of the kink instability creates multiple diffusion regions in its development. One way to calculate the reconnection rate for each region is via the algorithm described in~\cite{pontinDynamicsBraidedCoronal2011}, which dissects the distribution $\Phi(x_i, y_j)$ into separate regions before finding the maxima corresponding to the reconnection rate per diffusion region. In practice, the current structures created by the kink instability in the reported results are simple enough that this extended analysis is unnecessary.
 
@@ -256,24 +253,24 @@ in other quantities related to magnetic reconnection.
 
 \begin{figure}[t]
     \centering
-    \begin{subfigure}[t]{0.5\textwidth}
+    %\begin{subfigure}[t]{0.5\textwidth}
       \centering
-      \includegraphics[width=\linewidth]{max_parallel_electric_field.pdf}
-      \caption{Parallel electric field}
-      \label{fig:max_parallel_electric_field}
-    \end{subfigure}%
+      \includegraphics[width=0.5\linewidth]{max_parallel_electric_field.pdf}
+      %\caption{Parallel electric field}
+      %\label{fig:max_parallel_electric_field}
+    %\end{subfigure}%
     ~
-    \begin{subfigure}[t]{0.5\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{mean_difference_in_connectivity.pdf}
-      \caption{Difference in connectivity}
-      \label{fig:mean_difference_in_connectivity}
-    \end{subfigure}
-    \mycaption{Reconnection rates.}{The maximum integrated parallel electric field and mean difference in connectivity are plotting for the isotropic (blue dot \& solid line) and switching (orange cross \& dashed line) cases with $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. The difference in time between each data point is $5$ Alfv\'en times.}
+    %\begin{subfigure}[t]{0.5\textwidth}
+      %\centering
+      %\includegraphics[width=\linewidth]{mean_difference_in_connectivity.pdf}
+      %\caption{Difference in connectivity}
+      %\label{fig:mean_difference_in_connectivity}
+    %\end{subfigure}
+    \mycaption{Reconnection rate.}{The maximum integrated parallel electric field is plotted for the isotropic (blue dot \& solid line) and switching (orange cross \& dashed line) cases with $\nu = 10^{-4}$ and $\eta = 5\times 10^{-4.5}$. The difference in time between each data point is $5$ Alfv\'en times.}
     \label{fig:reconnection-rates}
 \end{figure}
 
-Figure~\ref{fig:reconnection-rates} displays the time series of the maximum integrated parallel electric field and the mean difference in connectivity, for both viscosity models. Both of the time series in figure~\ref{fig:reconnection-rates} display similar trends to those found in the perpendicular kinetic energy plot, figure~\ref{fig:energies}b. For both isotropic and anisotropic viscosity there appears to be two major peaks in the reconnection measures that align with peaks in the perpendicular kinetic energy. This is much more obvious in the isotropic case. Both viscosity models allow for two phases of reconnection but the time at which they occur is significantly modified by the form of viscosity chosen. It is, therefore, clear that the form of viscosity is having a significant effect on the nonlinear evolution of the kink instability, both on the flow dynamics and the reconnection of the magnetic field. The following section presents, in more detail, the two important phases indicated by the isotropic time series, and how the results differ in the switching case.
+Figure~\ref{fig:reconnection-rates} displays the time series of the maximum integrated parallel electric field, for both viscosity models. The time series in figure~\ref{fig:reconnection-rates} displays a similar trend to that found in the perpendicular kinetic energy plot, figure~\ref{fig:energies}b. For both isotropic and anisotropic viscosity there appears to be two major peaks in the reconnection measures that align with peaks in the perpendicular kinetic energy. This is much more obvious in the isotropic case. Both viscosity models allow for two phases of reconnection but the time at which they occur is significantly modified by the form of viscosity chosen. It is, therefore, clear that the form of viscosity is having a significant effect on the nonlinear evolution of the kink instability, both on the flow dynamics and the reconnection of the magnetic field. The following section presents, in more detail, the two important phases indicated by the isotropic time series, and how the results differ in the switching case.
 
 \subsection{First phase: $t\approx65$--$100$}
 
