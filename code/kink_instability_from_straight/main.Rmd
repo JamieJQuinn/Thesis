@@ -21,6 +21,7 @@ import math
 from scipy.signal import find_peaks
 import matplotlib
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 # %matplotlib inline
 
 sys.path.insert(0,'../shared')
@@ -414,7 +415,7 @@ u2 = 0.15 * 2.08 * r * (1+np.tanh(1 - 5*(r**2)))
 axis.plot(r, u2, 'k')
 axis.set_ylim(0, 0.2)
 axis.set_xlim(0, 2)
-axis.set_ylabel(r"$u(r)$")
+axis.set_ylabel(r"$u_r(r)$")
 axis.set_xlabel(r"$r$")
 save_plot(outdir + "u_r.pdf")
 ```
@@ -432,7 +433,7 @@ axis.plot(t, u, 'k')
 axis.plot((0, 10), (1,1), 'k:', linewidth=1)
 axis.set_ylim(0, 1.2)
 axis.set_xlim(0, 10)
-axis.set_ylabel(r"$u(r)$")
+axis.set_ylabel(r"$u_t(t)$")
 axis.set_xlabel(r"$t$")
 save_plot(outdir + "u_t.pdf")
 ```
@@ -489,12 +490,19 @@ for i in range(13, 16):
 #                 y = radius*np.sin(theta)
 #                 axis.plot(x, y, 'white')
             
-#             if i == 13:
-#                 xlim = ylim = 0.25
-#             else:
-#                 xlim = ylim = 1.0
-            xlim = ylim = 1.0
-                
+            if i == 13:
+                xlim = ylim = 0.25
+            else:
+                xlim = ylim = 1.0
+#             xlim = ylim = 1.0
+    
+#             if i==13:
+#                 theta = np.linspace(0, 2*np.pi)
+#                 rad = 0.075
+#                 x = rad*np.cos(theta)
+#                 y = rad*np.sin(theta)
+#                 axis.plot(x, y, 'k--', linewidth=0.5)
+
 
             axis.set_xlim((-xlim, xlim))
             axis.set_ylim((-ylim, ylim))
