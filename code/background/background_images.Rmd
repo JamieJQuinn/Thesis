@@ -161,10 +161,10 @@ b1 = (3.0 + eta_1 - 4.0*eta_2)/3.0
 b3 = eta_2 - eta_1
 
 fig, axis = create_axes(2)
-axis.plot(B, b1, label=r"$(3\eta_0 + \eta_1 - 4\eta_2)/3$")
+axis.plot(B, b1, label=r"parallel")
 # axis.plot(B, b2, label=r"$(\eta_2 - \eta_1)$")
-axis.plot(B, b3, label=r"$\eta_2 - \eta_1$")
-axis.plot(B, eta_1, label=r"$\eta_1$")
+axis.plot(B, b3, label=r"perpendicular")
+axis.plot(B, eta_1, label=r"isotropic")
 axis.set_xlabel(r"$|B|$")
 # axis.set_ylabel(r"$s$")
 axis.set_ylim(0.0, 1.1)

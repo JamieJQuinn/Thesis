@@ -482,7 +482,7 @@ for sigma_pt in [(0, 0), (0.1, 1.0), (0.77, 0)]:
     numerical_data = np.fromfile(numerical_filename, dtype=np.dtype(np.double))
 
     x = np.linspace(0, 1, res)
-    label = r"$\sigma_1 =\ $"+str(sigma1)+", $\sigma_2 ="+str(sigma2)+"$"
+    label = r"$c_1 =\ $"+str(sigma1)+", $c_2 ="+str(sigma2)+"$"
     axes[0].plot(x, numerical_data[:res], marker='.', label=label)
     axes[1].plot(x, numerical_data[res:2*res], marker='.', label=label)
     axes[2].plot(x, numerical_data[2*res:3*res], marker='.', label=label)
@@ -500,8 +500,8 @@ axes[0].plot(x, analytical_data[:res], '--', color='grey', label=r"$u(x)$")
 axes[1].plot(x, analytical_data[res:2*res], '--', color='grey', label=r"$u(x)$")
 axes[2].plot(x, analytical_data[2*res:3*res], '--', color='grey', label=r"$u(x)$")
 
-axes[0].set_ylim(0, 1.1)
-axes[1].set_ylim(0, 1.1)
+axes[0].set_ylim(0, 0.4)
+axes[1].set_ylim(0, 0.4)
 axes[2].set_ylim(0, 1.1)
 axes[0].set_xlim(0.8, 0.9)
 axes[1].set_xlim(0.8, 0.9)
@@ -511,7 +511,7 @@ axes[1].set_ylabel(r"$\rho$")
 axes[2].set_ylabel(r"$u$")
 axes[2].set_xlabel(r"$x$")
 
-axes[1].legend(frameon=False)
+axes[2].legend(frameon=False)
 # plt.show()
 os.chdir(NOTEBOOK_LOCATION)
 save_plot(outdir+'shock_viscosity_variables.pdf')

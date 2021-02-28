@@ -353,7 +353,7 @@ Lare1d was tested using the Sod shock tube problem. The problem was used to run 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{sod_analytical_solution.pdf}
-  \mycaption{Analytical solution to the Sod shock tube problem.}{The solution is separated into five regions: the left (L) and right (R) regions, which retain the values of the initial conditions; the right (1) and left (2) states on either side of the contact discontinuity, region 1 bounded to the right by the shock and region 2 to the left by the rarefaction wave; and the rarefaction wave (E).\todo{include time}}%
+  \mycaption{Analytical solution to the Sod shock tube problem at $t=0.2$.}{The solution is separated into five regions: the left (L) and right (R) regions, which retain the values of the initial conditions; the right (1) and left (2) states on either side of the contact discontinuity, region 1 bounded to the right by the shock and region 2 to the left by the rarefaction wave; and the rarefaction wave (E).}%
   \label{fig:sod_analytical_solution}
 \end{figure}
 
@@ -395,7 +395,7 @@ M_s - \frac{1}{M_s} = a_L \frac{\gamma + 1}{\gamma - 1} \left\{
 \right]^{\frac{\gamma - 1}{2\gamma}}
 \right\},
 \end{equation}
-where $a_L = \sqrt{\gamma p_L / \rho_L}$ is the local sound speed (defined similarly for other regions).\todo{define gamma} For this problem, $M_s \approx 1.75$. This is used to calculate the pressure, density and velocity in region 1, found via the equations,
+where $a_L = \sqrt{\gamma p_L / \rho_L}$ is the local sound speed (defined similarly for other regions) and $\gamma = 1.4$ is the ratio of heat capacities. For this problem, $M_s \approx 1.75$. This is used to calculate the pressure, density and velocity in region 1, found via the equations,
 \begin{equation}
   \label{eq:sod_region1}
 \begin{aligned}
@@ -464,7 +464,7 @@ Figure~\ref{fig:shock_parameter_searches} shows surface plots of the error $E$ a
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{shock_viscosity_variables.pdf}
-  \mycaption{Solutions to the Sod problem for various values of the shock viscosity parameters.}{The solution is plotted at $t=0.2$ for a resolution of $N=500$ and in the region $0.8 \leq x \leq 0.9$ to focus on the shock itself. The analytical solution is also shown\todo{fix labels in legend and enhance size of y axis in plots 1 and 2}.}%
+  \mycaption{Solutions to the Sod problem for various values of the shock viscosity parameters.}{The solution is plotted at $t=0.2$ for a resolution of $N=500$ and in the region $0.8 \leq x \leq 0.9$ to focus on the shock itself. The analytical solution is also shown.}%
   \label{fig:shock_viscosity_variables}
 \end{figure}
 
