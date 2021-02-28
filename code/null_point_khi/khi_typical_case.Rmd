@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.6.0
+      jupytext_version: 1.10.2
   kernelspec:
     display_name: Python 3
     language: python
@@ -259,6 +259,12 @@ axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$KE$")
 axis.legend(frameon=False)
 
+t_swi = 13.5
+t_iso = 17
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
+
 save_plot(outdir + "v-4r-4_kinetic_energy.pdf")
 ```
 
@@ -297,6 +303,10 @@ axis.set_xlim(0, 20)
 axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$Q_{\eta}$")
 
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
+
 save_plot(outdir + "v-4r-4_ohmic_heating.pdf")
 ```
 
@@ -323,6 +333,10 @@ axis.set_ylim(0.0, 0.015)
 axis.set_xlim(0, 20)
 axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$Q_{\nu}$")
+
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
 
 save_plot(outdir + "v-4r-4_viscous_heating.pdf")
 ```
@@ -351,6 +365,10 @@ axis.set_xlim(0, 20)
 axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$\varepsilon$")
 
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
+
 save_plot(outdir + "v-4r-4_internal_energy.pdf")
 ```
 
@@ -372,10 +390,15 @@ heating = energy_swi.data[:,1]
 
 axis.plot(time, heating, '--', linewidth=1)
 
+
 # axis.set_ylim(0.0, 0.015)
 axis.set_xlim(0, 20)
 axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$ME$")
+
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
 
 save_plot(outdir + "v-4r-4_magnetic_energy.pdf")
 ```
@@ -517,7 +540,7 @@ multipliers = [1, 1, 5, 1000, 1000, 1000]
 for i, t in enumerate([2, 4, 6, 8, 10, 12]):
     iso_sdf, swi_sdf = fetch_viscosity_pair_sdffile(t, -4, -4, data_folder + high_resolution_folder)
 
-    _fig, axis = create_axes(2, square=True)
+    _fig, axis = create_axes(3, square=True)
 
     multiplier = multipliers[i]
     imgs = plot_side_by_side(axis, iso_sdf, 
@@ -546,6 +569,8 @@ for i, t in enumerate([2, 4, 6, 8, 10, 12]):
               r"$\times" + str(multiplier) + "$")
     axis.text(0.95*boundaries, 0.9*boundaries, r"switching", ha='right')
 
+    axis.set_xlabel(r'$x$')
+    axis.set_ylabel(r'$y$')
 #     if DRAFT:
     cbar = attach_colorbar(axis, imgs[0])
     
@@ -732,7 +757,7 @@ for t in np.arange(0, 20.5, 0.5):
 ```
 
 ```{python}
-for t in np.arange(17, 20.5, 0.5):
+for t in np.arange(0, 20.5, 0.5):
     if t > 17:
         side_length = 0.3
         h = 0.02
@@ -753,21 +778,6 @@ for t in np.arange(17, 20.5, 0.5):
 ```
 
 ```{python}
-# print(iso_rate, swi_rate)
-
-# iso_rate = iso_rate[1:]
-# swi_rate = swi_rate[1:]
-
-for i in iso_rate_dic:
-    print(i)
-    plt.imshow(np.abs(iso_rate_dic[i]))
-    plt.show()
-    
-    plt.imshow(np.abs(swi_rate_dic[i]))
-    plt.show()
-```
-
-```{python}
 fig, axis = create_axes(3)
 t = np.arange(0, 20.5, 0.5)
 iso_max_rate = [np.max(np.abs(iso_rate_dic[ta])) for ta in t]
@@ -779,6 +789,9 @@ axis.set_xlim(0, 20)
 axis.set_ylim(0, 25)
 axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"max $\Phi$")
+ylim = axis.get_ylim()
+axis.plot((t_iso,t_iso), ylim, ':', color='C0')
+axis.plot((t_swi,t_swi), ylim, ':', color='C1')
 # plt.show()
 save_plot(outdir + "v-4r-4_reconn_rate_over_time.pdf")
 ```
@@ -847,6 +860,9 @@ imgs[1].set_clim(vmin=min_rate, vmax=max_rate)
 
 axis.text(-0.95*boundaries, 0.9*boundaries, r"isotropic")
 axis.text(0.95*boundaries, 0.9*boundaries, r"switching", ha='right')
+
+axis.set_xlabel(r'$x$')
+axis.set_ylabel(r'$y$')
 
 attach_colorbar(axis, imgs[0])
 
@@ -1223,6 +1239,8 @@ for i in range(34, 37):
 #         attach_colorbar(axis, im)
         axis.set_xlim((-xlim, xlim))
         axis.set_ylim((-ylim, ylim))
+        axis.set_xlabel(r"$x$")
+        axis.set_xlabel(r"$z$")
         
         save_plot(outdir + "v-4r-4-spine-fan-reconn-"+str(i)+".pdf")
 ```
@@ -1269,6 +1287,8 @@ for i in times:
         attach_colorbar(axis, im)
         axis.set_xlim((-xlim, xlim))
         axis.set_ylim((-ylim, ylim))
+        axis.set_xlabel(r"$x$")
+        axis.set_xlabel(r"$z$")
         plot_vectors(iso_sdf, axis, "velocity", slice_dim, slice_loc,
                      color='k', scale=None, pivot='tip', plot_every=(2, 32))
 #         plt.show()
@@ -1319,6 +1339,8 @@ for i in times:
         attach_colorbar(axis, im)
         axis.set_xlim((0, xlim))
         axis.set_ylim((-ylim, ylim))
+        axis.set_xlabel(r"$x$")
+        axis.set_xlabel(r"$z$")
 #         plt.show()
         save_plot(outdir + "v-4r-4-vx-imbalance-"+str(i)+".pdf")
 ```
