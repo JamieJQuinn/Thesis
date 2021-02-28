@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.6.0
+      jupytext_version: 1.10.2
   kernelspec:
     display_name: Python 3
     language: python
@@ -122,7 +122,7 @@ def plot_side_by_side(axis, sdfFile_left, sdfFile_right, slices, cmaps=['plasma'
 
 ```{python}
 old_data_folder = "/nas/1101974q/null-point-study-2017/"
-new_data_folder = "/home/pgrad2/1101974q/prog/lare3d-data/new_switching_function"
+new_data_folder = "/home/pgrad2/1101974q/lare3d-data/new_switching_function"
 
 low_res_braginskii_fname = old_data_folder + "100-b/" + "0005.sdf"
 high_res_braginskii_fname = old_data_folder + "500-b/" + "0001.sdf"
@@ -172,6 +172,9 @@ axis.text(0.95*limit, 0.85*limit, r"$N=500$", ha='right', color='white')
 axis.set_xlim(-limit, limit)
 axis.set_ylim(-limit, limit)
 
+axis.set_ylabel(r'$z$')
+axis.set_xlabel(r'$x$')
+
 save_plot(outdir + "diff_brag_resolution.pdf")
 ```
 
@@ -218,6 +221,10 @@ axis.text(0.95*limit, 0.85*limit, r"$N=500$", ha='right', color='white')
 
 axis.set_xlim(-limit, limit)
 axis.set_ylim(-limit, limit)
+
+
+axis.set_ylabel(r'$z$')
+axis.set_xlabel(r'$x$')
 
 save_plot(outdir + "diff_switching_resolution.pdf")
 ```
@@ -266,6 +273,10 @@ axis.text(0.95*limit, 0.85*limit, r"$N=500$", ha='right', color='white')
 axis.set_xlim(-limit, limit)
 axis.set_ylim(-limit, limit)
 
+
+axis.set_ylabel(r'$z$')
+axis.set_xlabel(r'$x$')
+
 save_plot(outdir + "diff_switching2_resolution.pdf")
 ```
 
@@ -313,6 +324,10 @@ axis.text(0.95*limit, 0.85*limit, r"$N=500$", ha='right', color='white')
 axis.set_xlim(-limit, limit)
 axis.set_ylim(-limit, limit)
 
+
+axis.set_ylabel(r'$z$')
+axis.set_xlabel(r'$x$')
+
 save_plot(outdir + "diff_switching3_resolution.pdf")
 ```
 
@@ -334,6 +349,9 @@ def plot_heating(sdffname, variable, max_val, outname, limit=1.5, slice_dim="x")
 
     axis.set_xlim(-limit, limit)
     axis.set_ylim(-limit, limit)
+    
+    axis.set_ylabel(r'$z$')
+    axis.set_xlabel(r'$x$')
     
     save_plot(outdir + outname)
 ```
@@ -428,6 +446,10 @@ def plot_total_heating(sdffname, max_val, outname, limit=1.5, slice_dim="x"):
 
     axis.set_xlim(-limit, limit)
     axis.set_ylim(-limit, limit)
+    
+    axis.set_ylabel(r'$z$')
+    axis.set_xlabel(r'$x$')
+
     
     save_plot(outdir + outname)
 ```
