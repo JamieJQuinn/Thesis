@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.6.0
+      jupytext_version: 1.10.2
   kernelspec:
     display_name: Python 3
     language: python
@@ -498,6 +498,8 @@ for i in range(13, 16):
 
             axis.set_xlim((-xlim, xlim))
             axis.set_ylim((-ylim, ylim))
+            axis.set_xlabel(r'$x$')
+            axis.set_ylabel(r'$y$')
             save_plot(outdir+"swi-4_pressure_"+str(i)+".pdf")
 ```
 
@@ -524,10 +526,10 @@ for i in [12, 14, 15, 16, 17, 18]:
 #             iso_image = get_variable_slice(iso_sdf, "pressure", slice_dim, slice_loc).T
             swi_image = get_variable_slice(swi_sdf, "pressure", slice_dim, slice_loc).T
 
-            vmax = max(iso_image.max(), swi_image.max())
-            vmin = min(iso_image.min(), swi_image.min())
+#             vmax = max(iso_image.max(), swi_image.max())
+#             vmin = min(iso_image.min(), swi_image.min())
             vmax = 1.0
-    #         vmin = -1e-4
+            vmin = -1e-4
     
 #             if i in [13, 14]:
 #                 xlim = ylim = 0.25
@@ -540,6 +542,8 @@ for i in [12, 14, 15, 16, 17, 18]:
             attach_colorbar(axis, im)
             axis.set_xlim((-xlim, xlim))
             axis.set_ylim((-ylim, ylim))
+            axis.set_xlabel(r'$x$')
+            axis.set_ylabel(r'$y$')
 #             plt.show()
             save_plot(outdir+"swi-3_pressure_"+str(i)+".pdf")
 ```
