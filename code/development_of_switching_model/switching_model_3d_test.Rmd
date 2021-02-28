@@ -579,10 +579,10 @@ swi_energy_filename = old_data_folder + "100-s/en.dat"
 swi_par_energy_filename = new_data_folder + "/v-4r-4-switching2-low-res/Data/en.dat"
 swi_iso_energy_filename = new_data_folder + "/v-4r-4-switching3-low-res/Data/en.dat"
 
-fnames = [brag_energy_filename,
+fnames = [iso_energy_filename, brag_energy_filename,
          swi_energy_filename, swi_par_energy_filename, swi_iso_energy_filename]
 
-labels = ["Brag", "Swi (von Mises)", "Swi (par)", "Swi (iso)"]
+labels = ["Iso", "Brag", "Swi (von Mises)", "Swi (par)", "Swi (iso)"]
 
 energies = [Energy(fname) for fname in fnames]
 
