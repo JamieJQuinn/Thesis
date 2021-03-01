@@ -30,3 +30,8 @@ clean:
 
 fetch-images:
 	rsync -avz maths-hop:~/thesis/images .
+
+diff:
+	latexdiff --flatten ../thesis_pre_viva/thesis.tex thesis.tex > diff.tex
+	latexmk -pdf -outdir=$(BUILD_FOLDER) diff.tex
+	cp $(BUILD_FOLDER)/diff.pdf .
