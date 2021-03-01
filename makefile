@@ -32,6 +32,7 @@ fetch-images:
 	rsync -avz maths-hop:~/thesis/images .
 
 diff:
-	latexdiff --flatten ../thesis_pre_viva/thesis.tex thesis.tex > diff.tex
+	latexdiff --flatten --allow-spaces ../thesis_pre_viva/thesis.tex thesis.tex > diff.tex
+	sed -i 's/\\hspace{0pt}//g' diff.tex
 	latexmk -pdf -outdir=$(BUILD_FOLDER) diff.tex
 	cp $(BUILD_FOLDER)/diff.pdf .
