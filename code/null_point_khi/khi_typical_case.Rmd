@@ -259,6 +259,7 @@ axis.set_xlabel(r"$t$")
 axis.set_ylabel(r"$KE$")
 axis.legend(frameon=False)
 
+t_khi = 8
 t_swi = 13.5
 t_iso = 17
 ylim = axis.get_ylim()
